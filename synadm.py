@@ -36,8 +36,10 @@ class Synapse_admin (object):
 
     def _get_synapse(self, urlpart):
         headers={'Accept': 'application/json' }
-        url="https://{}:{}/_synapse/admin/{}".format(self.host, self.port, urlpart)
-        log.debug('_get_synapse url: {}'.format(urlpart))
+        tokenpart=f"access_token={self.token}"
+        url="http://{}:{}/_synapse/admin/{}&{}".format(self.host, self.port,
+              urlpart, tokenpart)
+        log.debug('_get_synapse url: {}'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
             resp.raise_for_status()
@@ -62,8 +64,8 @@ class Synapse_admin (object):
     def user_list(self):
         ufrom = 0
         ulimit = 50
-        udeactivated = False
-        urlpart = f'v2/users?access_token={self.token}&from={ufrom}&limit={ulimit}&deactivated={udeactivated}' 
+        udeactivated = 'false'
+        urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}'
         return self._get_synapse(urlpart) 
 
 
