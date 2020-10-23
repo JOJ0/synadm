@@ -70,14 +70,17 @@ class Synapse_admin (object):
 log = logger_init()
 
 @click.group(invoke_without_command=False)
-@click.option('--debug/--no-debug', is_flag=True, default=False)
+#@click.option('--debug/--no-debug', is_flag=True, default=False)
+@click.option('--verbose', '-v', count=True, default=False)
 @click.pass_context
-def synadm(ctx, debug):
+def synadm(ctx, verbose):
     #click.echo('synadm command group')
-    ctx.obj['DEBUG'] = debug
-    click.echo('Debug logging is %s' % (ctx.obj['DEBUG'] and 'on' or 'off'))
-    if debug == True:
-        log.handlers[0].setLevel(logging.DEBUG) # adjust cli handler only
+    #ctx.obj['DEBUG'] = debug
+    #click.echo('Debug logging is %s' % (ctx.obj['DEBUG'] and 'on' or 'off'))
+    if verbose == 1:
+        log.handlers[0].setLevel(logging.INFO) # adjust cli handler only
+    elif verbose > 1:
+        log.handlers[0].setLevel(logging.DEBUG)
 
 @click.command()
 @click.argument('command')
