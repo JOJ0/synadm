@@ -55,12 +55,16 @@ class Synapse_admin (object):
             log.error("HTTPError: %s", errh)
             #if "Not found" in errh.response.text:
             #    log.warning("AcousticBrainz doesn't have this recording yet. Consider submitting it!")
+            return None
         except reqerrors.ConnectionError as errc:
             log.error("ConnectionError: %s", errc)
+            return None
         except reqerrors.Timeout as errt:
             log.error("Timeout: %s", errt)
+            return None
         except reqerrors.RequestException as erre:
             log.error("RequestException: %s", erre)
+            return None
 
 
     def user_list(self):
@@ -118,6 +122,9 @@ def user(ctx, user_task, args):
     if user_task == "list":
         synadm = Synapse_admin()
         users = synadm.user_list()
+        if users == None:
+            click.echo("Users could not be fetched.")
+            raise SystemExit(1)
         if ctx.parent.params['raw']:
             pprint(users)
             #print("this is ctx dir: {}".format(dir(ctx.parent)))
