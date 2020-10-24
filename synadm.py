@@ -80,9 +80,9 @@ def synadm(ctx, verbose):
     #ctx.obj['DEBUG'] = debug
     #click.echo('Debug logging is %s' % (ctx.obj['DEBUG'] and 'on' or 'off'))
     if verbose == 1:
-        log.handlers[0].setLevel(logging.INFO) # adjust cli handler only
+        log.handlers[0].setLevel(logging.INFO) # set cli handler to INFO,
     elif verbose > 1:
-        log.handlers[0].setLevel(logging.DEBUG)
+        log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
 @click.command()
 @click.argument('command')
