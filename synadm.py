@@ -47,10 +47,10 @@ class Synapse_admin (object):
                 _json = json.loads(resp.content)
                 return _json
             else:
-                log.debug("No valid response from Synapse. Returning None.")
+                log.warning("No valid response from Synapse. Returning None.")
                 return None
         except reqerrors.HTTPError as errh:
-            log.debug("HTTPError: %s", errh)
+            log.error("HTTPError: %s", errh)
             #if "Not found" in errh.response.text:
             #    log.warning("AcousticBrainz doesn't have this recording yet. Consider submitting it!")
         except reqerrors.ConnectionError as errc:
