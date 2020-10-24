@@ -7,6 +7,7 @@ from pathlib import Path
 import os
 import json
 from pprint import pprint
+from tabulate import tabulate
 
 def logger_init():
     synadmin_root = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -122,7 +123,17 @@ def user(ctx, user_task, args):
             #print("this is ctx dir: {}".format(dir(ctx.parent)))
             #print("this is ctx: {}".format(ctx.parent.params))
         else:
-            click.echo(users) # FIXME pretty print - build a class around tabulate or similar
+            click.echo(
+                  "\nTotal users on homeserver (excluding deactivated): {}\n".format(
+                  users['total']))
+            if int(users['total']) != 0:
+                headers_dict = {}
+                for header in users['users'][0]:
+                    headers_dict.update({header: header})
+                tab_users = tabulate(users['users'], tablefmt="simple",
+                      headers=headers_dict)
+                click.echo(tab_users)
+
     elif user_task == "add":
         pass
 
