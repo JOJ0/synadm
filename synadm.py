@@ -34,7 +34,7 @@ class Synapse_admin (object):
         self.user = 'admin'
         self.token = os.getenv("SYNTOKEN")
 
-    def _get_synapse(self, urlpart):
+    def _get(self, urlpart):
         headers={'Accept': 'application/json' }
         tokenpart=f"access_token={self.token}"
         url="http://{}:{}/_synapse/admin/{}&{}".format(self.host, self.port,
@@ -66,7 +66,7 @@ class Synapse_admin (object):
         ulimit = 50
         udeactivated = 'false'
         urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}'
-        return self._get_synapse(urlpart) 
+        return self._get(urlpart)
 
 
 log = logger_init()
