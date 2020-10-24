@@ -69,14 +69,35 @@ class Synapse_admin (object):
         return self._get(urlpart)
 
 
+def modify_usage_error(main_command):
+    '''a method to append the help menu to an usage error
+    :param main_command: top-level group or command object constructed by click wrapper
+    '''
+    from click._compat import get_text_stderr
+    from click.utils import echo
+    def show(self, file=None):
+        import sys
+        if file is None:
+            file = get_text_stderr()
+        color = None
+        if self.ctx is not None:
+            color = self.ctx.color
+            echo(self.ctx.get_usage() + '\n', file=file, color=color)
+        echo('Error: %s\n' % self.format_message(), file=file, color=color)
+        sys.argv = [sys.argv[0]]
+        main_command()
+
+    click.exceptions.UsageError.show = show
+
+
+
 log = logger_init()
 
 @click.group(invoke_without_command=False)
-#@click.option('--debug/--no-debug', is_flag=True, default=False)
-@click.option('--verbose', '-v', count=True, default=False)
+@click.option('--verbose', '-v', count=True, default=False,
+      help="enable INFO or DEBUG logging on console")
 @click.pass_context
 def synadm(ctx, verbose):
-    #click.echo('synadm command group')
     #ctx.obj['DEBUG'] = debug
     #click.echo('Debug logging is %s' % (ctx.obj['DEBUG'] and 'on' or 'off'))
     if verbose == 1:
@@ -85,27 +106,35 @@ def synadm(ctx, verbose):
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
 @click.command()
-@click.argument('command')
+@click.argument('user_task')
 @click.argument('args', nargs=-1)
 @click.pass_context
-def user(ctx, command, args):
-    click.echo('User subcommand: {} {}'.format(command, args))
-    if command == "list":
+def user(ctx, user_task, args):
+    """list, add, modify or deactivate/delete users
+       and reset passwords.
+    """
+    if user_task == "list":
         synadm = Synapse_admin()
         users = synadm.user_list()
         click.echo(users) # FIXME pretty print - build a class around tabulate or similar
-    elif command == "add":
+    elif user_task == "add":
         pass
 
     
 
 @click.command()
-def room():
-    click.echo('Room subcomand')
+@click.argument('room_task')
+@click.argument('args', nargs=-1)
+@click.pass_context
+def room(ctx, room_task, args):
+    """list rooms, modify their settings,... FIXME
+    """
+    pass
 
 synadm.add_command(user)
 synadm.add_command(room)
 #print(dir(synadm))
+modify_usage_error(synadm)
 
 if __name__ == '__main__':
     synadm(obj={})
