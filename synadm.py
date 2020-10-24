@@ -6,6 +6,7 @@ import logging
 from pathlib import Path
 import os
 import json
+from pprint import pprint
 
 def logger_init():
     synadmin_root = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -96,10 +97,10 @@ log = logger_init()
 @click.group(invoke_without_command=False)
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO or DEBUG logging on console")
+@click.option('--raw', '-r', is_flag=True, default=False,
+      help="print raw json data (no tables)")
 @click.pass_context
-def synadm(ctx, verbose):
-    #ctx.obj['DEBUG'] = debug
-    #click.echo('Debug logging is %s' % (ctx.obj['DEBUG'] and 'on' or 'off'))
+def synadm(ctx, verbose, raw):
     if verbose == 1:
         log.handlers[0].setLevel(logging.INFO) # set cli handler to INFO,
     elif verbose > 1:
@@ -116,7 +117,12 @@ def user(ctx, user_task, args):
     if user_task == "list":
         synadm = Synapse_admin()
         users = synadm.user_list()
-        click.echo(users) # FIXME pretty print - build a class around tabulate or similar
+        if ctx.parent.params['raw']:
+            pprint(users)
+            #print("this is ctx dir: {}".format(dir(ctx.parent)))
+            #print("this is ctx: {}".format(ctx.parent.params))
+        else:
+            click.echo(users) # FIXME pretty print - build a class around tabulate or similar
     elif user_task == "add":
         pass
 
