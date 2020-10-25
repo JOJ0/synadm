@@ -101,9 +101,9 @@ def read_yaml(yamlfile):
             return yaml.load(fyamlfile, Loader=yaml.SafeLoader)
     except IOError as errio:
         log.error("Can't find %s.", yamlfile)
-        #raise errio
+        raise errio
         #raise SystemExit(3)
-        return False
+        #return False
     except yaml.parser.ParserError as errparse:
         log.error("ParserError in %s.", yamlfile)
         #raise errparse
@@ -150,23 +150,29 @@ def synadm(ctx, verbose, raw, config_file):
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
     filename = os.path.expanduser(config_file)
-    conf = read_yaml(filename)
+    try:
+        conf = read_yaml(filename)
+    except IOError:
+        Path(filename).touch()
+        conf = read_yaml(filename)
     log.debug("read configuration from file {}".format(filename))
     log.debug("{}\n".format(conf))
 
     ctx.obj = {
         'config_file': filename,
     }
+    log.debug("ctx.obj: {}\n".format(ctx.obj))
     try:
-        ctx.obj = {
-            'user': conf['user'],
-            'token': conf['token'],
-            'host': conf['host'],
-            'port': conf['port'],
-        }
+        ctx.obj['user'] = conf['user']
+        ctx.obj['token'] = conf['token']
+        ctx.obj['host'] = conf['host']
+        ctx.obj['port'] = conf['port']
+        log.debug("ctx.obj: {}\n".format(ctx.obj))
     except KeyError as keyerr:
         click.echo("Missing entry in configuration file: {}".format(keyerr))
         #raise SystemExit(1)
+    except TypeError as typeerr:
+        click.echo("Configuration file is empty")
 
 @click.command()
 @click.argument('user_task')
