@@ -8,6 +8,7 @@ import os
 import json
 from pprint import pprint
 from tabulate import tabulate
+import yaml
 
 def logger_init():
     synadmin_root = Path(os.path.dirname(os.path.abspath(__file__)))
@@ -30,18 +31,18 @@ def logger_init():
     return log
 
 class Synapse_admin (object):
-    def __init__(self):
-        self.host = 'localhost'
-        self.port = 8008
-        self.user = 'admin'
-        self.token = os.getenv("SYNTOKEN")
+    def __init__(self, user, token, host, port):
+        self.host = host
+        self.port = port
+        self.user = user
+        self.token = token
 
     def _get(self, urlpart):
         headers={'Accept': 'application/json' }
         tokenpart=f"access_token={self.token}"
         url="http://{}:{}/_synapse/admin/{}&{}".format(self.host, self.port,
               urlpart, tokenpart)
-        log.debug('_get_synapse url: {}'.format(url))
+        log.debug('_get_synapse url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
             resp.raise_for_status()
@@ -52,20 +53,19 @@ class Synapse_admin (object):
                 log.warning("No valid response from Synapse. Returning None.")
                 return None
         except reqerrors.HTTPError as errh:
-            log.error("HTTPError: %s", errh)
+            log.error("HTTPError: %s\n", errh)
             #if "Not found" in errh.response.text:
             #    log.warning("AcousticBrainz doesn't have this recording yet. Consider submitting it!")
             return None
         except reqerrors.ConnectionError as errc:
-            log.error("ConnectionError: %s", errc)
+            log.error("ConnectionError: %s\n", errc)
             return None
         except reqerrors.Timeout as errt:
-            log.error("Timeout: %s", errt)
+            log.error("Timeout: %s\n", errt)
             return None
         except reqerrors.RequestException as erre:
-            log.error("RequestException: %s", erre)
+            log.error("RequestException: %s\n", erre)
             return None
-
 
     def user_list(self):
         ufrom = 0
@@ -73,7 +73,6 @@ class Synapse_admin (object):
         udeactivated = 'false'
         urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}'
         return self._get(urlpart)
-
 
 def modify_usage_error(main_command):
     '''a method to append the help menu to an usage error
@@ -94,8 +93,45 @@ def modify_usage_error(main_command):
         main_command()
 
     click.exceptions.UsageError.show = show
+  
+def read_yaml(yamlfile):
+    """expects path/file"""
+    try:
+        with open(str(yamlfile), "r") as fyamlfile:
+            return yaml.load(fyamlfile, Loader=yaml.SafeLoader)
+    except IOError as errio:
+        log.error("Can't find %s.", yamlfile)
+        #raise errio
+        #raise SystemExit(3)
+        return False
+    except yaml.parser.ParserError as errparse:
+        log.error("ParserError in %s.", yamlfile)
+        #raise errparse
+        raise SystemExit(3)
+    except yaml.scanner.ScannerError as errscan:
+        log.error("ScannerError in %s.", yamlfile)
+        #raise errscan
+        raise SystemExit(3)
+    except Exception as err:
+        log.error(" trying to load %s.", yamlfile)
+        raise err
+        #raise SystemExit(3)
 
-
+def write_yaml(data, yamlfile):
+    """data expects dict, yamlfile expects path/file"""
+    try:
+        with open(yamlfile, "w") as fyamlfile:
+            yaml.dump(data, fyamlfile, default_flow_style=False,
+                             allow_unicode=True)
+            return True
+    except IOError as errio:
+        log.error("IOError: could not write file %s \n\n", yamlfile)
+        #raise errio
+        raise SystemExit(3)
+    except Exception as err:
+        log.error(" trying to write %s \n\n", yamlfile)
+        #raise err
+        raise SystemExit(3)
 
 log = logger_init()
 
@@ -104,12 +140,33 @@ log = logger_init()
       help="enable INFO or DEBUG logging on console")
 @click.option('--raw', '-r', is_flag=True, default=False,
       help="print raw json data (no tables)")
+@click.option('--config-file', '-c', type=click.Path(), default='~/.synadm',
+      help="configuration file path")
 @click.pass_context
-def synadm(ctx, verbose, raw):
+def synadm(ctx, verbose, raw, config_file):
     if verbose == 1:
         log.handlers[0].setLevel(logging.INFO) # set cli handler to INFO,
     elif verbose > 1:
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
+
+    filename = os.path.expanduser(config_file)
+    conf = read_yaml(filename)
+    log.debug("read configuration from file {}".format(filename))
+    log.debug("{}\n".format(conf))
+
+    ctx.obj = {
+        'config_file': filename,
+    }
+    try:
+        ctx.obj = {
+            'user': conf['user'],
+            'token': conf['token'],
+            'host': conf['host'],
+            'port': conf['port'],
+        }
+    except KeyError as keyerr:
+        click.echo("Missing entry in configuration file: {}".format(keyerr))
+        #raise SystemExit(1)
 
 @click.command()
 @click.argument('user_task')
@@ -120,7 +177,8 @@ def user(ctx, user_task, args):
        and reset passwords.
     """
     if user_task == "list":
-        synadm = Synapse_admin()
+        synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+              ctx.obj['port'])
         users = synadm.user_list()
         if users == None:
             click.echo("Users could not be fetched.")
@@ -155,8 +213,31 @@ def room(ctx, room_task, args):
     """
     pass
 
+
+@click.command()
+@click.option('--user', '-u', type=str, default="admin",
+    help="admin user for accessing the Synapse Admin API's",)
+@click.option('--token', '-t', type=str,
+    help="admin user's access token for the Synapse Admin API's",)
+@click.option('--host', '-h', type=str, default="localhost",
+    help="the hostname running the Synapse Admin API's",)
+@click.option('--port', '-p', type=str, default="8008",
+    help="the port the Synapse API is listening on (default: 8008)",)
+@click.pass_context
+def config(ctx, user, token, host, port):
+    """store synadm's configuration in a file (default: ~/.synadm)."""
+    config_file = os.path.expanduser(ctx.obj['config_file'])
+
+    api_user = click.prompt("Please enter your API user", default=user)
+    api_token = click.prompt("Please enter your API token", default=token)
+    api_host = click.prompt("Please enter your API host", default=token)
+    api_port = click.prompt("Please enter your API port", default=token)
+    conf_dict = {"user": api_user, "token": api_token, "host": api_host, "port": api_port}
+    write_yaml(conf_dict, config_file)
+
 synadm.add_command(user)
 synadm.add_command(room)
+synadm.add_command(config)
 #print(dir(synadm))
 modify_usage_error(synadm)
 

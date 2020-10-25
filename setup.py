@@ -8,6 +8,7 @@ setup(
         'Click',
         'requests',
         'tabulate',
+        'PyYaml',
     ],
     entry_points='''
         [console_scripts]
