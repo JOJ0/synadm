@@ -40,7 +40,8 @@ class Synapse_admin (object):
     def _get(self, urlpart):
         headers={'Accept': 'application/json' }
         tokenpart=f"access_token={self.token}"
-        url="http://{}:{}/_synapse/admin/{}&{}".format(self.host, self.port,
+        # take care of putting & or ? at end of urlpart in calling method already!
+        url="http://{}:{}/_synapse/admin/{}{}".format(self.host, self.port,
               urlpart, tokenpart)
         log.debug('_get_synapse url: {}\n'.format(url))
         try:
@@ -71,11 +72,11 @@ class Synapse_admin (object):
         ufrom = 0
         ulimit = 50
         udeactivated = 'false'
-        urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}'
+        urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}&'
         return self._get(urlpart)
 
     def room_list(self):
-        urlpart = f'v1/rooms'
+        urlpart = f'v1/rooms?'
         return self._get(urlpart)
 
 def modify_usage_error(main_command):
