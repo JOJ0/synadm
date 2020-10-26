@@ -74,6 +74,10 @@ class Synapse_admin (object):
         urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}'
         return self._get(urlpart)
 
+    def room_list(self):
+        urlpart = f'v1/rooms'
+        return self._get(urlpart)
+
 def modify_usage_error(main_command):
     '''a method to append the help menu to an usage error
     :param main_command: top-level group or command object constructed by click wrapper
@@ -217,7 +221,17 @@ def user(ctx, user_task, args):
 def room(ctx, room_task, args):
     """list rooms, modify their settings,... FIXME
     """
-    pass
+    if room_task == "list":
+        synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+              ctx.obj['port'])
+        rooms = synadm.room_list()
+        if rooms == None:
+            click.echo("Rooms could not be fetched.")
+            raise SystemExit(1)
+        if ctx.parent.params['raw']:
+            pprint(rooms)
+        else:
+            pass
 
 
 @click.command()
