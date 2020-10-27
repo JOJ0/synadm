@@ -166,6 +166,7 @@ def synadm(ctx, verbose, raw, config_file):
 
     ctx.obj = {
         'config_file': filename,
+        'raw': raw,
     }
     log.debug("ctx.obj: {}\n".format(ctx.obj))
     try:
@@ -199,10 +200,9 @@ def list(ctx):
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
-    if ctx.parent.params['raw']:
+
+    if ctx.obj['raw']:
         pprint(users)
-        #print("this is ctx dir: {}".format(dir(ctx.parent)))
-        #print("this is ctx: {}".format(ctx.parent.params))
     else:
         click.echo(
               "\nTotal users on homeserver (excluding deactivated): {}\n".format(
@@ -235,7 +235,8 @@ def list(ctx):
     if rooms == None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
-    if ctx.parent.params['raw']:
+
+    if ctx.obj['raw']:
         pprint(rooms)
     else:
         if int(rooms['total_rooms']) != 0:
