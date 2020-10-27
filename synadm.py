@@ -232,7 +232,13 @@ def room(ctx, room_task, args):
         if ctx.parent.params['raw']:
             pprint(rooms)
         else:
-            pass
+            if int(rooms['total_rooms']) != 0:
+                headers_dict = {}
+                for header in rooms['rooms'][0]:
+                    headers_dict.update({header: header})
+                tab_rooms = tabulate(rooms['rooms'], tablefmt="simple",
+                      headers=headers_dict)
+                click.echo(tab_rooms)
 
 
 @click.command()
