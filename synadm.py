@@ -138,6 +138,16 @@ def write_yaml(data, yamlfile):
         #raise err
         raise SystemExit(3)
 
+def get_table(data):
+    headers_dict = {}
+    for header in data[0]:
+        headers_dict.update({header: header})
+    return tabulate(data, tablefmt="simple",
+          headers=headers_dict)
+
+
+
+
 log = logger_init()
 
 ### main synadm command group starts here ###
@@ -190,6 +200,7 @@ def user(ctx):
        and reset passwords.
     """
 
+
 #### user commands start here ###
 @user.command()
 @click.pass_context
@@ -208,15 +219,8 @@ def list(ctx):
               "\nTotal users on homeserver (excluding deactivated): {}\n".format(
               users['total']))
         if int(users['total']) != 0:
-            headers_dict = {}
-            for header in users['users'][0]:
-                headers_dict.update({header: header})
-            tab_users = tabulate(users['users'], tablefmt="simple",
-                  headers=headers_dict)
+            tab_users = get_table(users['users'])
             click.echo(tab_users)
-
-
-
 
 
 ### room commands group starts here ###
@@ -224,6 +228,7 @@ def list(ctx):
 def room():
     """list rooms, modify their settings,... FIXME
     """
+
 
 ### room commands starts here ###
 @room.command()
@@ -240,13 +245,8 @@ def list(ctx):
         pprint(rooms)
     else:
         if int(rooms['total_rooms']) != 0:
-            headers_dict = {}
-            for header in rooms['rooms'][0]:
-                headers_dict.update({header: header})
-            tab_rooms = tabulate(rooms['rooms'], tablefmt="simple",
-                  headers=headers_dict)
+            tab_rooms = get_table(rooms['rooms'])
             click.echo(tab_rooms)
-
 
 
 ### the config command starts here ###
@@ -270,6 +270,7 @@ def config(ctx, user, token, host, port):
     api_port = click.prompt("Please enter your API port", default=token)
     conf_dict = {"user": api_user, "token": api_token, "host": api_host, "port": api_port}
     write_yaml(conf_dict, config_file)
+
 
 if __name__ == '__main__':
     synadm(obj={})
