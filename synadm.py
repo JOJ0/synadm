@@ -140,6 +140,7 @@ def write_yaml(data, yamlfile):
 
 log = logger_init()
 
+### main synadm command group starts here ###
 @click.group(invoke_without_command=False)
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO or DEBUG logging on console")
@@ -179,69 +180,76 @@ def synadm(ctx, verbose, raw, config_file):
     except TypeError as typeerr:
         click.echo("Configuration file is empty")
 
-@click.command()
-@click.argument('user_task')
-@click.argument('args', nargs=-1)
+
+### user commands group starts here ###
+@synadm.group()
 @click.pass_context
-def user(ctx, user_task, args):
+def user(ctx):
     """list, add, modify or deactivate/delete users
        and reset passwords.
     """
-    if user_task == "list":
-        synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-              ctx.obj['port'])
-        users = synadm.user_list()
-        if users == None:
-            click.echo("Users could not be fetched.")
-            raise SystemExit(1)
-        if ctx.parent.params['raw']:
-            pprint(users)
-            #print("this is ctx dir: {}".format(dir(ctx.parent)))
-            #print("this is ctx: {}".format(ctx.parent.params))
-        else:
-            click.echo(
-                  "\nTotal users on homeserver (excluding deactivated): {}\n".format(
-                  users['total']))
-            if int(users['total']) != 0:
-                headers_dict = {}
-                for header in users['users'][0]:
-                    headers_dict.update({header: header})
-                tab_users = tabulate(users['users'], tablefmt="simple",
-                      headers=headers_dict)
-                click.echo(tab_users)
 
-    elif user_task == "add":
-        pass
-
-    
-
-@click.command()
-@click.argument('room_task')
-@click.argument('args', nargs=-1)
+#### user commands start here ###
+@user.command()
 @click.pass_context
-def room(ctx, room_task, args):
+def list(ctx):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'])
+    users = synadm.user_list()
+    if users == None:
+        click.echo("Users could not be fetched.")
+        raise SystemExit(1)
+    if ctx.parent.params['raw']:
+        pprint(users)
+        #print("this is ctx dir: {}".format(dir(ctx.parent)))
+        #print("this is ctx: {}".format(ctx.parent.params))
+    else:
+        click.echo(
+              "\nTotal users on homeserver (excluding deactivated): {}\n".format(
+              users['total']))
+        if int(users['total']) != 0:
+            headers_dict = {}
+            for header in users['users'][0]:
+                headers_dict.update({header: header})
+            tab_users = tabulate(users['users'], tablefmt="simple",
+                  headers=headers_dict)
+            click.echo(tab_users)
+
+
+
+
+
+### room commands group starts here ###
+@synadm.group()
+def room():
     """list rooms, modify their settings,... FIXME
     """
-    if room_task == "list":
-        synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-              ctx.obj['port'])
-        rooms = synadm.room_list()
-        if rooms == None:
-            click.echo("Rooms could not be fetched.")
-            raise SystemExit(1)
-        if ctx.parent.params['raw']:
-            pprint(rooms)
-        else:
-            if int(rooms['total_rooms']) != 0:
-                headers_dict = {}
-                for header in rooms['rooms'][0]:
-                    headers_dict.update({header: header})
-                tab_rooms = tabulate(rooms['rooms'], tablefmt="simple",
-                      headers=headers_dict)
-                click.echo(tab_rooms)
+
+### room commands starts here ###
+@room.command()
+@click.pass_context
+def list(ctx):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'])
+    rooms = synadm.room_list()
+    if rooms == None:
+        click.echo("Rooms could not be fetched.")
+        raise SystemExit(1)
+    if ctx.parent.params['raw']:
+        pprint(rooms)
+    else:
+        if int(rooms['total_rooms']) != 0:
+            headers_dict = {}
+            for header in rooms['rooms'][0]:
+                headers_dict.update({header: header})
+            tab_rooms = tabulate(rooms['rooms'], tablefmt="simple",
+                  headers=headers_dict)
+            click.echo(tab_rooms)
 
 
-@click.command()
+
+### the config command starts here ###
+@synadm.command()
 @click.option('--user', '-u', type=str, default="admin",
     help="admin user for accessing the Synapse Admin API's",)
 @click.option('--token', '-t', type=str,
@@ -261,12 +269,6 @@ def config(ctx, user, token, host, port):
     api_port = click.prompt("Please enter your API port", default=token)
     conf_dict = {"user": api_user, "token": api_token, "host": api_host, "port": api_port}
     write_yaml(conf_dict, config_file)
-
-synadm.add_command(user)
-synadm.add_command(room)
-synadm.add_command(config)
-#print(dir(synadm))
-modify_usage_error(synadm)
 
 if __name__ == '__main__':
     synadm(obj={})
