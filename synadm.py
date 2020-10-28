@@ -68,11 +68,9 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
-    def user_list(self):
-        ufrom = 0
-        ulimit = 50
-        udeactivated = 'false'
-        urlpart = f'v2/users?from={ufrom}&limit={ulimit}&deactivated={udeactivated}&'
+    def user_list(self, _from=0, _limit=50, _guests=False, _deactivated=False):
+        _deactivated_s = 'true' if _deactivated else 'false'
+        urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests}&deactivated={_deactivated_s}&'
         return self._get(urlpart)
 
     def room_list(self):
@@ -203,11 +201,19 @@ def user(ctx):
 
 #### user commands start here ###
 @user.command()
+@click.option('--start-from', '-f', type=int, default=0,
+      help="offset user listing by given number")
+@click.option('--limit', '-l', type=int, default=50,
+      help="limit user listing by given number")
+@click.option('--no-guests', '-n', is_flag=True, default=True,
+      help="also show deactivated users")
+@click.option('--deactivated', '-d', is_flag=True, default=False,
+      help="also show deactivated users")
 @click.pass_context
-def list(ctx):
+def list(ctx, start_from, limit, no_guests, deactivated):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'])
-    users = synadm.user_list()
+    users = synadm.user_list(start_from, limit, no_guests, deactivated)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
