@@ -195,8 +195,8 @@ def synadm(ctx, verbose, raw, config_file):
 @synadm.group()
 @click.pass_context
 def user(ctx):
-    """list, add, modify or deactivate/delete users
-       and reset passwords.
+    """list, add, modify, deactivate (delete) users,
+       reset passwords.
     """
 
 
@@ -205,9 +205,9 @@ def user(ctx):
 @click.option('--start-from', '-f', type=int, default=0,
       help="offset user listing by given number")
 @click.option('--limit', '-l', type=int, default=50,
-      help="limit user listing by given number")
+      help="limit user listing to given number")
 @click.option('--no-guests', '-n', is_flag=True, default=True,
-      help="also show deactivated users")
+      help="don't show guest users")
 @click.option('--deactivated', '-d', is_flag=True, default=False,
       help="also show deactivated users")
 @click.pass_context
@@ -233,7 +233,7 @@ def list(ctx, start_from, limit, no_guests, deactivated):
 ### room commands group starts here ###
 @synadm.group()
 def room():
-    """list rooms, modify their settings,... FIXME
+    """list/delete rooms, show/invite/join members, ...
     """
 
 
@@ -259,24 +259,27 @@ def list(ctx):
 ### the config command starts here ###
 @synadm.command()
 @click.option('--user', '-u', type=str, default="admin",
-    help="admin user for accessing the Synapse Admin API's",)
+    help="admin user for accessing the Synapse admin API's",)
 @click.option('--token', '-t', type=str,
-    help="admin user's access token for the Synapse Admin API's",)
+    help="admin user's access token for the Synapse admin API's",)
 @click.option('--host', '-h', type=str, default="localhost",
-    help="the hostname running the Synapse Admin API's",)
-@click.option('--port', '-p', type=str, default="8008",
-    help="the port the Synapse API is listening on (default: 8008)",)
+    help="the hostname running the Synapse admin API's",)
+@click.option('--port', '-p', type=int, default=8008,
+    help="the port the Synapse admin API's are listening on",)
 @click.pass_context
 def config(ctx, user, token, host, port):
-    """store synadm's configuration in a file (default: ~/.synadm)."""
+    """modify synadm's configuration (usually saved in ~/.synadm).
+       configuration details are asked interactively but can also be provided using Options:"""
     config_file = os.path.expanduser(ctx.obj['config_file'])
 
-    api_user = click.prompt("Please enter your API user", default=user)
-    api_token = click.prompt("Please enter your API token", default=token)
-    api_host = click.prompt("Please enter your API host", default=token)
-    api_port = click.prompt("Please enter your API port", default=token)
+    api_user = click.prompt("Synapse admin user name", default=user)
+    api_token = click.prompt("Synapse admin user token", default=token)
+    api_host = click.prompt("Synapse admin API host", default=host)
+    api_port = click.prompt("Synapse admin API port", default=port)
     conf_dict = {"user": api_user, "token": api_token, "host": api_host, "port": api_port}
+    click.echo('Configuration will now be written to {}'.format(config_file))
     write_yaml(conf_dict, config_file)
+    click.echo('Done.')
 
 
 if __name__ == '__main__':
