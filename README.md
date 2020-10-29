@@ -10,6 +10,8 @@
   - [Update](#update)
   - [Contribution](#contribution)
       - [Install in development mode](#install-in-development-mode)
+      - [How can I help?](#how-can-i-help)
+      - [Get in contact / feedback / support](#get-in-contact--feedback--support)
 
 ## Prerequisites
 
@@ -145,3 +147,15 @@ python3 setup.py develop
 
 *Note: When installed like this, code-changes inside the repo dir will immediately be available when executing `synadm`. This could also be used as a quick way to just stay on top of synadm's development.*
 
+
+#### How can I help?
+
+* Install synadm and report back weather the installation process worked on the OS you're running.
+* Read the [docs about the Synapse admin API's possibilities](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request.
+* If you really have no idea of coding at all, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is.
+
+Thanks in advance for any help! I can't do this without you!
+
+#### Get in contact / feedback / support
+
+If you have anything on your mind and think a github issue or pull-request is not the right form, just join the public Matrix room #synadm:peek-a-boo.at to talk about it.
