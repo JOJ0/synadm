@@ -1,6 +1,7 @@
 # synadm - a CLI frontend to the Synapse admin API's
 
 - [synadm - a CLI frontend to the Synapse admin API's](#synadm---a-cli-frontend-to-the-synapse-admin-apis)
+  - [About](#about)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
     - [Install systemwide](#install-systemwide)
@@ -13,6 +14,10 @@
       - [How can I help?](#how-can-i-help)
       - [Example of implementing a feature](#example-of-implementing-a-feature)
       - [Get in contact / feedback / support](#get-in-contact--feedback--support)
+
+## About
+
+A CLI tool to help admins of Matrix-Synapse homeservers conveniently issue commands available via its admin API's (https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
 
 ## Prerequisites
 
