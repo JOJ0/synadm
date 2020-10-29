@@ -11,6 +11,7 @@
   - [Contribution](#contribution)
       - [Install in development mode](#install-in-development-mode)
       - [How can I help?](#how-can-i-help)
+      - [Example of implementing a feature](#example-of-implementing-a-feature)
       - [Get in contact / feedback / support](#get-in-contact--feedback--support)
 
 ## Prerequisites
@@ -155,6 +156,27 @@ python3 setup.py develop
 * If you really have no idea of coding at all, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is.
 
 Thanks in advance for any help! I can't do this without you!
+
+#### Example of implementing a feature
+
+A feature based on a GET request is quite easy to implement. It needs two things
+
+- A method in the Synapse_admin class. Generation of the url as described in the above mentioned docs, and the actual execution of the GET request (using the Python *requests* module) happens here.
+- A "decorated" function that creates the necessary command line arguments and options (using the Python *Click* module)
+
+Let's have a look on a particular example. Take the following command:
+
+```
+synadm user list --deactivated --no-guests
+```
+
+- The method [user_list() in Synapse_admin class](https://github.com/JOJ0/synadm/blob/master/synadm.py#L71-L75) has to be written first. It just builds a urlpart together to fit the need of the [user admin API docs](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst#list-accounts). It then passes the urlpart to the [_get() method](https://github.com/JOJ0/synadm/blob/master/synadm.py#L40-L69) to execute the request. Most of network/http error handling happens here and you don't have to take care about it.
+- The cli part works like this: [This method named "list" (plus it's @decorators)](https://github.com/JOJ0/synadm/blob/master/synadm.py#L203-L230) is all the magic behind the `... list --deactivated --no-guests` part of the command. If you take a closer look at [this decorator](https://github.com/JOJ0/synadm/blob/master/synadm.py#L204) you see that it is a "subelement" of the click.group "user". The ["user-group" is defined here](https://github.com/JOJ0/synadm/blob/master/synadm.py#L195-L200) .... and is responsible to make the `synadm user ...` part of the command happen.
+
+So to further clarify things: *Click* works with *command groups* and *commands*. At the time of writing this tutorial synadm consists of the following:
+
+main *group* **synadm** -> *subgroups* **user** and **room** -> each of those *subgroups* contains a *command* named **list**
+
 
 #### Get in contact / feedback / support
 
