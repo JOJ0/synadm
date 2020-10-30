@@ -297,8 +297,8 @@ def version(ctx):
     if ctx.obj['raw']:
         pprint(version)
     else:
-        click.echo("synapse version: {}".format(version['server_version']))
-        click.echo("python version: {}".format(version['python_version']))
+        click.echo("Synapse version: {}".format(version['server_version']))
+        click.echo("Python version: {}".format(version['python_version']))
 
 
 ### the config command starts here ###
