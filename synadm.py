@@ -10,9 +10,22 @@ from pprint import pprint
 from tabulate import tabulate
 import yaml
 
+def create_config_dir():
+    home = Path(os.getenv('HOME'))
+    Path.mkdir(home / '.config', exist_ok=True)
+    synadm_config = home / '.config'
+    return synadm_config
+
+def create_data_dir():
+    home = Path(os.getenv('HOME'))
+    Path.mkdir(home / '.local' / 'share' / 'synadm', parents=True, exist_ok=True)
+    synadm_data = home / '.local' / 'share' / 'synadm'
+    return synadm_data
+
+
 def logger_init():
-    synadmin_root = Path(os.path.dirname(os.path.abspath(__file__)))
-    debug_log = synadmin_root / "debug.log"
+    synadm_data = create_data_dir()
+    debug_log = synadm_data / "debug.log"
 
     log = logging.getLogger('synadm')
     log.setLevel(logging.DEBUG) # level of logger itself
@@ -147,7 +160,9 @@ def get_table(data):
 
 
 
+# handle logging and configuration prerequisites
 log = logger_init()
+create_config_dir()
 
 ### main synadm command group starts here ###
 @click.group(invoke_without_command=False)
@@ -155,7 +170,7 @@ log = logger_init()
       help="enable INFO or DEBUG logging on console")
 @click.option('--raw', '-r', is_flag=True, default=False,
       help="print raw json data (no tables)")
-@click.option('--config-file', '-c', type=click.Path(), default='~/.synadm',
+@click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
       help="configuration file path")
 @click.pass_context
 def synadm(ctx, verbose, raw, config_file):
