@@ -83,11 +83,11 @@ class Synapse_admin (object):
     def user_list(self, _from=0, _limit=50, _guests=False, _deactivated=False):
         _deactivated_s = 'true' if _deactivated else 'false'
         _guests_s = 'true' if _guests else 'false'
-        urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}&'
+        urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}'
         return self._get(urlpart)
 
     def room_list(self):
-        urlpart = f'v1/rooms?'
+        urlpart = f'v1/rooms'
         return self._get(urlpart)
 
     def version(self):
