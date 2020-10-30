@@ -110,7 +110,9 @@ Execute the configuration command - you will be prompted for host, port, user an
 synadm config
 ```
 
-Configuration will be saved in a yaml file called `~/.synadm`
+Configuration will be saved in `~/.config/synadm.yaml`
+
+*Note: To find out your admin user's token in Element-Web: Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"*
 
 ## Usage
 
