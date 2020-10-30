@@ -76,7 +76,7 @@ Assuming you did steps 1 and 2 as described above already:
 #### 3. Set up and load a new Python3 virtual environment
 
 ```
-python -m ~/.venvs/synadm
+python -m venv ~/.venvs/synadm
 source ~/.venvs/synadm/bin/activate
 ```
 
