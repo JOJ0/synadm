@@ -91,6 +91,10 @@ class Synapse_admin (object):
         urlpart = f'v1/rooms?'
         return self._get(urlpart)
 
+    def version(self):
+        urlpart = f'v1/server_version'
+        return self._get(urlpart)
+
 def modify_usage_error(main_command):
     '''a method to append the help menu to an usage error
     :param main_command: top-level group or command object constructed by click wrapper
@@ -269,6 +273,25 @@ def list(ctx):
         if int(rooms['total_rooms']) != 0:
             tab_rooms = get_table(rooms['rooms'])
             click.echo(tab_rooms)
+
+
+### the version command starts here ###
+@synadm.command()
+@click.pass_context
+def version(ctx):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+                           ctx.obj['port'])
+
+    version = synadm.version()
+    if version == None:
+        click.echo("Rooms could not be fetched.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(version)
+    else:
+        click.echo("synapse version: {}".format(version['server_version']))
+        click.echo("python version: {}".format(version['python_version']))
 
 
 ### the config command starts here ###
