@@ -54,7 +54,7 @@ class Synapse_admin (object):
         headers={'Accept': 'application/json' }
         tokenpart=f"access_token={self.token}"
         # take care of putting & or ? at end of urlpart in calling method already!
-        url="http://{}:{}/_synapse/admin/{}{}".format(self.host, self.port,
+        url="https://{}:{}/_synapse/admin/{}{}".format(self.host, self.port,
               urlpart, tokenpart)
         log.debug('_get_synapse url: {}\n'.format(url))
         try:
