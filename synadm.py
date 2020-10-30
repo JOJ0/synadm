@@ -284,7 +284,7 @@ def version(ctx):
 
     version = synadm.version()
     if version == None:
-        click.echo("Rooms could not be fetched.")
+        click.echo("Version could not be fetched.")
         raise SystemExit(1)
 
     if ctx.obj['raw']:
