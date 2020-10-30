@@ -177,6 +177,13 @@ create_config_dir()
       help="configuration file path")
 @click.pass_context
 def synadm(ctx, verbose, raw, config_file):
+    def _eventually_run_config():
+        if ctx.invoked_subcommand != 'config':
+            ctx.invoke(config)
+            click.echo("Now try running your command again!")
+            raise SystemExit(1)
+        return None # do nothing if it's config command already
+
     if verbose == 1:
         log.handlers[0].setLevel(logging.INFO) # set cli handler to INFO,
     elif verbose > 1:
@@ -204,9 +211,10 @@ def synadm(ctx, verbose, raw, config_file):
         log.debug("ctx.obj: {}\n".format(ctx.obj))
     except KeyError as keyerr:
         click.echo("Missing entry in configuration file: {}".format(keyerr))
-        #raise SystemExit(1)
+        _eventually_run_config()
     except TypeError as typeerr:
         click.echo("Configuration file is empty")
+        _eventually_run_config()
 
 
 ### user commands group starts here ###
