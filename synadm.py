@@ -51,11 +51,10 @@ class Synapse_admin (object):
         self.token = token
 
     def _get(self, urlpart):
-        headers={'Accept': 'application/json' }
-        tokenpart=f"access_token={self.token}"
+        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         # take care of putting & or ? at end of urlpart in calling method already!
-        url="http://{}:{}/_synapse/admin/{}{}".format(self.host, self.port,
-              urlpart, tokenpart)
+        url="http://{}:{}/_synapse/admin/{}".format(self.host, self.port,
+              urlpart)
         log.debug('_get_synapse url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
