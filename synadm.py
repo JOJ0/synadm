@@ -44,7 +44,8 @@ def logger_init():
     return log
 
 class Synapse_admin (object):
-    def __init__(self, user, token, host, port):
+    def __init__(self, user, token, host, port, ssl):
+        self.proto = 'https' if ssl == True else 'http'
         self.host = host
         self.port = port
         self.user = user
@@ -53,8 +54,7 @@ class Synapse_admin (object):
     def _get(self, urlpart):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         # take care of putting & or ? at end of urlpart in calling method already!
-        url="http://{}:{}/_synapse/admin/{}".format(self.host, self.port,
-              urlpart)
+        url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
         log.debug('_get_synapse url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
@@ -208,6 +208,7 @@ def synadm(ctx, verbose, raw, config_file):
         ctx.obj['token'] = conf['token']
         ctx.obj['host'] = conf['host']
         ctx.obj['port'] = conf['port']
+        ctx.obj['ssl'] = conf['ssl']
         log.debug("ctx.obj: {}\n".format(ctx.obj))
     except KeyError as keyerr:
         click.echo("Missing entry in configuration file: {}".format(keyerr))
@@ -239,7 +240,7 @@ def user(ctx):
 @click.pass_context
 def list(ctx, start_from, limit, no_guests, deactivated):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'])
+          ctx.obj['port'], ctx.obj['ssl'])
     users = synadm.user_list(start_from, limit, no_guests, deactivated)
     if users == None:
         click.echo("Users could not be fetched.")
@@ -268,7 +269,7 @@ def room():
 @click.pass_context
 def list(ctx):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'])
+          ctx.obj['port'], ctx.obj['ssl'])
     rooms = synadm.room_list()
     if rooms == None:
         click.echo("Rooms could not be fetched.")
@@ -287,7 +288,7 @@ def list(ctx):
 @click.pass_context
 def version(ctx):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-                           ctx.obj['port'])
+                           ctx.obj['port'], ctx.obj['ssl'])
 
     version = synadm.version()
     if version == None:
@@ -311,8 +312,10 @@ def version(ctx):
     help="the hostname running the Synapse admin API's",)
 @click.option('--port', '-p', type=int, default=8008,
     help="the port the Synapse admin API's are listening on",)
+@click.option('--ssl', '-s', is_flag=True, default=False,
+    help="weather https should be used or not.",)
 @click.pass_context
-def config(ctx, user, token, host, port):
+def config(ctx, user, token, host, port, ssl):
     """modify synadm's configuration (usually saved in ~/.synadm).
        configuration details are asked interactively but can also be provided using Options:"""
     config_file = os.path.expanduser(ctx.obj['config_file'])
@@ -321,7 +324,9 @@ def config(ctx, user, token, host, port):
     api_token = click.prompt("Synapse admin user token", default=token)
     api_host = click.prompt("Synapse admin API host", default=host)
     api_port = click.prompt("Synapse admin API port", default=port)
-    conf_dict = {"user": api_user, "token": api_token, "host": api_host, "port": api_port}
+    api_ssl = click.prompt("Use SSL (y/N)?", default=ssl, type=bool, show_default=False)
+    conf_dict = {"user": api_user, "token": api_token, "host": api_host,
+          "port": api_port, "ssl": api_ssl}
     click.echo('Configuration will now be written to {}'.format(config_file))
     write_yaml(conf_dict, config_file)
     click.echo('Done.')
