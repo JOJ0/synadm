@@ -55,7 +55,7 @@ class Synapse_admin (object):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         # take care of putting & or ? at end of urlpart in calling method already!
         url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
-        log.debug('_get_synapse url: {}\n'.format(url))
+        log.info('_get url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
             resp.raise_for_status()
@@ -176,7 +176,7 @@ create_config_dir()
 ### main synadm command group starts here ###
 @click.group(invoke_without_command=False)
 @click.option('--verbose', '-v', count=True, default=False,
-      help="enable INFO or DEBUG logging on console")
+      help="enable INFO (-v) or DEBUG (-vv) logging on console")
 @click.option('--raw', '-r', is_flag=True, default=False,
       help="print raw json data (no tables)")
 @click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
@@ -247,7 +247,7 @@ def user(ctx):
 #                help='')
 @click.option('--name', '-n', type=str,
       help="search users by name")
-@click.option('--id', '-i', type=int,
+@click.option('--id', '-i', type=str,
       help="search users by id")
 @click.pass_context
 def list(ctx, start_from, limit, no_guests, deactivated, name, id):
