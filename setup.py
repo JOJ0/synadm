@@ -9,7 +9,7 @@ setup(
         'requests',
         'tabulate',
         'PyYaml',
-        'click-option-group',
+        #'click-option-group',
     ],
     entry_points='''
         [console_scripts]

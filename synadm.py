@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+#from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -243,11 +243,11 @@ def user(ctx):
       help="don't show guest users")
 @click.option('--deactivated', '-d', is_flag=True, default=False, show_default=True,
       help="also show deactivated users")
-@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
-                help='')
-@optgroup.option('--name', '-n', type=str,
+#@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
+#                help='')
+@click.option('--name', '-n', type=str,
       help="search users by name")
-@optgroup.option('--id', '-i', type=int,
+@click.option('--id', '-i', type=int,
       help="search users by id")
 @click.pass_context
 def list(ctx, start_from, limit, no_guests, deactivated, name, id):
