@@ -9,6 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -21,7 +22,6 @@ def create_data_dir():
     Path.mkdir(home / '.local' / 'share' / 'synadm', parents=True, exist_ok=True)
     synadm_data = home / '.local' / 'share' / 'synadm'
     return synadm_data
-
 
 def logger_init():
     synadm_data = create_data_dir()
@@ -80,10 +80,16 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
-    def user_list(self, _from=0, _limit=50, _guests=False, _deactivated=False):
+    def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
+          _id=None, _name=None): # if --options missing they are None too, let's stick with that.
         _deactivated_s = 'true' if _deactivated else 'false'
         _guests_s = 'true' if _guests else 'false'
         urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}'
+        # optional filters
+        if _name:
+            urlpart+= f'&name={_name}'
+        elif _id:
+            urlpart+= f'&id={_id}'
         return self._get(urlpart)
 
     def room_list(self):
@@ -229,19 +235,26 @@ def user(ctx):
 
 #### user commands start here ###
 @user.command()
-@click.option('--start-from', '-f', type=int, default=0,
-      help="offset user listing by given number")
-@click.option('--limit', '-l', type=int, default=50,
+@click.option('--start-from', '-f', type=int, default=0, show_default=True,
+      help="offset user listing by given number. This option is also used for pagination.")
+@click.option('--limit', '-l', type=int, default=100, show_default=True,
       help="limit user listing to given number")
-@click.option('--no-guests', '-n', is_flag=True, default=True,
+@click.option('--no-guests', '-N', is_flag=True, default=True, show_default=True,
       help="don't show guest users")
-@click.option('--deactivated', '-d', is_flag=True, default=False,
+@click.option('--deactivated', '-d', is_flag=True, default=False, show_default=True,
       help="also show deactivated users")
+@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
+                help='')
+@optgroup.option('--name', '-n', type=str,
+      help="search users by name")
+@optgroup.option('--id', '-i', type=int,
+      help="search users by id")
 @click.pass_context
-def list(ctx, start_from, limit, no_guests, deactivated):
+def list(ctx, start_from, limit, no_guests, deactivated, name, id):
+    log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
-    users = synadm.user_list(start_from, limit, no_guests, deactivated)
+    users = synadm.user_list(start_from, limit, no_guests, deactivated, name, id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
@@ -255,6 +268,11 @@ def list(ctx, start_from, limit, no_guests, deactivated):
         if int(users['total']) != 0:
             tab_users = get_table(users['users'])
             click.echo(tab_users)
+        if 'next_token' in users:
+            click.echo(
+                "\nThere is more users than shown, use '--from {}' to view them.\n".format(
+                users['next_token']))
+
 
 
 ### room commands group starts here ###
