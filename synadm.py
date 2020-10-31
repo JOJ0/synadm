@@ -174,7 +174,7 @@ create_config_dir()
 @click.option('--raw', '-r', is_flag=True, default=False,
       help="print raw json data (no tables)")
 @click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
-      help="configuration file path")
+      help="configuration file path", show_default=True)
 @click.pass_context
 def synadm(ctx, verbose, raw, config_file):
     def _eventually_run_config():
@@ -316,7 +316,7 @@ def version(ctx):
     help="weather https should be used or not.",)
 @click.pass_context
 def config(ctx, user, token, host, port, ssl):
-    """modify synadm's configuration (usually saved in ~/.synadm).
+    """modify synadm's configuration.
        configuration details are asked interactively but can also be provided using Options:"""
     config_file = os.path.expanduser(ctx.obj['config_file'])
 
