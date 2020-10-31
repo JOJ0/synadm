@@ -81,15 +81,15 @@ class Synapse_admin (object):
             return None
 
     def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
-          _id=None, _name=None): # if --options missing they are None too, let's stick with that.
+          _name=None, _user_id=None): # if --options missing they are None too, let's stick with that.
         _deactivated_s = 'true' if _deactivated else 'false'
         _guests_s = 'true' if _guests else 'false'
         urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}'
         # optional filters
         if _name:
             urlpart+= f'&name={_name}'
-        elif _id:
-            urlpart+= f'&id={_id}'
+        elif _user_id:
+            urlpart+= f'&user_id={_user_id}'
         return self._get(urlpart)
 
     def room_list(self):
@@ -246,15 +246,15 @@ def user(ctx):
 #@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
 #                help='')
 @click.option('--name', '-n', type=str,
-      help="search users by name")
-@click.option('--id', '-i', type=str,
-      help="search users by id")
+      help="search users by name - the full matrix ID's (user:server) and display names")
+@click.option('--user-id', '-i', type=str,
+      help="search users by id - the left part before the colon of the matrix ID's (user:server)")
 @click.pass_context
-def list(ctx, start_from, limit, no_guests, deactivated, name, id):
+def list(ctx, start_from, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
-    users = synadm.user_list(start_from, limit, no_guests, deactivated, name, id)
+    users = synadm.user_list(start_from, limit, no_guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
