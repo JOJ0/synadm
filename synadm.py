@@ -123,6 +123,14 @@ class Synapse_admin (object):
         data = '{"erase": true}' if gdpr_erase else {}
         return self._post(urlpart, data)
 
+    def user_password(self, user_id, password, no_logout):
+        urlpart = f'v1/reset_password/{user_id}'
+        data = {"new_password": password}
+        if no_logout:
+            data.update({"logout_devices": no_logout})
+        json_data = json.dumps(data)
+        return self._post(urlpart, json_data)
+
     def room_list(self):
         urlpart = f'v1/rooms'
         return self._get(urlpart)
@@ -330,6 +338,33 @@ def deactivate(ctx, user_id, gdpr_erase):
             click.echo('User successfully deactivated/erased.')
         else:
             click.echo('Synapse returned: {}'.format(deactivated['id_server_unbind_result']))
+
+@user.command()
+@click.argument('user_id', type=str)
+@click.option('--no-logout', '-n', is_flag=True, default=False,
+      help="don't log user out of all sessions on all devices.")
+@click.option('--password', '-p', prompt=True, hide_input=True,
+              confirmation_prompt=True, help="new password")
+@click.pass_context
+def password(ctx, user_id, password, no_logout):
+    """change a user's password. To prevent the user from being logged out of all
+       sessions use option -n
+    """
+    log.info(f'user password options: {ctx.params}\n')
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    changed = synadm.user_password(user_id, password, no_logout)
+    if changed == None:
+        click.echo("Password could not be reset.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(changed)
+    else:
+        if changed == {}:
+            click.echo('Password reset successfully.')
+        else:
+            click.echo('Synapse returned: {}'.format(changed))
 
 
 
