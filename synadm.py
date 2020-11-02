@@ -53,7 +53,6 @@ class Synapse_admin (object):
 
     def _get(self, urlpart):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
-        # take care of putting & or ? at end of urlpart in calling method already!
         url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
