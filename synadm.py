@@ -79,6 +79,33 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
+    def _post(self, urlpart, post_data):
+        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
+        url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
+        log.info('_post url: {}\n'.format(url))
+        log.info('_post data: {}\n'.format(post_data))
+        try:
+            resp = requests.post(url, headers=headers, timeout=7, data=post_data)
+            resp.raise_for_status()
+            if resp.ok:
+                _json = json.loads(resp.content)
+                return _json
+            else:
+                log.warning("No valid response from Synapse. Returning None.")
+                return None
+        except reqerrors.HTTPError as errh:
+            log.error("HTTPError: %s\n", errh)
+            return None
+        except reqerrors.ConnectionError as errc:
+            log.error("ConnectionError: %s\n", errc)
+            return None
+        except reqerrors.Timeout as errt:
+            log.error("Timeout: %s\n", errt)
+            return None
+        except reqerrors.RequestException as erre:
+            log.error("RequestException: %s\n", erre)
+            return None
+
     def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
           _name=None, _user_id=None): # if --options missing they are None too, let's stick with that.
         _deactivated_s = 'true' if _deactivated else 'false'
@@ -90,6 +117,11 @@ class Synapse_admin (object):
         elif _user_id:
             urlpart+= f'&user_id={_user_id}'
         return self._get(urlpart)
+
+    def user_deactivate(self, user_id, gdpr_erase):
+        urlpart = f'v1/deactivate/{user_id}'
+        data = '{"erase": true}' if gdpr_erase else {}
+        return self._post(urlpart, data)
 
     def room_list(self):
         urlpart = f'v1/rooms'
@@ -227,7 +259,7 @@ def synadm(ctx, verbose, raw, config_file):
 @synadm.group()
 @click.pass_context
 def user(ctx):
-    """list, add, modify, deactivate (delete) users,
+    """list, add, modify, deactivate/erase users,
        reset passwords.
     """
 
@@ -241,13 +273,13 @@ def user(ctx):
 @click.option('--no-guests', '-N', is_flag=True, default=True, show_default=True,
       help="don't show guest users")
 @click.option('--deactivated', '-d', is_flag=True, default=False, show_default=True,
-      help="also show deactivated users")
+      help="also show deactivated/erased users")
 #@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
 #                help='')
 @click.option('--name', '-n', type=str,
-      help="search users by name - the full matrix ID's (user:server) and display names")
+      help="search users by name - the full matrix ID's (@user:server) and display names")
 @click.option('--user-id', '-i', type=str,
-      help="search users by id - the left part before the colon of the matrix ID's (user:server)")
+      help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
 @click.pass_context
 def list(ctx, start_from, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
@@ -271,6 +303,33 @@ def list(ctx, start_from, limit, no_guests, deactivated, name, user_id):
             click.echo(
                 "\nThere is more users than shown, use '--from {}' to view them.\n".format(
                 users['next_token']))
+
+@user.command()
+@click.argument('user_id', type=str)
+      #help='the matrix user ID to deactivate/erase (user:server')
+@click.option('--gdpr-erase', '-e', is_flag=True, default=False, show_default=True,
+      help="""marks the user as GDPR-erased. This means messages sent by the user
+              will still be visible by anyone that was in the room when these messages
+              were sent, but hidden from users joining the room afterwards.""")
+@click.pass_context
+def deactivate(ctx, user_id, gdpr_erase):
+    """deactivate or gdpr-erase users. Provide matrix user ID (@user:server) as argument.
+    """
+    log.info(f'user deactivate options: {ctx.params}\n')
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    deactivated = synadm.user_deactivate(user_id, gdpr_erase)
+    if deactivated == None:
+        click.echo("User could not be deactivated/erased.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(deactivated)
+    else:
+        if deactivated['id_server_unbind_result'] == 'success':
+            click.echo('User successfully deactivated/erased.')
+        else:
+            click.echo('Synapse returned: {}'.format(deactivated['id_server_unbind_result']))
 
 
 
