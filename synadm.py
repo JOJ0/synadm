@@ -118,6 +118,10 @@ class Synapse_admin (object):
             urlpart+= f'&user_id={_user_id}'
         return self._get(urlpart)
 
+    def user_membership(self, user_id):
+        urlpart = f'v1/users/{user_id}/joined_rooms'
+        return self._get(urlpart)
+
     def user_deactivate(self, user_id, gdpr_erase):
         urlpart = f'v1/deactivate/{user_id}'
         data = '{"erase": true}' if gdpr_erase else {}
@@ -366,6 +370,34 @@ def password(ctx, user_id, password, no_logout):
         else:
             click.echo('Synapse returned: {}'.format(changed))
 
+
+@user.command()
+@click.argument('user_id', type=str)
+@click.pass_context
+def membership(ctx, user_id):
+    '''list all rooms a user is member of. Provide matrix user ID (@user:server) as argument.'''
+    log.info(f'user membership options: {ctx.params}\n')
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    joined_rooms = synadm.user_membership(user_id)
+    if joined_rooms == None:
+        click.echo("Membership could not be fetched.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(joined_rooms)
+    else:
+        click.echo(
+              "\nUser is member ob {} rooms.\n".format(
+              joined_rooms['total']))
+        if int(joined_rooms['total']) != 0:
+            # joined_rooms is just a list, we don't need get_table() tabulate wrapper
+            # (it's for key-value json data aka dicts). Just simply print the list:
+            for room in joined_rooms['joined_rooms']:
+                click.echo(room)
+
+                
+                
 
 
 ### room commands group starts here ###
