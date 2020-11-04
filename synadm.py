@@ -206,11 +206,24 @@ def write_yaml(data, yamlfile):
         #raise err
         raise SystemExit(3)
 
-def get_table(data):
+def get_table(data, listify=False):
+    '''expects lists of dicts, fetches header information from first list element
+       and saves as a dict (tabulate expects headers arg as dict)
+       then uses tabulate to return a pretty printed tables. The listify argument is used
+       to wrap very simple "one-dimensional" API responses into a list so tabulate accepts it.'''
+
+    data_list = []
+    if listify == False:
+        data_list = data
+        log.debug('get_table using data as is. Got this: {}'.format(data_list))
+    else:
+        data_list.append(data)
+        log.debug('get_table listified data. Now looks like this: {}'.format(data_list))
+
     headers_dict = {}
-    for header in data[0]:
+    for header in data_list[0]:
         headers_dict.update({header: header})
-    return tabulate(data, tablefmt="simple",
+    return tabulate(data_list, tablefmt="simple",
           headers=headers_dict)
 
 
