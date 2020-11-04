@@ -139,6 +139,10 @@ class Synapse_admin (object):
         urlpart = f'v1/rooms'
         return self._get(urlpart)
 
+    def room_details(self, room_id):
+        urlpart = f'v1/rooms/{room_id}'
+        return self._get(urlpart)
+
     def version(self):
         urlpart = f'v1/server_version'
         return self._get(urlpart)
@@ -424,6 +428,24 @@ def list(ctx):
         if int(rooms['total_rooms']) != 0:
             tab_rooms = get_table(rooms['rooms'])
             click.echo(tab_rooms)
+
+@room.command()
+@click.argument('room_id', type=str)
+@click.pass_context
+def details(ctx, room_id):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    room = synadm.room_details(room_id)
+    if room == None:
+        click.echo("Room details could not be fetched.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(room)
+    else:
+        if room != {}:
+            tab_room = get_table(room)
+            click.echo(tab_room)
 
 
 ### the version command starts here ###
