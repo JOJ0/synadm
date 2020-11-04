@@ -6,7 +6,6 @@
 - [Installation](#installation)
   - [Install systemwide](#install-systemwide)
   - [Install to virtual environment](#install-to-virtual-environment)
-    - [3. Set up and load a new Python3 virtual environment](#3-set-up-and-load-a-new-python3-virtual-environment)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [Update](#update)
@@ -70,43 +69,15 @@ synadm --help
 
 ### Install to virtual environment
 
+<!-- omit in toc -->
+#### 3. Setup and load a new Python3 virtual environment]
+
 If you'd rather prefer to install synadm into its own private virtual Python environment or even would like to help code it, this is a much cleaner approach.
 
-Assuming you did steps 1 and 2 as describ### Implementation status
-
-(https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
-
-* [ ] account_validity
-* [ ] delete_group
-* [ ] media_admin_api
-* [ ] purge_history_api
-* [ ] purge_remote_media
-* [x] purge_room
-  * [ ] `room purge <room id>`
-  * [ ] `room garbage-collect`
-* [ ] register_api
-* [ ] room_membership
-* [x] rooms
-  * [ ] `room count`
-  * [ ] `room delete <room id>`
-  * [ ] `room details <room id>`
-  * [ ] `room list`
-  * [ ] `room top-complexity`
-  * [ ] `room top-members`
-* [ ] server_notices
-* [x] shutdown_room
-  * `room shutdown <room id>`
-* [x] user_admin_api
-  * [x] `user list`
-  * [ ] `user query <user id>`
-  * [ ] `user deactivate <user id>`
-  * [ ] `user password <user id>`
-* [x] version_api
-  * `!version`
-#### 3. Set up and load a new Python3 virtual environment
+Assuming you did steps 1 and 2 as described above, create and activate a virtual environment using the python3 venv module:
 
 ```
-python -m venv ~/.venvs/synadm
+python3 -m venv ~/.venvs/synadm
 source ~/.venvs/synadm/bin/activate
 ```
 
@@ -134,7 +105,7 @@ synadm --help
 
 ## Configuration
 
-Execute the configuration command - you will be prompted for host, port, user and token:
+Execute the configuration command - you will be prompted for host, port, user, token and weather your API port is en SSL endpoint or not:
 
 ```
 synadm config
@@ -155,6 +126,7 @@ synadm --help
 and of the available subcommands, eg.
 
 ```
+synadm version --help
 synadm user --help
 synadm room --help
 ```
@@ -236,8 +208,8 @@ If you have anything on your mind and think a github issue or pull-request is no
 * [ ] rooms
   * [ ] `room count`
   * [ ] `room delete <room id>`
-  * [ ] `room details <room id>`
-  * [x] `room list`
+  * [x] `room details <room id>`
+  * [x] `room list` (FIXME: partly implemented only)
   * [ ] `room top-complexity`
   * [ ] `room top-members`
 * [ ] server_notices
@@ -248,5 +220,6 @@ If you have anything on your mind and think a github issue or pull-request is no
   * [ ] `user query <user id>`
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
+  * [x] `user membership <user id>` 
 * [x] version_api
   * `!version`
