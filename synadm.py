@@ -457,7 +457,7 @@ def details(ctx, room_id):
         pprint(room)
     else:
         if room != {}:
-            tab_room = get_table(room)
+            tab_room = get_table(room, listify=True)
             click.echo(tab_room)
 
 
