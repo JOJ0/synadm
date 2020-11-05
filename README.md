@@ -13,7 +13,8 @@
     - [Install in development mode](#install-in-development-mode)
     - [How can I help?](#how-can-i-help)
     - [Example of implementing a feature](#example-of-implementing-a-feature)
-    - [Get in contact / feedback / support](#get-in-contact--feedback--support)
+    - [Further implementation examples](#further-implementation-examples)
+    - [Get in touch / feedback / support](#get-in-touch--feedback--support)
 - [Implementation status](#implementation-status)
 
 ## About
@@ -186,10 +187,18 @@ So to further clarify things: *Click* works with *command groups* and *commands*
 
 main *group* **synadm** -> *subgroups* **user** and **room** -> each of those *subgroups* contains a *command* named **list**
 
+#### Further implementation examples
 
-#### Get in contact / feedback / support
+Without much talk, have a look at this commit: https://github.com/JOJ0/synadm/commit/4978794751aaad23369988da66ccc8e87bc638c4#diff-a676a1667b53bcb8aad4097acb601e227a6b60a6168625e364d250ed47bf7619
 
-If you have anything on your mind and think a github issue or pull-request is not the right form, just join the public Matrix room #synadm:peek-a-boo.at to talk about it.
+It implements command `synadm room details <room_id>`. Pretty straight forward, right? Help me out and code such a little feature! Thanks! :-)
+
+And another one, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`: https://github.com/JOJ0/synadm/commit/274f6bf50ceaa175313aab25da4699ea745ee2ea#diff-a676a1667b53bcb8aad4097acb601e227a6b60a6168625e364d250ed47bf7619
+
+
+#### Get in touch / feedback / support
+
+If you have anything on your mind and think a github issue or pull-request is not the right way, just join public matrix room #synadm:peek-a-boo.at and let's talk about it. I am also hanging around on #matrix-dev:matrix.org and #synapse:mastrix.org regularily. Catch me there! My matrix ID is jojo:peek-a-boo.at
 
 ## Implementation status
 
