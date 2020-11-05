@@ -233,7 +233,9 @@ def get_table(data, listify=False):
 log = logger_init()
 create_config_dir()
 
+#############################################
 ### main synadm command group starts here ###
+#############################################
 @click.group(invoke_without_command=False)
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
@@ -284,7 +286,60 @@ def synadm(ctx, verbose, raw, config_file):
         _eventually_run_config()
 
 
+### the config command starts here ###
+@synadm.command()
+@click.option('--user', '-u', type=str, default="admin",
+    help="admin user for accessing the Synapse admin API's",)
+@click.option('--token', '-t', type=str,
+    help="admin user's access token for the Synapse admin API's",)
+@click.option('--host', '-h', type=str, default="localhost",
+    help="the hostname running the Synapse admin API's",)
+@click.option('--port', '-p', type=int, default=8008,
+    help="the port the Synapse admin API's are listening on",)
+@click.option('--ssl', '-s', is_flag=True, default=False,
+    help="weather https should be used or not.",)
+@click.pass_context
+def config(ctx, user, token, host, port, ssl):
+    """modify synadm's configuration.
+       configuration details are asked interactively but can also be provided using Options:"""
+    config_file = os.path.expanduser(ctx.obj['config_file'])
+
+    api_user = click.prompt("Synapse admin user name", default=user)
+    api_token = click.prompt("Synapse admin user token", default=token)
+    api_host = click.prompt("Synapse admin API host", default=host)
+    api_port = click.prompt("Synapse admin API port", default=port)
+    api_ssl = click.prompt("Use SSL (y/N)?", default=ssl, type=bool, show_default=False)
+    conf_dict = {"user": api_user, "token": api_token, "host": api_host,
+          "port": api_port, "ssl": api_ssl}
+    click.echo('Configuration will now be written to {}'.format(config_file))
+    write_yaml(conf_dict, config_file)
+    click.echo('Done.')
+
+
+### the version command starts here ###
+@synadm.command()
+@click.pass_context
+def version(ctx):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+                           ctx.obj['port'], ctx.obj['ssl'])
+
+    version = synadm.version()
+    if version == None:
+        click.echo("Version could not be fetched.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(version)
+    else:
+        click.echo("Synapse version: {}".format(version['server_version']))
+        click.echo("Python version: {}".format(version['python_version']))
+
+
+
+
+#######################################
 ### user commands group starts here ###
+#######################################
 @synadm.group()
 @click.pass_context
 def user(ctx):
@@ -333,6 +388,7 @@ def list(ctx, start_from, limit, no_guests, deactivated, name, user_id):
                 "\nThere is more users than shown, use '--from {}' to view them.\n".format(
                 users['next_token']))
 
+
 @user.command()
 @click.argument('user_id', type=str)
       #help='the matrix user ID to deactivate/erase (user:server')
@@ -359,6 +415,7 @@ def deactivate(ctx, user_id, gdpr_erase):
             click.echo('User successfully deactivated/erased.')
         else:
             click.echo('Synapse returned: {}'.format(deactivated['id_server_unbind_result']))
+
 
 @user.command()
 @click.argument('user_id', type=str)
@@ -416,15 +473,16 @@ def membership(ctx, user_id):
                 
                 
 
-
+#######################################
 ### room commands group starts here ###
+#######################################
 @synadm.group()
 def room():
     """list/delete rooms, show/invite/join members, ...
     """
 
 
-### room commands starts here ###
+### room commands start here ###
 @room.command()
 @click.pass_context
 def list(ctx):
@@ -441,6 +499,7 @@ def list(ctx):
         if int(rooms['total_rooms']) != 0:
             tab_rooms = get_table(rooms['rooms'])
             click.echo(tab_rooms)
+
 
 @room.command()
 @click.argument('room_id', type=str)
@@ -460,54 +519,6 @@ def details(ctx, room_id):
             tab_room = get_table(room, listify=True)
             click.echo(tab_room)
 
-
-### the version command starts here ###
-@synadm.command()
-@click.pass_context
-def version(ctx):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-                           ctx.obj['port'], ctx.obj['ssl'])
-
-    version = synadm.version()
-    if version == None:
-        click.echo("Version could not be fetched.")
-        raise SystemExit(1)
-
-    if ctx.obj['raw']:
-        pprint(version)
-    else:
-        click.echo("Synapse version: {}".format(version['server_version']))
-        click.echo("Python version: {}".format(version['python_version']))
-
-
-### the config command starts here ###
-@synadm.command()
-@click.option('--user', '-u', type=str, default="admin",
-    help="admin user for accessing the Synapse admin API's",)
-@click.option('--token', '-t', type=str,
-    help="admin user's access token for the Synapse admin API's",)
-@click.option('--host', '-h', type=str, default="localhost",
-    help="the hostname running the Synapse admin API's",)
-@click.option('--port', '-p', type=int, default=8008,
-    help="the port the Synapse admin API's are listening on",)
-@click.option('--ssl', '-s', is_flag=True, default=False,
-    help="weather https should be used or not.",)
-@click.pass_context
-def config(ctx, user, token, host, port, ssl):
-    """modify synadm's configuration.
-       configuration details are asked interactively but can also be provided using Options:"""
-    config_file = os.path.expanduser(ctx.obj['config_file'])
-
-    api_user = click.prompt("Synapse admin user name", default=user)
-    api_token = click.prompt("Synapse admin user token", default=token)
-    api_host = click.prompt("Synapse admin API host", default=host)
-    api_port = click.prompt("Synapse admin API port", default=port)
-    api_ssl = click.prompt("Use SSL (y/N)?", default=ssl, type=bool, show_default=False)
-    conf_dict = {"user": api_user, "token": api_token, "host": api_host,
-          "port": api_port, "ssl": api_ssl}
-    click.echo('Configuration will now be written to {}'.format(config_file))
-    write_yaml(conf_dict, config_file)
-    click.echo('Done.')
 
 
 if __name__ == '__main__':
