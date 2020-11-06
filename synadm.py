@@ -368,7 +368,7 @@ def user(ctx):
 
 #### user commands start here ###
 @user.command()
-@click.option('--start-from', '-f', type=int, default=0, show_default=True,
+@click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="offset user listing by given number. This option is also used for pagination.")
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help="limit user listing to given number")
@@ -383,11 +383,11 @@ def user(ctx):
 @click.option('--user-id', '-i', type=str,
       help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
 @click.pass_context
-def list(ctx, start_from, limit, no_guests, deactivated, name, user_id):
+def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
-    users = synadm.user_list(start_from, limit, no_guests, deactivated, name, user_id)
+    users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
