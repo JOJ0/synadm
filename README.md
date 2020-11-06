@@ -1,19 +1,21 @@
+<!-- omit in toc -->
 # synadm - a CLI frontend to the Synapse admin API's
 
-- [synadm - a CLI frontend to the Synapse admin API's](#synadm---a-cli-frontend-to-the-synapse-admin-apis)
-  - [About](#about)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-    - [Install systemwide](#install-systemwide)
-    - [Install to virtual environment](#install-to-virtual-environment)
-  - [Configuration](#configuration)
-  - [Usage](#usage)
-  - [Update](#update)
-  - [Contribution](#contribution)
-      - [Install in development mode](#install-in-development-mode)
-      - [How can I help?](#how-can-i-help)
-      - [Example of implementing a feature](#example-of-implementing-a-feature)
-      - [Get in contact / feedback / support](#get-in-contact--feedback--support)
+- [About](#about)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+  - [Install systemwide](#install-systemwide)
+  - [Install to virtual environment](#install-to-virtual-environment)
+    - [3. Set up and load a new Python3 virtual environment](#3-set-up-and-load-a-new-python3-virtual-environment)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Update](#update)
+- [Contribution](#contribution)
+    - [Install in development mode](#install-in-development-mode)
+    - [How can I help?](#how-can-i-help)
+    - [Example of implementing a feature](#example-of-implementing-a-feature)
+    - [Get in contact / feedback / support](#get-in-contact--feedback--support)
+- [Implementation status](#implementation-status)
 
 ## About
 
@@ -70,9 +72,37 @@ synadm --help
 
 If you'd rather prefer to install synadm into its own private virtual Python environment or even would like to help code it, this is a much cleaner approach.
 
-Assuming you did steps 1 and 2 as described above already:
+Assuming you did steps 1 and 2 as describ### Implementation status
 
-<!-- omit in toc -->
+(https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
+
+* [ ] account_validity
+* [ ] delete_group
+* [ ] media_admin_api
+* [ ] purge_history_api
+* [ ] purge_remote_media
+* [x] purge_room
+  * [ ] `room purge <room id>`
+  * [ ] `room garbage-collect`
+* [ ] register_api
+* [ ] room_membership
+* [x] rooms
+  * [ ] `room count`
+  * [ ] `room delete <room id>`
+  * [ ] `room details <room id>`
+  * [ ] `room list`
+  * [ ] `room top-complexity`
+  * [ ] `room top-members`
+* [ ] server_notices
+* [x] shutdown_room
+  * `room shutdown <room id>`
+* [x] user_admin_api
+  * [x] `user list`
+  * [ ] `user query <user id>`
+  * [ ] `user deactivate <user id>`
+  * [ ] `user password <user id>`
+* [x] version_api
+  * `!version`
 #### 3. Set up and load a new Python3 virtual environment
 
 ```
@@ -188,3 +218,35 @@ main *group* **synadm** -> *subgroups* **user** and **room** -> each of those *s
 #### Get in contact / feedback / support
 
 If you have anything on your mind and think a github issue or pull-request is not the right form, just join the public Matrix room #synadm:peek-a-boo.at to talk about it.
+
+## Implementation status
+
+(https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
+
+* [ ] account_validity
+* [ ] delete_group
+* [ ] media_admin_api
+* [ ] purge_history_api
+* [ ] purge_remote_media
+* [ ] purge_room
+  * [ ] `room purge <room id>`
+  * [ ] `room garbage-collect`
+* [ ] register_api
+* [ ] room_membership
+* [ ] rooms
+  * [ ] `room count`
+  * [ ] `room delete <room id>`
+  * [ ] `room details <room id>`
+  * [x] `room list`
+  * [ ] `room top-complexity`
+  * [ ] `room top-members`
+* [ ] server_notices
+* [ ] shutdown_room
+  * `room shutdown <room id>`
+* [ ] user_admin_api
+  * [x] `user list`
+  * [ ] `user query <user id>`
+  * [x] `user deactivate <user id>`
+  * [x] `user password <user id>`
+* [x] version_api
+  * `!version`
