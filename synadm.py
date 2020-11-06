@@ -143,6 +143,24 @@ class Synapse_admin (object):
         urlpart = f'v1/rooms/{room_id}'
         return self._get(urlpart)
 
+    def room_delete(self, room_id, new_room_user_id, room_name, message,
+          block, no_purge):
+        urlpart = f'v1/rooms/{room_id}/delete'
+        purge = False if no_purge else True
+        data = {
+            "block": block, # data with proper defaults from cli
+            "purge": purge  # should go here
+        }
+        # everything else is optional and shouldn't even exist in post body
+        if new_room_user_id:
+            data.update({"new_room_user_id": new_room_user_id})
+        if room_name:
+            data.update({"room_name": room_name})
+        if message:
+            data.update({"message": message})
+        json_data = json.dumps(data)
+        return self._post(urlpart, json_data)
+
     def version(self):
         urlpart = f'v1/server_version'
         return self._get(urlpart)
@@ -518,6 +536,67 @@ def details(ctx, room_id):
         if room != {}:
             tab_room = get_table(room, listify=True)
             click.echo(tab_room)
+
+@room.command()
+@click.pass_context
+@click.argument('room_id', type=str)
+@click.option('--new-room-user-id', '-u', type=str,
+      help='''If set, a new room will be created with this user ID as the
+      creator and admin, and all users in the old room will be moved into
+      that room. If not set, no new room will be created and the users will
+      just be removed from the old room. The user ID must be on the local
+      server, but does not necessarily have to belong to a registered
+      user.''')
+@click.option('--room-name', '-n', type=str,
+       help='''A string representing the name of the room that new users will
+       be invited to. Defaults to "Content Violation Notification"''')
+@click.option('--message', '-m', type=str,
+      help='''A string containing the first message that will be sent as
+      new_room_user_id in the new room. Ideally this will clearly convey why
+      the original room was shut down. Defaults to "Sharing illegal content
+      on this server is not permitted and rooms in violation will be
+      blocked."''')
+@click.option('--block', '-b', is_flag=True, default=False, show_default=True,
+      help='''If set, this room will be added to a blocking list,
+      preventing future attempts to join the room''')
+@click.option('--no-purge', is_flag=True, default=False, show_default=True,
+      help='''Prevent removing of all traces of the room from your
+      database.''')
+def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    room = synadm.room_details(room_id)
+    if room == None:
+        click.echo("Room details could not be fetched. Can't delete room.")
+        raise SystemExit(1)
+
+    click.echo('\nRoom details:\n')
+    if ctx.obj['raw']:
+        pprint(room)
+    else:
+        if room != {}:
+            tab_room = get_table(room, listify=True)
+            click.echo(tab_room)
+
+    sure = click.prompt("\nAre you sure you want to delete this room? (y/N)",
+          type=bool, default=False, show_default=False)
+    if sure:
+        room_del = synadm.room_delete(room_id, new_room_user_id, room_name,
+              message, block, no_purge)
+        if room_del == None:
+            click.echo("Room not deleted.")
+            raise SystemExit(1)
+
+        if ctx.obj['raw']:
+            pprint(room_del)
+        else:
+            if room_del != {}:
+                tab_room = get_table(room_del, listify=True)
+                click.echo(tab_room)
+    else:
+        click.echo('Abort.')
+
+
 
 
 
