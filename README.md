@@ -204,26 +204,28 @@ If you have anything on your mind and think a github issue or pull-request is no
 
 (https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
 
+*Note: Most commands have several optional arguments available. Try putting --help after the commands below to get to know them*
+
 * [ ] account_validity
 * [ ] delete_group
 * [ ] media_admin_api
 * [ ] purge_history_api
 * [ ] purge_remote_media
 * [ ] purge_room
-  * [ ] `room purge <room id>`
+  * [x] ~~`room purge <room id>`~~ (covered by `room delete` already)
   * [ ] `room garbage-collect`
 * [ ] register_api
 * [ ] room_membership
 * [ ] rooms
   * [ ] `room count`
-  * [ ] `room delete <room id>`
+  * [x] `room delete <room id>`
   * [x] `room details <room id>`
   * [x] `room list` (FIXME: partly implemented only)
   * [ ] `room top-complexity`
   * [ ] `room top-members`
 * [ ] server_notices
-* [ ] shutdown_room
-  * `room shutdown <room id>`
+* [x] shutdown_room
+  * [x] ~~`room shutdown <room id>`~~ (covered by `room delete` already)
 * [ ] user_admin_api
   * [x] `user list`
   * [ ] `user query <user id>`
@@ -231,4 +233,4 @@ If you have anything on your mind and think a github issue or pull-request is no
   * [x] `user password <user id>`
   * [x] `user membership <user id>` 
 * [x] version_api
-  * `!version`
+  * [x] `!version`
