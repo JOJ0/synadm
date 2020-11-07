@@ -250,11 +250,14 @@ def get_table(data, listify=False):
 # handle logging and configuration prerequisites
 log = logger_init()
 create_config_dir()
+# change default help options
+cont_set = dict(help_option_names=['-h', '--help'])
+#usage: @click.command(context_settings=cont_set)
 
 #############################################
 ### main synadm command group starts here ###
 #############################################
-@click.group(invoke_without_command=False)
+@click.group(invoke_without_command=False, context_settings=cont_set)
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
 @click.option('--raw', '-r', is_flag=True, default=False,
@@ -305,7 +308,7 @@ def synadm(ctx, verbose, raw, config_file):
 
 
 ### the config command starts here ###
-@synadm.command()
+@synadm.command(context_settings=cont_set)
 @click.option('--user', '-u', type=str, default="admin",
     help="admin user for accessing the Synapse admin API's",)
 @click.option('--token', '-t', type=str,
@@ -335,7 +338,7 @@ def config(ctx, user, token, host, port, ssl):
 
 
 ### the version command starts here ###
-@synadm.command()
+@synadm.command(context_settings=cont_set)
 @click.pass_context
 def version(ctx):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
@@ -358,7 +361,7 @@ def version(ctx):
 #######################################
 ### user commands group starts here ###
 #######################################
-@synadm.group()
+@synadm.group(context_settings=cont_set)
 @click.pass_context
 def user(ctx):
     """list, add, modify, deactivate/erase users,
@@ -367,7 +370,7 @@ def user(ctx):
 
 
 #### user commands start here ###
-@user.command()
+@user.command(context_settings=cont_set)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="offset user listing by given number. This option is also used for pagination.")
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
@@ -407,7 +410,7 @@ def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
                 users['next_token']))
 
 
-@user.command()
+@user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
       #help='the matrix user ID to deactivate/erase (user:server')
 @click.option('--gdpr-erase', '-e', is_flag=True, default=False, show_default=True,
@@ -435,7 +438,7 @@ def deactivate(ctx, user_id, gdpr_erase):
             click.echo('Synapse returned: {}'.format(deactivated['id_server_unbind_result']))
 
 
-@user.command()
+@user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
 @click.option('--no-logout', '-n', is_flag=True, default=False,
       help="don't log user out of all sessions on all devices.")
@@ -463,7 +466,7 @@ def password(ctx, user_id, password, no_logout):
             click.echo('Synapse returned: {}'.format(changed))
 
 
-@user.command()
+@user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
 @click.pass_context
 def membership(ctx, user_id):
@@ -494,14 +497,14 @@ def membership(ctx, user_id):
 #######################################
 ### room commands group starts here ###
 #######################################
-@synadm.group()
+@synadm.group(context_settings=cont_set)
 def room():
     """list/delete rooms, show/invite/join members, ...
     """
 
 
 ### room commands start here ###
-@room.command()
+@room.command(context_settings=cont_set)
 @click.pass_context
 def list(ctx):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
@@ -519,7 +522,7 @@ def list(ctx):
             click.echo(tab_rooms)
 
 
-@room.command()
+@room.command(context_settings=cont_set)
 @click.argument('room_id', type=str)
 @click.pass_context
 def details(ctx, room_id):
@@ -537,7 +540,7 @@ def details(ctx, room_id):
             tab_room = get_table(room, listify=True)
             click.echo(tab_room)
 
-@room.command()
+@room.command(context_settings=cont_set)
 @click.pass_context
 @click.argument('room_id', type=str)
 @click.option('--new-room-user-id', '-u', type=str,
