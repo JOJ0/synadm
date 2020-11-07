@@ -5,7 +5,7 @@ setup(
     version='0.1',
     py_modules=['synadm'],
     install_requires=[
-        'Click',
+        'Click>=7.0',
         'requests',
         'tabulate',
         'PyYaml',
