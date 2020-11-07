@@ -490,7 +490,7 @@ def membership(ctx, user_id):
         pprint(joined_rooms)
     else:
         click.echo(
-              "\nUser is member ob {} rooms.\n".format(
+              "\nUser is member of {} rooms.\n".format(
               joined_rooms['total']))
         if int(joined_rooms['total']) != 0:
             # joined_rooms is just a list, we don't need get_table() tabulate wrapper
