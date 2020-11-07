@@ -144,6 +144,10 @@ class Synapse_admin (object):
         urlpart = f'v1/rooms/{room_id}'
         return self._get(urlpart)
 
+    def room_members(self, room_id):
+        urlpart = f'v1/rooms/{room_id}/members'
+        return self._get(urlpart)
+
     def room_delete(self, room_id, new_room_user_id, room_name, message,
           block, no_purge):
         urlpart = f'v1/rooms/{room_id}/delete'
@@ -542,6 +546,27 @@ def details(ctx, room_id):
         if room != {}:
             tab_room = get_table(room, listify=True)
             click.echo(tab_room)
+
+@room.command(context_settings=cont_set)
+@click.argument('room_id', type=str)
+@click.pass_context
+def members(ctx, room_id):
+    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+          ctx.obj['port'], ctx.obj['ssl'])
+    members = synadm.room_members(room_id)
+    if members == None:
+        click.echo("Room members could not be fetched.")
+        raise SystemExit(1)
+
+    if ctx.obj['raw']:
+        pprint(members)
+    else:
+        click.echo(
+              "\nTotal members in room: {}\n".format(
+              members['total']))
+        if int(members['total']) != 0:
+            for member in members['members']:
+                click.echo(member)
 
 @room.command(context_settings=cont_set)
 @click.pass_context
