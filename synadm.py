@@ -594,25 +594,16 @@ def members(ctx, room_id):
       help='''Prevent removing of all traces of the room from your
       database.''')
 def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
+    synadm_fetch = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
-    room = synadm.room_details(room_id)
-    if room == None:
-        click.echo("Room details could not be fetched. Can't delete room.")
-        raise SystemExit(1)
 
-    click.echo('\nRoom details:\n')
-    if ctx.obj['raw']:
-        pprint(room)
-    else:
-        if room != {}:
-            tab_room = get_table(room, listify=True)
-            click.echo(tab_room)
+    ctx.invoke(details, room_id=room_id)
+    ctx.invoke(members, room_id=room_id)
 
     sure = click.prompt("\nAre you sure you want to delete this room? (y/N)",
           type=bool, default=False, show_default=False)
     if sure:
-        room_del = synadm.room_delete(room_id, new_room_user_id, room_name,
+        room_del = synadm_fetch.room_delete(room_id, new_room_user_id, room_name,
               message, block, no_purge)
         if room_del == None:
             click.echo("Room not deleted.")
