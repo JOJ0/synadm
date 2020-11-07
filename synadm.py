@@ -79,11 +79,12 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
-    def _post(self, urlpart, post_data):
+    def _post(self, urlpart, post_data, log_post_data=True):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
         log.info('_post url: {}\n'.format(url))
-        log.info('_post data: {}\n'.format(post_data))
+        if log_post_data:
+            log.info('_post data: {}\n'.format(post_data))
         try:
             resp = requests.post(url, headers=headers, timeout=7, data=post_data)
             resp.raise_for_status()
@@ -133,7 +134,7 @@ class Synapse_admin (object):
         if no_logout:
             data.update({"logout_devices": no_logout})
         json_data = json.dumps(data)
-        return self._post(urlpart, json_data)
+        return self._post(urlpart, json_data, log_post_data=False)
 
     def room_list(self):
         urlpart = f'v1/rooms'
@@ -449,7 +450,9 @@ def password(ctx, user_id, password, no_logout):
     """change a user's password. To prevent the user from being logged out of all
        sessions use option -n
     """
-    log.info(f'user password options: {ctx.params}\n')
+    m='user password options: user_id: {}, password: secrect, no_logout: {}'.format(
+            ctx.params['user_id'], ctx.params['no_logout'])
+    log.info(m)
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
     changed = synadm.user_password(user_id, password, no_logout)
