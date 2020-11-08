@@ -136,8 +136,14 @@ class Synapse_admin (object):
         json_data = json.dumps(data)
         return self._post(urlpart, json_data, log_post_data=False)
 
-    def room_list(self):
-        urlpart = f'v1/rooms'
+    def room_list(self, _from, limit, name, order_by, reverse):
+        urlpart = f'v1/rooms?from={_from}&limit={limit}'
+        if name:
+            urlpart+= f'&search_term={name}'
+        if order_by:
+            urlpart+= f'&order_by={order_by}'
+        if reverse:
+            urlpart+= f'&dir=b'
         return self._get(urlpart)
 
     def room_details(self, room_id):
@@ -513,10 +519,26 @@ def room():
 ### room commands start here ###
 @room.command(context_settings=cont_set)
 @click.pass_context
-def list(ctx):
+@click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
+      help="""offset room listing by given number. This option is also used
+      for pagination.""")
+@click.option('--limit', '-l', type=int, default=100, show_default=True,
+      help="Maximum amount of rooms to return.")
+@click.option('--name', '-n', type=str,
+      help="""Filter rooms by their room name. Search term can be contained in
+      any part of the room name)""")
+@click.option('--order-by', '-o', type=click.Choice(['name', 'canonical_alias',
+      'joined_members', 'joined_local_members', 'version', 'creator',
+      'encryption', 'federatable', 'public', 'join_rules', 'guest_access',
+      'history_visibility', 'state_events']),
+      help="The method in which to sort the returned list of rooms.")
+@click.option('--reverse', '-r', is_flag=True, default=False,
+      help="""Direction of room order. If set it will reverse the sort order of
+      --order-by method.""")
+def list(ctx, from_, limit, name, order_by, reverse):
     synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
           ctx.obj['port'], ctx.obj['ssl'])
-    rooms = synadm.room_list()
+    rooms = synadm.room_list(from_, limit, name, order_by, reverse)
     if rooms == None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
@@ -527,6 +549,11 @@ def list(ctx):
         if int(rooms['total_rooms']) != 0:
             tab_rooms = get_table(rooms['rooms'])
             click.echo(tab_rooms)
+        if 'next_batch' in rooms:
+            m_n = "\nThere is more rooms than shown, use '--from {}' ".format(
+                  rooms['next_batch'])
+            m_n+="to go to next page.\n"
+            click.echo(m_n)
 
 
 @room.command(context_settings=cont_set)
