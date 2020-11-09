@@ -211,7 +211,7 @@ If you have anything on your mind and think a github issue or pull-request is no
 * [ ] media_admin_api
 * [ ] purge_history_api
 * [ ] purge_remote_media
-* [ ] purge_room
+* ~~[x] purge_room~~
   * [x] ~~`room purge <room id>`~~ (covered by `room delete` already)
   * [ ] `room garbage-collect`
 * [ ] register_api
@@ -220,11 +220,12 @@ If you have anything on your mind and think a github issue or pull-request is no
   * [ ] `room count`
   * [x] `room delete <room id>`
   * [x] `room details <room id>`
-  * [x] `room list` (FIXME: partly implemented only)
+  * [x] `room list`
+  * [x] `room members`
   * [ ] `room top-complexity`
   * [ ] `room top-members`
 * [ ] server_notices
-* [x] shutdown_room
+* ~~[x] shutdown_room~~
   * [x] ~~`room shutdown <room id>`~~ (covered by `room delete` already)
 * [ ] user_admin_api
   * [x] `user list`
