@@ -195,45 +195,6 @@ def modify_usage_error(main_command):
         main_command()
 
     click.exceptions.UsageError.show = show
-  
-def read_yaml(yamlfile):
-    """expects path/file"""
-    try:
-        with open(str(yamlfile), "r") as fyamlfile:
-            return yaml.load(fyamlfile, Loader=yaml.SafeLoader)
-    except IOError as errio:
-        log.error("Can't find %s.", yamlfile)
-        raise errio
-        #raise SystemExit(3)
-        #return False
-    except yaml.parser.ParserError as errparse:
-        log.error("ParserError in %s.", yamlfile)
-        #raise errparse
-        raise SystemExit(3)
-    except yaml.scanner.ScannerError as errscan:
-        log.error("ScannerError in %s.", yamlfile)
-        #raise errscan
-        raise SystemExit(3)
-    except Exception as err:
-        log.error(" trying to load %s.", yamlfile)
-        raise err
-        #raise SystemExit(3)
-
-def write_yaml(data, yamlfile):
-    """data expects dict, yamlfile expects path/file"""
-    try:
-        with open(yamlfile, "w") as fyamlfile:
-            yaml.dump(data, fyamlfile, default_flow_style=False,
-                             allow_unicode=True)
-            return True
-    except IOError as errio:
-        log.error("IOError: could not write file %s \n\n", yamlfile)
-        #raise errio
-        raise SystemExit(3)
-    except Exception as err:
-        log.error(" trying to write %s \n\n", yamlfile)
-        #raise err
-        raise SystemExit(3)
 
 def get_table(data, listify=False):
     '''expects lists of dicts, fetches header information from first list element
@@ -255,6 +216,85 @@ def get_table(data, listify=False):
     return tabulate(data_list, tablefmt="simple",
           headers=headers_dict)
 
+class Config(object):
+    def __init__(self, config_yaml):
+        self.config_yaml = os.path.expanduser(config_yaml)
+        self.incomplete = False # save weather reconfiguration is necessary
+        try:
+            conf = self._read_yaml(self.config_yaml)
+        except IOError:
+            log.debug('No configuration file found, creating empty one.\n')
+            Path(self.config_yaml).touch()
+            conf = self._read_yaml(self.config_yaml)
+        log.debug("Successfully read configuration from {}\n".format(
+              self.config_yaml))
+
+        self.user = self._get_config_entry(conf, 'user')
+        self.token = self._get_config_entry(conf, 'token')
+        self.host = self._get_config_entry(conf, 'host')
+        self.port = self._get_config_entry(conf, 'port')
+        self.ssl = self._get_config_entry(conf, 'ssl', default=False)
+        if self.incomplete: click.echo()
+
+    def _get_config_entry(self, conf_dict, yaml_key, default=''):
+        try:
+            if conf_dict[yaml_key] == '':
+                value = default
+                log.warning('Empty entry in configuration file: "{}"'.format(yaml_key))
+                self.incomplete = True
+            else:
+                value = conf_dict[yaml_key]
+                log.debug('Configuration entry "{}": {}'.format(yaml_key,
+                      conf_dict[yaml_key]))
+        except KeyError:
+            value = default
+            log.warning('Missing entry in configuration file: "{}"'.format(yaml_key))
+            self.incomplete = True
+        return value
+
+    def write(self, config_values):
+        click.echo('Writing configuration to {}'.format(
+              self.config_yaml))
+        self._write_yaml(config_values)
+        click.echo('Done.')
+
+    def _read_yaml(self, yamlfile):
+        """expects path/file"""
+        try:
+            with open(str(yamlfile), "r") as fyamlfile:
+                return yaml.load(fyamlfile, Loader=yaml.SafeLoader)
+        except IOError as errio:
+            log.error("Can't find %s.", yamlfile)
+            raise errio
+            #raise SystemExit(3)
+            #return False
+        except yaml.parser.ParserError as errparse:
+            log.error("ParserError in %s.", yamlfile)
+            #raise errparse
+            raise SystemExit(3)
+        except yaml.scanner.ScannerError as errscan:
+            log.error("ScannerError in %s.", yamlfile)
+            #raise errscan
+            raise SystemExit(3)
+        except Exception as err:
+            log.error(" trying to load %s.", yamlfile)
+            raise err
+            #raise SystemExit(3)
+
+    def _write_yaml(self, data):
+        """data expects dict, self.config_yaml expects path/file"""
+        try:
+            with open(self.config_yaml, "w") as fconfig_yaml:
+                yaml.dump(data, fconfig_yaml, default_flow_style=False,
+                                 allow_unicode=True)
+                return True
+        except IOError as errio:
+            log.error("IOError: could not write file %s \n\n", self.config_yaml)
+            raise errio
+        except Exception as err:
+            log.error(" trying to write %s \n\n", self.config_yaml)
+            raise err
+            raise SystemExit(2)
 
 
 
@@ -289,32 +329,14 @@ def synadm(ctx, verbose, raw, config_file):
     elif verbose > 1:
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
-    filename = os.path.expanduser(config_file)
-    try:
-        conf = read_yaml(filename)
-    except IOError:
-        Path(filename).touch()
-        conf = read_yaml(filename)
-    log.debug("read configuration from file {}".format(filename))
-    log.debug("{}\n".format(conf))
-
+    configuration = Config(config_file)
     ctx.obj = {
-        'config_file': filename,
+        'config': configuration,
         'raw': raw,
     }
     log.debug("ctx.obj: {}\n".format(ctx.obj))
-    try:
-        ctx.obj['user'] = conf['user']
-        ctx.obj['token'] = conf['token']
-        ctx.obj['host'] = conf['host']
-        ctx.obj['port'] = conf['port']
-        ctx.obj['ssl'] = conf['ssl']
-        log.debug("ctx.obj: {}\n".format(ctx.obj))
-    except KeyError as keyerr:
-        click.echo("Missing entry in configuration file: {}".format(keyerr))
-        _eventually_run_config()
-    except TypeError as typeerr:
-        click.echo("Configuration file is empty")
+
+    if configuration.incomplete:
         _eventually_run_config()
 
 
@@ -333,19 +355,28 @@ def synadm(ctx, verbose, raw, config_file):
 @click.pass_context
 def config(ctx, user, token, host, port, ssl):
     """modify synadm's configuration.
-       configuration details are asked interactively but can also be provided using Options:"""
-    config_file = os.path.expanduser(ctx.obj['config_file'])
-
-    api_user = click.prompt("Synapse admin user name", default=user)
-    api_token = click.prompt("Synapse admin user token", default=token)
-    api_host = click.prompt("Synapse admin API host", default=host)
-    api_port = click.prompt("Synapse admin API port", default=port)
-    api_ssl = click.prompt("Use SSL (y/N)?", default=ssl, type=bool, show_default=False)
+       configuration details are asked interactively but can also be provided using options:"""
+    click.echo('Running configurator...')
+    configuration = ctx.obj['config']
+    # get defaults for prompts from either config file or commandline
+    user_default = configuration.user if configuration.user else user
+    token_default = configuration.token if configuration.token else token
+    host_default = configuration.host if configuration.host else host
+    port_default = configuration.port if configuration.port else port
+    ssl_default = configuration.ssl if configuration.ssl else ssl
+    if ssl_default:
+        ssl_prompt = 'Use SSL (Y/n)?'
+    else:
+        ssl_prompt = 'Use SSL (y/N)?'
+    api_user = click.prompt("Synapse admin user name", default=user_default)
+    api_token = click.prompt("Synapse admin user token", default=token_default)
+    api_host = click.prompt("Synapse admin API host", default=host_default)
+    api_port = click.prompt("Synapse admin API port", default=port_default)
+    api_ssl = click.prompt(ssl_prompt, default=ssl_default, type=bool,
+          show_default=False)
     conf_dict = {"user": api_user, "token": api_token, "host": api_host,
           "port": api_port, "ssl": api_ssl}
-    click.echo('Configuration will now be written to {}'.format(config_file))
-    write_yaml(conf_dict, config_file)
-    click.echo('Done.')
+    configuration.write(conf_dict)
 
 
 ### the version command starts here ###
@@ -393,14 +424,15 @@ def user(ctx):
 #@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
 #                help='')
 @click.option('--name', '-n', type=str,
-      help="search users by name - the full matrix ID's (@user:server) and display names")
+      help="""search users by name - the full matrix ID's (@user:server) and
+      display names""")
 @click.option('--user-id', '-i', type=str,
       help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
 @click.pass_context
 def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
@@ -433,8 +465,8 @@ def deactivate(ctx, user_id, gdpr_erase):
     """deactivate or gdpr-erase users. Provide matrix user ID (@user:server) as argument.
     """
     log.info(f'user deactivate options: {ctx.params}\n')
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     deactivated = synadm.user_deactivate(user_id, gdpr_erase)
     if deactivated == None:
         click.echo("User could not be deactivated/erased.")
@@ -463,8 +495,8 @@ def password(ctx, user_id, password, no_logout):
     m='user password options: user_id: {}, password: secrect, no_logout: {}'.format(
             ctx.params['user_id'], ctx.params['no_logout'])
     log.info(m)
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     changed = synadm.user_password(user_id, password, no_logout)
     if changed == None:
         click.echo("Password could not be reset.")
@@ -485,8 +517,8 @@ def password(ctx, user_id, password, no_logout):
 def membership(ctx, user_id):
     '''list all rooms a user is member of. Provide matrix user ID (@user:server) as argument.'''
     log.info(f'user membership options: {ctx.params}\n')
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     joined_rooms = synadm.user_membership(user_id)
     if joined_rooms == None:
         click.echo("Membership could not be fetched.")
@@ -536,8 +568,8 @@ def room():
       help="""Direction of room order. If set it will reverse the sort order of
       --order-by method.""")
 def list(ctx, from_, limit, name, order_by, reverse):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     rooms = synadm.room_list(from_, limit, name, order_by, reverse)
     if rooms == None:
         click.echo("Rooms could not be fetched.")
@@ -560,8 +592,8 @@ def list(ctx, from_, limit, name, order_by, reverse):
 @click.argument('room_id', type=str)
 @click.pass_context
 def details(ctx, room_id):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     room = synadm.room_details(room_id)
     if room == None:
         click.echo("Room details could not be fetched.")
@@ -578,8 +610,8 @@ def details(ctx, room_id):
 @click.argument('room_id', type=str)
 @click.pass_context
 def members(ctx, room_id):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
     members = synadm.room_members(room_id)
     if members == None:
         click.echo("Room members could not be fetched.")
@@ -621,8 +653,8 @@ def members(ctx, room_id):
       help='''Prevent removing of all traces of the room from your
       database.''')
 def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
-    synadm_fetch = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-          ctx.obj['port'], ctx.obj['ssl'])
+    synadm_fetch = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
 
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
