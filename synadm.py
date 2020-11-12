@@ -44,16 +44,14 @@ def logger_init():
     return log
 
 class Synapse_admin (object):
-    def __init__(self, user, token, host, port, ssl):
-        self.proto = 'https' if ssl == True else 'http'
-        self.host = host
-        self.port = port
+    def __init__(self, user, token, base_url):
         self.user = user
         self.token = token
+        self.base_url = base_url.strip('/')
 
     def _get(self, urlpart):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
-        url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
+        url=f'{self.base_url}/_synapse/admin/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
@@ -81,7 +79,7 @@ class Synapse_admin (object):
 
     def _post(self, urlpart, post_data, log_post_data=True):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
-        url=f'{self.proto}://{self.host}:{self.port}/_synapse/admin/{urlpart}'
+        url=f'{self.base_url}/_synapse/admin/{urlpart}'
         log.info('_post url: {}\n'.format(url))
         if log_post_data:
             log.info('_post data: {}\n'.format(post_data))
@@ -231,10 +229,7 @@ class Config(object):
 
         self.user = self._get_config_entry(conf, 'user')
         self.token = self._get_config_entry(conf, 'token')
-        self.host = self._get_config_entry(conf, 'host')
-        self.port = self._get_config_entry(conf, 'port')
-        self.ssl = self._get_config_entry(conf, 'ssl', default=False)
-        if self.incomplete: click.echo()
+        self.base_url = self._get_config_entry(conf, 'base_url')
 
     def _get_config_entry(self, conf_dict, yaml_key, default=''):
         try:
@@ -342,40 +337,31 @@ def synadm(ctx, verbose, raw, config_file):
 
 ### the config command starts here ###
 @synadm.command(context_settings=cont_set)
-@click.option('--user', '-u', type=str, default="admin",
+@click.option('--user', '-u', type=str, default='admin',
     help="admin user for accessing the Synapse admin API's",)
 @click.option('--token', '-t', type=str,
     help="admin user's access token for the Synapse admin API's",)
-@click.option('--host', '-h', type=str, default="localhost",
-    help="the hostname running the Synapse admin API's",)
-@click.option('--port', '-p', type=int, default=8008,
-    help="the port the Synapse admin API's are listening on",)
-@click.option('--ssl', '-s', is_flag=True, default=False,
-    help="weather https should be used or not.",)
+@click.option('--base-url', '-b', type=str, default='http://localhost:8008',
+    help="""the base URL Synapse is running on. Typically this is
+    https://localhost:8008 or https://localhost:8448. If Synapse is
+    configured to expose its admin API's to the outside world it could also be
+    https://example.org:8448""")
 @click.pass_context
-def config(ctx, user, token, host, port, ssl):
-    """modify synadm's configuration.
-       configuration details are asked interactively but can also be provided using options:"""
+def config(ctx, user, token, base_url):
+    """modify synadm's configuration. configuration details are asked
+    interactively but can also be provided using options:"""
     click.echo('Running configurator...')
     configuration = ctx.obj['config']
     # get defaults for prompts from either config file or commandline
     user_default = configuration.user if configuration.user else user
     token_default = configuration.token if configuration.token else token
-    host_default = configuration.host if configuration.host else host
-    port_default = configuration.port if configuration.port else port
-    ssl_default = configuration.ssl if configuration.ssl else ssl
-    if ssl_default:
-        ssl_prompt = 'Use SSL (Y/n)?'
-    else:
-        ssl_prompt = 'Use SSL (y/N)?'
+    base_url_default = configuration.base_url if configuration.base_url else base_url
     api_user = click.prompt("Synapse admin user name", default=user_default)
     api_token = click.prompt("Synapse admin user token", default=token_default)
-    api_host = click.prompt("Synapse admin API host", default=host_default)
-    api_port = click.prompt("Synapse admin API port", default=port_default)
-    api_ssl = click.prompt(ssl_prompt, default=ssl_default, type=bool,
-          show_default=False)
-    conf_dict = {"user": api_user, "token": api_token, "host": api_host,
-          "port": api_port, "ssl": api_ssl}
+    api_base_url = click.prompt(
+      "Synapse base URL",
+      default=base_url_default)
+    conf_dict = {"user": api_user, "token": api_token, "base_url": api_base_url}
     configuration.write(conf_dict)
 
 
@@ -383,8 +369,8 @@ def config(ctx, user, token, host, port, ssl):
 @synadm.command(context_settings=cont_set)
 @click.pass_context
 def version(ctx):
-    synadm = Synapse_admin(ctx.obj['user'], ctx.obj['token'], ctx.obj['host'],
-                           ctx.obj['port'], ctx.obj['ssl'])
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url)
 
     version = synadm.version()
     if version == None:
@@ -432,7 +418,7 @@ def user(ctx):
 def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
@@ -466,7 +452,7 @@ def deactivate(ctx, user_id, gdpr_erase):
     """
     log.info(f'user deactivate options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     deactivated = synadm.user_deactivate(user_id, gdpr_erase)
     if deactivated == None:
         click.echo("User could not be deactivated/erased.")
@@ -496,7 +482,7 @@ def password(ctx, user_id, password, no_logout):
             ctx.params['user_id'], ctx.params['no_logout'])
     log.info(m)
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     changed = synadm.user_password(user_id, password, no_logout)
     if changed == None:
         click.echo("Password could not be reset.")
@@ -518,7 +504,7 @@ def membership(ctx, user_id):
     '''list all rooms a user is member of. Provide matrix user ID (@user:server) as argument.'''
     log.info(f'user membership options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     joined_rooms = synadm.user_membership(user_id)
     if joined_rooms == None:
         click.echo("Membership could not be fetched.")
@@ -569,7 +555,7 @@ def room():
       --order-by method.""")
 def list(ctx, from_, limit, name, order_by, reverse):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     rooms = synadm.room_list(from_, limit, name, order_by, reverse)
     if rooms == None:
         click.echo("Rooms could not be fetched.")
@@ -593,7 +579,7 @@ def list(ctx, from_, limit, name, order_by, reverse):
 @click.pass_context
 def details(ctx, room_id):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     room = synadm.room_details(room_id)
     if room == None:
         click.echo("Room details could not be fetched.")
@@ -611,7 +597,7 @@ def details(ctx, room_id):
 @click.pass_context
 def members(ctx, room_id):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+          ctx.obj['config'].base_url)
     members = synadm.room_members(room_id)
     if members == None:
         click.echo("Room members could not be fetched.")
@@ -653,8 +639,8 @@ def members(ctx, room_id):
       help='''Prevent removing of all traces of the room from your
       database.''')
 def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
-    synadm_fetch = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].host, ctx.obj['config'].port, ctx.obj['config'].ssl)
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url)
 
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
@@ -662,7 +648,7 @@ def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
     sure = click.prompt("\nAre you sure you want to delete this room? (y/N)",
           type=bool, default=False, show_default=False)
     if sure:
-        room_del = synadm_fetch.room_delete(room_id, new_room_user_id, room_name,
+        room_del = synadm.room_delete(room_id, new_room_user_id, room_name,
               message, block, no_purge)
         if room_del == None:
             click.echo("Room not deleted.")
