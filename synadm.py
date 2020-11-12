@@ -44,14 +44,15 @@ def logger_init():
     return log
 
 class Synapse_admin (object):
-    def __init__(self, user, token, base_url):
+    def __init__(self, user, token, base_url, admin_path):
         self.user = user
         self.token = token
         self.base_url = base_url.strip('/')
+        self.admin_path = admin_path.strip('/')
 
     def _get(self, urlpart):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
-        url=f'{self.base_url}/_synapse/admin/{urlpart}'
+        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=headers, timeout=7)
@@ -79,7 +80,7 @@ class Synapse_admin (object):
 
     def _post(self, urlpart, post_data, log_post_data=True):
         headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
-        url=f'{self.base_url}/_synapse/admin/{urlpart}'
+        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_post url: {}\n'.format(url))
         if log_post_data:
             log.info('_post data: {}\n'.format(post_data))
@@ -217,7 +218,7 @@ def get_table(data, listify=False):
 class Config(object):
     def __init__(self, config_yaml):
         self.config_yaml = os.path.expanduser(config_yaml)
-        self.incomplete = False # save weather reconfiguration is necessary
+        self.incomplete = False # save whether reconfiguration is necessary
         try:
             conf = self._read_yaml(self.config_yaml)
         except IOError:
@@ -230,6 +231,7 @@ class Config(object):
         self.user = self._get_config_entry(conf, 'user')
         self.token = self._get_config_entry(conf, 'token')
         self.base_url = self._get_config_entry(conf, 'base_url')
+        self.admin_path = self._get_config_entry(conf, 'admin_api_path')
 
     def _get_config_entry(self, conf_dict, yaml_key, default=''):
         try:
@@ -345,23 +347,28 @@ def synadm(ctx, verbose, raw, config_file):
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
     configured to expose its admin API's to the outside world it could also be
-    https://example.org:8448""")
+    https://example.org:8448""", show_default=True)
+@click.option('--admin-api-path', '-p', type=str, default='/_synapse/admin',
+    help="""the path Synapse provides its admin API's, usually the default is
+    alright for most installations.""", show_default=True)
 @click.pass_context
-def config(ctx, user, token, base_url):
+def config(ctx, user, token, base_url, admin_api_path):
     """modify synadm's configuration. configuration details are asked
-    interactively but can also be provided using options:"""
+    interactively but can also be provided using command line options."""
     click.echo('Running configurator...')
     configuration = ctx.obj['config']
     # get defaults for prompts from either config file or commandline
     user_default = configuration.user if configuration.user else user
     token_default = configuration.token if configuration.token else token
     base_url_default = configuration.base_url if configuration.base_url else base_url
+    admin_path_default = configuration.admin_path if configuration.admin_path else admin_api_path
     api_user = click.prompt("Synapse admin user name", default=user_default)
     api_token = click.prompt("Synapse admin user token", default=token_default)
-    api_base_url = click.prompt(
-      "Synapse base URL",
-      default=base_url_default)
-    conf_dict = {"user": api_user, "token": api_token, "base_url": api_base_url}
+    api_base_url = click.prompt("Synapse base URL", default=base_url_default)
+    api_admin_path = click.prompt("Synapse admin API path", default=admin_path_default)
+
+    conf_dict = {"user": api_user, "token": api_token, "base_url": api_base_url,
+          "admin_api_path": api_admin_path}
     configuration.write(conf_dict)
 
 
@@ -370,7 +377,7 @@ def config(ctx, user, token, base_url):
 @click.pass_context
 def version(ctx):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
 
     version = synadm.version()
     if version == None:
@@ -418,7 +425,7 @@ def user(ctx):
 def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
@@ -452,7 +459,7 @@ def deactivate(ctx, user_id, gdpr_erase):
     """
     log.info(f'user deactivate options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     deactivated = synadm.user_deactivate(user_id, gdpr_erase)
     if deactivated == None:
         click.echo("User could not be deactivated/erased.")
@@ -482,7 +489,7 @@ def password(ctx, user_id, password, no_logout):
             ctx.params['user_id'], ctx.params['no_logout'])
     log.info(m)
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     changed = synadm.user_password(user_id, password, no_logout)
     if changed == None:
         click.echo("Password could not be reset.")
@@ -504,7 +511,7 @@ def membership(ctx, user_id):
     '''list all rooms a user is member of. Provide matrix user ID (@user:server) as argument.'''
     log.info(f'user membership options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     joined_rooms = synadm.user_membership(user_id)
     if joined_rooms == None:
         click.echo("Membership could not be fetched.")
@@ -555,7 +562,7 @@ def room():
       --order-by method.""")
 def list(ctx, from_, limit, name, order_by, reverse):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     rooms = synadm.room_list(from_, limit, name, order_by, reverse)
     if rooms == None:
         click.echo("Rooms could not be fetched.")
@@ -579,7 +586,7 @@ def list(ctx, from_, limit, name, order_by, reverse):
 @click.pass_context
 def details(ctx, room_id):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     room = synadm.room_details(room_id)
     if room == None:
         click.echo("Room details could not be fetched.")
@@ -597,7 +604,7 @@ def details(ctx, room_id):
 @click.pass_context
 def members(ctx, room_id):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     members = synadm.room_members(room_id)
     if members == None:
         click.echo("Room members could not be fetched.")
@@ -640,7 +647,7 @@ def members(ctx, room_id):
       database.''')
 def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url)
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
 
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
