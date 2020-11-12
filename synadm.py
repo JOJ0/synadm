@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-#from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -441,9 +441,10 @@ def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
             tab_users = get_table(users['users'])
             click.echo(tab_users)
         if 'next_token' in users:
-            click.echo(
-                "\nThere is more users than shown, use '--from {}' to view them.\n".format(
-                users['next_token']))
+            m_n ="\nThere is more users than shown, use '--from {}' ".format(
+                  users['next_token'])
+            m_n+="to go to next page.\n"
+            click.echo(m_n)
 
 
 @user.command(context_settings=cont_set)
