@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+#from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -232,6 +232,7 @@ class Config(object):
         self.token = self._get_config_entry(conf, 'token')
         self.base_url = self._get_config_entry(conf, 'base_url')
         self.admin_path = self._get_config_entry(conf, 'admin_api_path')
+        self.view = self._get_config_entry(conf, 'view')
 
     def _get_config_entry(self, conf_dict, yaml_key, default=''):
         try:
@@ -309,11 +310,13 @@ cont_set = dict(help_option_names=['-h', '--help'])
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
 @click.option('--raw', '-r', is_flag=True, default=False,
-      help="print raw json data (no tables)")
+      help="print raw json data (overrides default setting)")
+@click.option('--table', '-t', is_flag=True, default=False,
+      help="print tables (overrides default setting)")
 @click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
       help="configuration file path", show_default=True)
 @click.pass_context
-def synadm(ctx, verbose, raw, config_file):
+def synadm(ctx, verbose, raw, table, config_file):
     def _eventually_run_config():
         if ctx.invoked_subcommand != 'config':
             ctx.invoke(config)
@@ -327,10 +330,16 @@ def synadm(ctx, verbose, raw, config_file):
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
     configuration = Config(config_file)
-    ctx.obj = {
-        'config': configuration,
-        'raw': raw,
-    }
+    if raw and table:
+        view = configuration.view
+    elif raw:
+        view = 'raw'
+    elif table:
+        view = 'table'
+    else:
+        view = configuration.view
+
+    ctx.obj = {'config': configuration, 'view': view }
     log.debug("ctx.obj: {}\n".format(ctx.obj))
 
     if configuration.incomplete:
@@ -351,25 +360,35 @@ def synadm(ctx, verbose, raw, config_file):
 @click.option('--admin-api-path', '-p', type=str, default='/_synapse/admin',
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
+@click.option('--view', type=click.Choice(['table', 'raw']), default='table',
+    help="""how should synadm display data by default? 'table' gives a
+    tabular view but needs your terminal to be quite width. 'raw' shows
+    formatted json exactely as the API responded. Note that this can always
+    be overridden by using global switches -r and -t (eg 'synadm -r user
+    list')""", show_default=True)
 @click.pass_context
-def config(ctx, user, token, base_url, admin_api_path):
+def config(ctx, user, token, base_url, admin_api_path, view):
     """modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options."""
     click.echo('Running configurator...')
-    configuration = ctx.obj['config']
+    cfg = ctx.obj['config']
     # get defaults for prompts from either config file or commandline
-    user_default = configuration.user if configuration.user else user
-    token_default = configuration.token if configuration.token else token
-    base_url_default = configuration.base_url if configuration.base_url else base_url
-    admin_path_default = configuration.admin_path if configuration.admin_path else admin_api_path
+    user_default = cfg.user if cfg.user else user
+    token_default = cfg.token if cfg.token else token
+    base_url_default = cfg.base_url if cfg.base_url else base_url
+    admin_path_default = cfg.admin_path if cfg.admin_path else admin_api_path
+    view_default = cfg.view if cfg.view else view
+    # prompts
     api_user = click.prompt("Synapse admin user name", default=user_default)
     api_token = click.prompt("Synapse admin user token", default=token_default)
     api_base_url = click.prompt("Synapse base URL", default=base_url_default)
     api_admin_path = click.prompt("Synapse admin API path", default=admin_path_default)
+    api_view = click.prompt("How should data be viewed by default?",
+           default=view_default, type=click.Choice(['table', 'raw']))
 
     conf_dict = {"user": api_user, "token": api_token, "base_url": api_base_url,
-          "admin_api_path": api_admin_path}
-    configuration.write(conf_dict)
+          "admin_api_path": api_admin_path, "view": api_view}
+    cfg.write(conf_dict)
 
 
 ### the version command starts here ###
@@ -384,7 +403,7 @@ def version(ctx):
         click.echo("Version could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(version)
     else:
         click.echo("Synapse version: {}".format(version['server_version']))
@@ -431,7 +450,7 @@ def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(users)
     else:
         click.echo(
@@ -466,7 +485,7 @@ def deactivate(ctx, user_id, gdpr_erase):
         click.echo("User could not be deactivated/erased.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(deactivated)
     else:
         if deactivated['id_server_unbind_result'] == 'success':
@@ -496,7 +515,7 @@ def password(ctx, user_id, password, no_logout):
         click.echo("Password could not be reset.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(changed)
     else:
         if changed == {}:
@@ -518,7 +537,7 @@ def membership(ctx, user_id):
         click.echo("Membership could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(joined_rooms)
     else:
         click.echo(
@@ -569,7 +588,7 @@ def list(ctx, from_, limit, name, order_by, reverse):
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(rooms)
     else:
         if int(rooms['total_rooms']) != 0:
@@ -593,7 +612,7 @@ def details(ctx, room_id):
         click.echo("Room details could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(room)
     else:
         if room != {}:
@@ -611,7 +630,7 @@ def members(ctx, room_id):
         click.echo("Room members could not be fetched.")
         raise SystemExit(1)
 
-    if ctx.obj['raw']:
+    if ctx.obj['view'] == 'raw':
         pprint(members)
     else:
         click.echo(
@@ -662,7 +681,7 @@ def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
             click.echo("Room not deleted.")
             raise SystemExit(1)
 
-        if ctx.obj['raw']:
+        if ctx.obj['view'] == 'raw':
             pprint(room_del)
         else:
             if room_del != {}:
