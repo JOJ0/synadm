@@ -424,7 +424,7 @@ def user(ctx):
 
 
 #### user commands start here ###
-@user.command(context_settings=cont_set)
+@user.command(name='list', context_settings=cont_set)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="offset user listing by given number. This option is also used for pagination.")
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
@@ -441,7 +441,7 @@ def user(ctx):
 @click.option('--user-id', '-i', type=str,
       help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
 @click.pass_context
-def list(ctx, from_, limit, no_guests, deactivated, name, user_id):
+def list_user_cmd(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
@@ -550,7 +550,33 @@ def membership(ctx, user_id):
                 click.echo(room)
 
                 
-                
+@user.command(name='search', context_settings=cont_set)
+@click.pass_context
+@click.argument('search-term', type=str)
+@click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
+      help='''offset user listing by given number. This option is also used
+      for pagination.''')
+@click.option('--limit', '-l', type=int, default=100, show_default=True,
+      help='maximum amount of users to return.')
+def search_user_cmd(ctx, search_term, from_, limit):
+    '''a simplified shortcut to \'synadm user list -d -n <search-term>\'
+    (Searches for users by name/matrix-ID, including deactivated users
+    as well as guest users). Also it executes a case-insensitive search
+    compared to the original command.'''
+    if search_term[0].isupper():
+        search_term_cap = search_term
+        search_term_nocap = search_term[0].lower() + search_term[1:]
+    else:
+        search_term_cap = search_term[0].upper() + search_term[1:]
+        search_term_nocap = search_term
+
+    click.echo("\nUser search results for '{}':\n".format(search_term_nocap))
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap)
+    click.echo("\nUser search results for '{}':\n".format(search_term_cap))
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap)
+
+
+
 
 #######################################
 ### room commands group starts here ###
