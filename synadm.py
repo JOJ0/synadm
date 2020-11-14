@@ -588,7 +588,7 @@ def room():
 
 
 ### room commands start here ###
-@room.command(context_settings=cont_set)
+@room.command(name='list', context_settings=cont_set)
 @click.pass_context
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="""offset room listing by given number. This option is also used
@@ -606,7 +606,7 @@ def room():
 @click.option('--reverse', '-r', is_flag=True, default=False,
       help="""Direction of room order. If set it will reverse the sort order of
       --order-by method.""")
-def list(ctx, from_, limit, name, order_by, reverse):
+def list_room_cmd(ctx, from_, limit, name, order_by, reverse):
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     rooms = synadm.room_list(from_, limit, name, order_by, reverse)
@@ -719,7 +719,7 @@ def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
         click.echo('Abort.')
 
 
-@room.command(context_settings=cont_set)
+@room.command(name='search', context_settings=cont_set)
 @click.pass_context
 @click.argument('search-term', type=str)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
@@ -727,22 +727,21 @@ def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
       for pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help='Maximum amount of rooms to return.')
-def search(ctx, search_term, from_, limit):
-    '''This command is a simplified
-    shortcut to \'synadm room list -n <search-term>\'. Also it executes a
-    case-insensitive search compared to the original command.'''
+def search_room_cmd(ctx, search_term, from_, limit):
+    '''a simplified shortcut to \'synadm room list -n <search-term>\'. Also
+    it executes a case-insensitive search compared to the original
+    command.'''
     if search_term[0].isupper():
-        click.echo("\nRoom search results for '{}':\n".format(search_term))
-        ctx.invoke(list, from_=from_, limit=limit, name=search_term)
+        search_term_cap = search_term
         search_term_nocap = search_term[0].lower() + search_term[1:]
-        click.echo("\nRoom search results for '{}':\n".format(search_term_nocap))
-        ctx.invoke(list, from_=from_, limit=limit, name=search_term_nocap)
     else:
-        click.echo("\nRoom search results for '{}':\n".format(search_term))
-        ctx.invoke(list, from_=from_, limit=limit, name=search_term)
         search_term_cap = search_term[0].upper() + search_term[1:]
-        click.echo("\nRoom search results for '{}':\n".format(search_term_cap))
-        ctx.invoke(list, from_=from_, limit=limit, name=search_term_cap)
+        search_term_nocap = search_term
+
+    click.echo("\nRoom search results for '{}':\n".format(search_term_nocap))
+    ctx.invoke(list_room_cmd, from_=from_, limit=limit, name=search_term_nocap)
+    click.echo("\nRoom search results for '{}':\n".format(search_term_cap))
+    ctx.invoke(list_room_cmd, from_=from_, limit=limit, name=search_term_cap)
 
 
 
