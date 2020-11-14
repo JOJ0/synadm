@@ -224,6 +224,7 @@ If you have anything on your mind and think a github issue or pull-request is no
   * [x] `room members`
   * [ ] `room top-complexity`
   * [ ] `room top-members`
+  * [x] `room search <search-term>` (shortcut to `room list -n <search-term>`)
 * [ ] server_notices
 * ~~[x] shutdown_room~~
   * [x] ~~`room shutdown <room id>`~~ (covered by `room delete` already)
@@ -233,5 +234,6 @@ If you have anything on your mind and think a github issue or pull-request is no
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
   * [x] `user membership <user id>` 
+  * [x] `user search <search-term>` (shortcut to `user list -n <search-term>`)
 * [x] version_api
-  * [x] `!version`
+  * [x] `version`
