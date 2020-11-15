@@ -469,29 +469,56 @@ def list_user_cmd(ctx, from_, limit, no_guests, deactivated, name, user_id):
 @user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
       #help='the matrix user ID to deactivate/erase (user:server')
-@click.option('--gdpr-erase', '-e', is_flag=True, default=False, show_default=True,
-      help="""marks the user as GDPR-erased. This means messages sent by the user
-              will still be visible by anyone that was in the room when these messages
-              were sent, but hidden from users joining the room afterwards.""")
+@click.option('--gdpr-erase', '-e', is_flag=True, default=False,
+      help="""marks the user as GDPR-erased. This means messages sent by the
+      user will still be visible by anyone that was in the room when these
+      messages were sent, but hidden from users joining the room
+      afterwards.""", show_default=True)
 @click.pass_context
 def deactivate(ctx, user_id, gdpr_erase):
-    """deactivate or gdpr-erase users. Provide matrix user ID (@user:server) as argument.
+    """deactivate or gdpr-erase a user. Provide matrix user ID (@user:server)
+    as argument. It removes active access tokens, resets the password, and
+    deletes third-party IDs (to prevent the user requesting a password
+    reset).
     """
     log.info(f'user deactivate options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    deactivated = synadm.user_deactivate(user_id, gdpr_erase)
-    if deactivated == None:
-        click.echo("User could not be deactivated/erased.")
-        raise SystemExit(1)
 
-    if ctx.obj['view'] == 'raw':
-        pprint(deactivated)
-    else:
-        if deactivated['id_server_unbind_result'] == 'success':
-            click.echo('User successfully deactivated/erased.')
+    #ctx.invoke(query, user_id=user_id) # FIXME implement user query cmd
+    m_kick = '\nNote that deactivating/gdpr-erasing a user leads to the following:\n'
+    m_kick+= '  - Removal from all joined rooms\n'
+    m_kick+= '  - Removal of all active access tokens\n'
+    m_kick+= '  - Password reset\n'
+    m_kick+= '  - Deletion of third-party-IDs (to prevent the user requesting '
+    m_kick+= 'a password)\n' if ctx.obj['view'] == 'raw' else 'a password)'
+    click.echo(m_kick)
+    ctx.invoke(membership, user_id=user_id)
+    m_erase_or_deact = '"gdpr-erase"' if gdpr_erase else 'deactivate'
+    m_erase_or_deact_p = '"gdpr-erased"' if gdpr_erase else 'deactivated'
+    sure = click.prompt("\nAre you sure you want to {} this user? (y/N)".format(
+          m_erase_or_deact), type=bool, default=False, show_default=False)
+    if sure:
+        deactivated = synadm.user_deactivate(user_id, gdpr_erase)
+        if deactivated == None:
+            click.echo("User could not be {}.".format(m_erase_or_deact))
+            raise SystemExit(1)
+
+        if ctx.obj['view'] == 'raw':
+            pprint(deactivated)
         else:
-            click.echo('Synapse returned: {}'.format(deactivated['id_server_unbind_result']))
+            if deactivated['id_server_unbind_result'] == 'success':
+                click.echo('User successfully {}.'.format(m_erase_or_deact_p))
+            else:
+                click.echo('Synapse returned: {}'.format(
+                      deactivated['id_server_unbind_result']))
+    else:
+        click.echo('Abort.')
+
+
+
+
+
 
 
 @user.command(context_settings=cont_set)
