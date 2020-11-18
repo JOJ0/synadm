@@ -367,7 +367,7 @@ def synadm(ctx, verbose, raw, table, config_file):
 @click.option('--admin-api-path', '-p', type=str, default='/_synapse/admin',
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
-@click.option('--view', type=click.Choice(['table', 'raw']), default='table',
+@click.option('--view', type=click.Choice(['table', 'raw']), default='raw',
     help="""how should synadm display data by default? 'table' gives a
     tabular view but needs your terminal to be quite width. 'raw' shows
     formatted json exactely as the API responded. Note that this can always
