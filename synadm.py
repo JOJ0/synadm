@@ -219,14 +219,15 @@ class Config(object):
     def __init__(self, config_yaml):
         self.config_yaml = os.path.expanduser(config_yaml)
         self.incomplete = False # save whether reconfiguration is necessary
+        self.empty = False # save whether synadm.yaml was just created and is empty
         try:
             conf = self._read_yaml(self.config_yaml)
+            log.debug("Successfully read configuration from {}".format(
+                  self.config_yaml))
         except IOError:
-            log.debug('No configuration file found, creating empty one.\n')
+            log.debug('Creating empty configuration file.')
             Path(self.config_yaml).touch()
             conf = self._read_yaml(self.config_yaml)
-        log.debug("Successfully read configuration from {}\n".format(
-              self.config_yaml))
 
         self.user = self._get_config_entry(conf, 'user')
         self.token = self._get_config_entry(conf, 'token')
@@ -248,6 +249,11 @@ class Config(object):
             value = default
             log.warning('Missing entry in configuration file: "{}"'.format(yaml_key))
             self.incomplete = True
+        except TypeError:
+            value = default
+            log.debug('Can\'t fetch value from empty configuration file.')
+            self.incomplete = True
+            self.empty = True
         return value
 
     def write(self, config_values):
@@ -330,6 +336,7 @@ def synadm(ctx, verbose, raw, table, config_file):
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
     configuration = Config(config_file)
+
     if raw and table:
         view = configuration.view
     elif raw:
