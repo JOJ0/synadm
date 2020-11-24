@@ -135,6 +135,27 @@ class Synapse_admin (object):
         json_data = json.dumps(data)
         return self._post(urlpart, json_data, log_post_data=False)
 
+    def user_modify(self, user_id, password, display_name, threepid, avatar_url,
+          admin, deactivated):
+        'threepid is a tuple in a tuple'
+        urlpart = f'v2/users/{user_id}'
+        data = {}
+        if password:
+            data.update({"password": password})
+        if display_name:
+            data.update({"displayname": display_name})
+        if threepid:
+            threep_list = [{k: i} for k,i in dict(threepid).items()]
+            data.update({'threepids': threep_list})
+        if avatar_url:
+            data.update({"avatar_url": avatar_url})
+        if admin:
+            data.update({"admin": admin})
+        if deactivated:
+            data.update({"deactivated": deactivated})
+        json_data = json.dumps(data)
+        return self._post(urlpart, json_data, log_post_data=True)
+
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f'v1/rooms?from={_from}&limit={limit}'
         if name:
@@ -523,11 +544,6 @@ def deactivate(ctx, user_id, gdpr_erase):
         click.echo('Abort.')
 
 
-
-
-
-
-
 @user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
 @click.option('--no-logout', '-n', is_flag=True, default=False,
@@ -609,6 +625,96 @@ def search_user_cmd(ctx, search_term, from_, limit):
     click.echo("\nUser search results for '{}':\n".format(search_term_cap))
     ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap)
 
+
+
+
+@user.command(context_settings=cont_set)
+@click.pass_context
+@click.argument('user_id', type=str)
+@click.option('--password-prompt', '-p', is_flag=True,
+      help="set password interactively.")
+@click.option('--password', '-P', type=str,
+      help="set password on command line.")
+@click.option('--display-name', '-n', type=str,
+      help='''set displayname. defaults to the value of user_id''')
+@click.option('--threepid', '-t', type=str, multiple=True, nargs=2,
+      help='''add a third-party identifier. This can be an email address or a
+      phone number. Threepids are used for several things: For use when
+      logging in, as an alternative to the user id. In the case of email, as
+      an alternative contact to help with account recovery. In the case of
+      email, to receive notifications of missed messages. Format: medium
+      value (eg. --threepid email <user@example.org>). This option can also
+      be stated multiple times, i.e. a user can have multiple threepids
+      configured.''')
+@click.option('--avatar-url', '-v', type=str,
+      help='''set avatar URL. Must be a MXC URI
+      (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).''')
+@click.option('--admin', '-a', is_flag=True, default=None, show_default=True,
+      help='''admin permission. Eg user is allowed to use the admin
+      API''')
+@click.option('--deactivated', '-d', is_flag=True, default=None, show_default=True,
+      help='''deactivate/activate user. Use with caution! Deactivating a user
+      removes their active access tokens, resets their password, kicks them out
+      of all rooms and deletes third-party identifiers (to prevent the user
+      requesting a password reset). See also "user deactivate" command.''')
+def modify(ctx, user_id, password, password_prompt, display_name, threepid,
+      avatar_url, admin, deactivated):
+    '''create or modify a local user. Provide matrix user ID (@user:server)
+    as argument.'''
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
+    log.info(f'user modify options: {ctx.params}\n')
+
+    click.echo('Current user account settings:')
+    #ctx.invoke(membership, user_id=user_id)
+    click.echo()
+    click.echo('User account settings after modification:')
+    for key,value in ctx.params.items():
+        if key in ['user_id', 'password', 'password_prompt']:
+            continue
+        elif key == 'threepid':
+            if value != ():
+                for t_key, t_val in value:
+                    click.echo(f'{key}: {t_key} {t_val}')
+                    if t_key not in ['email', 'msisdn']:
+                        m_m =f'{t_key} is probably not a supported medium type. '
+                        m_m+='Are you sure you want to add it?. Supported medium '
+                        m_m+='types according to the current matrix spec are: '
+                        m_m+='email, msisdn'
+                        log.warning(m_m)
+        elif value not in [None, {}, []]:
+            click.echo(f'{key}: {value}')
+        else:
+            continue
+
+    if password_prompt:
+        pw = click.prompt('Password', hide_input=True, confirmation_prompt=True)
+    elif password:
+        click.echo('Password will be set as provided on command line')
+        pw = password
+    else:
+        pw = None
+
+    sure = click.prompt("\nAre you sure you want to modify user? (y/N)",
+          type=bool, default=False, show_default=False)
+    if sure:
+        modified = synadm.user_modify(user_id, pw, display_name, threepid,
+              avatar_url, admin, deactivated)
+
+        if modified == None:
+            click.echo("User could not be modified.")
+            raise SystemExit(1)
+
+        if ctx.obj['view'] == 'raw':
+            pprint(modified)
+        else:
+            if modified['xxx'] == 'success':
+                click.echo('User successfully modified.')
+            else:
+                click.echo('Synapse returned: {}'.format(
+                      modified['xxx']))
+    else:
+        click.echo('Abort.')
 
 
 
