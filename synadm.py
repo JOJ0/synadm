@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-#from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -484,20 +484,23 @@ def user(ctx):
 #### user commands start here ###
 @user.command(name='list', context_settings=cont_set)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
-      help="offset user listing by given number. This option is also used for pagination.")
+      help='''offset user listing by given number. This option is also used for
+      pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help="limit user listing to given number")
-@click.option('--no-guests', '-N', is_flag=True, default=True, show_default=True,
+@click.option('--no-guests', '-N', is_flag=True, default=True,
       help="don't show guest users")
-@click.option('--deactivated', '-d', is_flag=True, default=False, show_default=True,
-      help="also show deactivated/erased users")
-#@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
-#                help='')
-@click.option('--name', '-n', type=str,
-      help="""search users by name - the full matrix ID's (@user:server) and
-      display names""")
-@click.option('--user-id', '-i', type=str,
-      help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
+@click.option('--deactivated', '-d', is_flag=True, default=False,
+      help="also show deactivated/erased users", show_default=True)
+@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
+                help='')
+@optgroup.option('--name', '-n', type=str,
+      help='''search users by name - filters to only return users with user ID
+      localparts or displaynames that contain this value (localpart is the left
+      part before the colon of the matrix ID (@user:server)''')
+@optgroup.option('--user-id', '-i', type=str,
+      help='''search users by ID - filters to only return users with Matrix IDs
+      (@user:server) that contain this value''')
 @click.pass_context
 def list_user_cmd(ctx, from_, limit, no_guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
