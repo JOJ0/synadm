@@ -164,7 +164,7 @@ class Synapse_admin (object):
         return self._post(urlpart, json_data, log_post_data=False)
 
     def user_modify(self, user_id, password, display_name, threepid, avatar_url,
-          admin, deactivated):
+          admin, deactivation):
         'threepid is a tuple in a tuple'
         urlpart = f'v2/users/{user_id}'
         data = {}
@@ -179,8 +179,10 @@ class Synapse_admin (object):
             data.update({"avatar_url": avatar_url})
         if admin:
             data.update({"admin": admin})
-        if deactivated:
-            data.update({"deactivated": deactivated})
+        if deactivation == 'deactivate':
+            data.update({"deactivated": True})
+        if deactivation == 'activate':
+            data.update({"deactivated": False})
         json_data = json.dumps(data)
         return self._put(urlpart, json_data, log_put_data=True)
 
@@ -664,7 +666,7 @@ def search_user_cmd(ctx, search_term, from_, limit):
 @click.option('--password', '-P', type=str,
       help="set password on command line.")
 @click.option('--display-name', '-n', type=str,
-      help='''set displayname. defaults to the value of user_id''')
+      help='''set display name. defaults to the value of user_id''')
 @click.option('--threepid', '-t', type=str, multiple=True, nargs=2,
       help='''add a third-party identifier. This can be an email address or a
       phone number. Threepids are used for several things: For use when
@@ -678,15 +680,17 @@ def search_user_cmd(ctx, search_term, from_, limit):
       help='''set avatar URL. Must be a MXC URI
       (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).''')
 @click.option('--admin', '-a', is_flag=True, default=None, show_default=True,
-      help='''admin permission. Eg user is allowed to use the admin
+      help='''grant user admin permission. Eg user is allowed to use the admin
       API''')
-@click.option('--deactivated', '-d', is_flag=True, default=None, show_default=True,
-      help='''deactivate/activate user. Use with caution! Deactivating a user
+@click.option('--deactivate', 'deactivation_state', flag_value='deactivate',
+      help='''deactivate user. Use with caution! Deactivating a user
       removes their active access tokens, resets their password, kicks them out
       of all rooms and deletes third-party identifiers (to prevent the user
       requesting a password reset). See also "user deactivate" command.''')
+@click.option('--activate', 'deactivation_state', flag_value='activate',
+      help='''re-activate user.''')
 def modify(ctx, user_id, password, password_prompt, display_name, threepid,
-      avatar_url, admin, deactivated):
+      avatar_url, admin, deactivation_state):
     '''create or modify a local user. Provide matrix user ID (@user:server)
     as argument.'''
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
@@ -694,11 +698,11 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
     log.info(f'user modify options: {ctx.params}\n')
 
     click.echo('Current user account settings:')
-    #ctx.invoke(membership, user_id=user_id)
+    #ctx.invoke(query, user_id=user_id)
     click.echo()
     click.echo('User account settings after modification:')
     for key,value in ctx.params.items():
-        if key in ['user_id', 'password', 'password_prompt']:
+        if key in ['user_id', 'password', 'password_prompt']: # skip these
             continue
         elif key == 'threepid':
             if value != ():
@@ -712,8 +716,6 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
                         log.warning(m_m)
         elif value not in [None, {}, []]:
             click.echo(f'{key}: {value}')
-        else:
-            continue
 
     if password_prompt:
         pw = click.prompt('Password', hide_input=True, confirmation_prompt=True)
@@ -727,7 +729,7 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
           type=bool, default=False, show_default=False)
     if sure:
         modified = synadm.user_modify(user_id, pw, display_name, threepid,
-              avatar_url, admin, deactivated)
+              avatar_url, admin, deactivation_state)
 
         if modified == None:
             click.echo("User could not be modified.")
