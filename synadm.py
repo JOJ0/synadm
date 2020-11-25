@@ -107,6 +107,33 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
+    def _put(self, urlpart, put_data, log_put_data=True):
+        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
+        log.info('_put url: {}\n'.format(url))
+        if log_put_data:
+            log.info('_put data: {}\n'.format(put_data))
+        try:
+            resp = requests.put(url, headers=self.headers, timeout=7, data=put_data)
+            resp.raise_for_status()
+            if resp.ok:
+                _json = json.loads(resp.content)
+                return _json
+            else:
+                log.warning("No valid response from Synapse. Returning None.")
+                return None
+        except reqerrors.HTTPError as errh:
+            log.error("HTTPError: %s\n", errh)
+            return None
+        except reqerrors.ConnectionError as errc:
+            log.error("ConnectionError: %s\n", errc)
+            return None
+        except reqerrors.Timeout as errt:
+            log.error("Timeout: %s\n", errt)
+            return None
+        except reqerrors.RequestException as erre:
+            log.error("RequestException: %s\n", erre)
+            return None
+
     def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
           _name=None, _user_id=None): # if --options missing they are None too, let's stick with that.
         _deactivated_s = 'true' if _deactivated else 'false'
