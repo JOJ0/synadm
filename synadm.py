@@ -49,13 +49,15 @@ class Synapse_admin (object):
         self.token = token
         self.base_url = base_url.strip('/')
         self.admin_path = admin_path.strip('/')
+        self.headers = {'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + self.token
+        }
 
     def _get(self, urlpart):
-        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
-            resp = requests.get(url, headers=headers, timeout=7)
+            resp = requests.get(url, headers=self.headers, timeout=7)
             resp.raise_for_status()
             if resp.ok:
                 _json = json.loads(resp.content)
@@ -79,13 +81,12 @@ class Synapse_admin (object):
             return None
 
     def _post(self, urlpart, post_data, log_post_data=True):
-        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_post url: {}\n'.format(url))
         if log_post_data:
             log.info('_post data: {}\n'.format(post_data))
         try:
-            resp = requests.post(url, headers=headers, timeout=7, data=post_data)
+            resp = requests.post(url, headers=self.headers, timeout=7, data=post_data)
             resp.raise_for_status()
             if resp.ok:
                 _json = json.loads(resp.content)
