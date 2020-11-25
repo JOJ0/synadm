@@ -182,7 +182,7 @@ class Synapse_admin (object):
         if deactivated:
             data.update({"deactivated": deactivated})
         json_data = json.dumps(data)
-        return self._post(urlpart, json_data, log_post_data=True)
+        return self._put(urlpart, json_data, log_put_data=True)
 
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f'v1/rooms?from={_from}&limit={limit}'
