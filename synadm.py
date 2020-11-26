@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup, RequiredAnyOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -660,38 +660,40 @@ def search_user_cmd(ctx, search_term, from_, limit):
 
 
 
+#user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
+user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 
 @user.command(context_settings=cont_set)
 @click.pass_context
 @click.argument('user_id', type=str)
-@click.option('--password-prompt', '-p', is_flag=True,
+@user_detail.option('--password-prompt', '-p', is_flag=True,
       help="set password interactively.")
-@click.option('--password', '-P', type=str,
+@user_detail.option('--password', '-P', type=str,
       help="set password on command line.")
-@click.option('--display-name', '-n', type=str,
+@user_detail.option('--display-name', '-n', type=str,
       help='''set display name. defaults to the value of user_id''')
-@click.option('--threepid', '-t', type=str, multiple=True, nargs=2,
+@user_detail.option('--threepid', '-t', type=str, multiple=True, nargs=2,
       help='''add a third-party identifier. This can be an email address or a
       phone number. Threepids are used for several things: For use when
       logging in, as an alternative to the user id. In the case of email, as
-      an alternative contact to help with account recovery. In the case of
-      email, to receive notifications of missed messages. Format: medium
+      an alternative contact to help with account recovery, as well as
+      to receive notifications of missed messages. Format: medium
       value (eg. --threepid email <user@example.org>). This option can also
       be stated multiple times, i.e. a user can have multiple threepids
       configured.''')
-@click.option('--avatar-url', '-v', type=str,
+@user_detail.option('--avatar-url', '-v', type=str,
       help='''set avatar URL. Must be a MXC URI
       (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).''')
-@click.option('--admin', '-a', is_flag=True, default=None, show_default=True,
+@user_detail.option('--admin', '-a', is_flag=True, default=None,
       help='''grant user admin permission. Eg user is allowed to use the admin
-      API''')
-@click.option('--deactivate', 'deactivation_state', flag_value='deactivate',
+      API''', show_default=True,)
+@user_detail.option('--activate', 'deactivation_state', flag_value='activate',
+      help='''re-activate user.''')
+@user_detail.option('--deactivate', 'deactivation_state', flag_value='deactivate',
       help='''deactivate user. Use with caution! Deactivating a user
       removes their active access tokens, resets their password, kicks them out
       of all rooms and deletes third-party identifiers (to prevent the user
       requesting a password reset). See also "user deactivate" command.''')
-@click.option('--activate', 'deactivation_state', flag_value='activate',
-      help='''re-activate user.''')
 def modify(ctx, user_id, password, password_prompt, display_name, threepid,
       avatar_url, admin, deactivation_state):
     '''create or modify a local user. Provide matrix user ID (@user:server)
@@ -699,6 +701,10 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     log.info(f'user modify options: {ctx.params}\n')
+
+    if password_prompt and password: # sanity check
+        log.error('Use either "-p" or "-P secret", not both.')
+        raise SystemExit(1)
 
     click.echo('Current user account settings:')
     #ctx.invoke(query, user_id=user_id)
@@ -717,7 +723,7 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
                         m_m+='types according to the current matrix spec are: '
                         m_m+='email, msisdn'
                         log.warning(m_m)
-        elif value not in [None, {}, []]:
+        elif value not in [None, {}, []]: # only show non-empty (aka changed)
             click.echo(f'{key}: {value}')
 
     if password_prompt:
