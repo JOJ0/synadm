@@ -684,26 +684,36 @@ user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 @user_detail.option('--avatar-url', '-v', type=str,
       help='''set avatar URL. Must be a MXC URI
       (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).''')
-@user_detail.option('--admin', '-a', is_flag=True, default=None,
+@user_detail.option('--admin/--no-admin', '-a/-u', default=None,
       help='''grant user admin permission. Eg user is allowed to use the admin
       API''', show_default=True,)
-@user_detail.option('--activate', 'deactivation_state', flag_value='activate',
+@user_detail.option('--activate', 'deactivation', flag_value='activate',
       help='''re-activate user.''')
-@user_detail.option('--deactivate', 'deactivation_state', flag_value='deactivate',
+@user_detail.option('--deactivate', 'deactivation', flag_value='deactivate',
       help='''deactivate user. Use with caution! Deactivating a user
       removes their active access tokens, resets their password, kicks them out
       of all rooms and deletes third-party identifiers (to prevent the user
       requesting a password reset). See also "user deactivate" command.''')
 def modify(ctx, user_id, password, password_prompt, display_name, threepid,
-      avatar_url, admin, deactivation_state):
+      avatar_url, admin, deactivation):
     '''create or modify a local user. Provide matrix user ID (@user:server)
     as argument.'''
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
     log.info(f'user modify options: {ctx.params}\n')
 
-    if password_prompt and password: # sanity check
+    # sanity checks that can't easily be handled by Click.
+    if password_prompt and password:
         log.error('Use either "-p" or "-P secret", not both.')
+        raise SystemExit(1)
+    if deactivation == 'activate' and not (password_prompt or password):
+        m_act = 'Need to set password when activating a user. Add either "-p" '
+        m_act+= 'or "-P secret" to your command.'
+        log.error(m_act)
+        raise SystemExit(1)
+    if deactivation == 'deactivate' and (password_prompt or password):
+        m_act = "Deactivating a user and setting a password doesn't make sense."
+        log.error(m_act)
         raise SystemExit(1)
 
     click.echo('Current user account settings:')
@@ -738,7 +748,7 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
           type=bool, default=False, show_default=False)
     if sure:
         modified = synadm.user_modify(user_id, pw, display_name, threepid,
-              avatar_url, admin, deactivation_state)
+              avatar_url, admin, deactivation)
 
         if modified == None:
             click.echo("User could not be modified.")
