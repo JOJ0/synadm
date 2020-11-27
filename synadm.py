@@ -173,7 +173,9 @@ class Synapse_admin (object):
         if display_name:
             data.update({"displayname": display_name})
         if threepid:
-            threep_list = [{k: i} for k,i in dict(threepid).items()]
+            threep_list = [
+                {'medium': k, 'address': i} for k,i in dict(threepid).items()
+            ]
             data.update({'threepids': threep_list})
         if avatar_url:
             data.update({"avatar_url": avatar_url})
