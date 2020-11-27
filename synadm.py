@@ -757,11 +757,13 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
         if ctx.obj['view'] == 'raw':
             pprint(modified)
         else:
-            if modified['xxx'] == 'success':
+            if modified != {}:
+                tab_mod = get_table(modified, listify=True)
+                click.echo(tab_mod)
                 click.echo('User successfully modified.')
             else:
                 click.echo('Synapse returned: {}'.format(
-                      modified['xxx']))
+                      modified))
     else:
         click.echo('Abort.')
 
