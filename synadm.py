@@ -569,6 +569,7 @@ def deactivate(ctx, user_id, gdpr_erase):
     m_kick+= '  - Deletion of third-party-IDs (to prevent the user requesting '
     m_kick+= 'a password)\n' if ctx.obj['view'] == 'raw' else 'a password)'
     click.echo(m_kick)
+    ctx.invoke(user_details_cmd, user_id=user_id)
     ctx.invoke(membership, user_id=user_id)
     m_erase_or_deact = '"gdpr-erase"' if gdpr_erase else 'deactivate'
     m_erase_or_deact_p = '"gdpr-erased"' if gdpr_erase else 'deactivated'
