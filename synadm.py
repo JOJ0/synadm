@@ -134,15 +134,24 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
-    def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
-          _name=None, _user_id=None): # if --options missing they are None too, let's stick with that.
-        _deactivated_s = 'true' if _deactivated else 'false'
-        _guests_s = 'true' if _guests else 'false'
-        urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}'
+    def user_list(self, _from, _limit, _guests, _deactivated,
+          _name, _user_id):
+        urlpart = f'v2/users?from={_from}&limit={_limit}'
         # optional filters
+        if _guests == False:
+            urlpart+= f'&guests=false' # true is API default
+        elif _guests == True:
+            urlpart+= f'&guests=true'
+        # no else - fall back to API default if None, which is "true"
+
+        # only add when present, deactivated=false will never be added
+        if _deactivated:
+            urlpart+= f'&deactivated=true' # false is API default
+
+        # either of both is added, never both, Click MutEx prevents it
         if _name:
             urlpart+= f'&name={_name}'
-        elif _user_id:
+        if _user_id:
             urlpart+= f'&user_id={_user_id}'
         return self._get(urlpart)
 
@@ -490,8 +499,8 @@ def user(ctx):
       pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help="limit user listing to given number")
-@click.option('--no-guests', '-N', is_flag=True, default=True,
-      help="don't show guest users")
+@click.option('--guests/--no-guests', '-g/-G', default=None, show_default=True,
+      help="show guest users.")
 @click.option('--deactivated', '-d', is_flag=True, default=False,
       help="also show deactivated/erased users", show_default=True)
 @optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
@@ -504,11 +513,11 @@ def user(ctx):
       help='''search users by ID - filters to only return users with Matrix IDs
       (@user:server) that contain this value''')
 @click.pass_context
-def list_user_cmd(ctx, from_, limit, no_guests, deactivated, name, user_id):
+def list_user_cmd(ctx, from_, limit, guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
+    users = synadm.user_list(from_, limit, guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
