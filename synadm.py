@@ -172,6 +172,10 @@ class Synapse_admin (object):
         json_data = json.dumps(data)
         return self._post(urlpart, json_data, log_post_data=False)
 
+    def user_details(self, user_id): # called "Query User Account" in API docs.
+        urlpart = f'v2/users/{user_id}'
+        return self._get(urlpart)
+
     def user_modify(self, user_id, password, display_name, threepid, avatar_url,
           admin, deactivation):
         'threepid is a tuple in a tuple'
@@ -669,6 +673,25 @@ def search_user_cmd(ctx, search_term, from_, limit):
     click.echo("\nUser search results for '{}':\n".format(search_term_cap))
     ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap)
 
+
+@user.command(name='details', context_settings=cont_set)
+@click.pass_context
+@click.argument('user_id', type=str)
+def user_details_cmd(ctx, user_id):
+    '''view details of a user account.'''
+    log.info(f'user details options: {ctx.params}\n')
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
+    user = synadm.user_details(user_id)
+    if user == None:
+        click.echo('User details could not be fetched.')
+        raise SystemExit(1)
+
+    if ctx.obj['view'] == 'raw':
+        pprint(user)
+    else:
+        tab_user = get_table(user, listify=True)
+        click.echo(tab_user)
 
 
 #user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
