@@ -656,8 +656,8 @@ def membership(ctx, user_id):
       for pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help='maximum amount of users to return.')
-def search_user_cmd(ctx, search_term, from_, limit):
-    '''a simplified shortcut to \'synadm user list -d -n <search-term>\'
+def user_search_cmd(ctx, search_term, from_, limit):
+    '''a simplified shortcut to \'synadm user list -d -g -n <search-term>\'
     (Searches for users by name/matrix-ID, including deactivated users
     as well as guest users). Also it executes a case-insensitive search
     compared to the original command.'''
@@ -669,9 +669,11 @@ def search_user_cmd(ctx, search_term, from_, limit):
         search_term_nocap = search_term
 
     click.echo("\nUser search results for '{}':\n".format(search_term_nocap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap)
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap,
+          deactivated=True, guests=True)
     click.echo("\nUser search results for '{}':\n".format(search_term_cap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap)
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap,
+          deactivated=True, guests=True)
 
 
 @user.command(name='details', context_settings=cont_set)
