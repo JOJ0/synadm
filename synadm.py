@@ -9,7 +9,7 @@ import json
 from pprint import pprint
 from tabulate import tabulate
 import yaml
-#from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup, RequiredAnyOptionGroup
 
 def create_config_dir():
     home = Path(os.getenv('HOME'))
@@ -49,13 +49,15 @@ class Synapse_admin (object):
         self.token = token
         self.base_url = base_url.strip('/')
         self.admin_path = admin_path.strip('/')
+        self.headers = {'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + self.token
+        }
 
     def _get(self, urlpart):
-        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
-            resp = requests.get(url, headers=headers, timeout=7)
+            resp = requests.get(url, headers=self.headers, timeout=7)
             resp.raise_for_status()
             if resp.ok:
                 _json = json.loads(resp.content)
@@ -79,13 +81,12 @@ class Synapse_admin (object):
             return None
 
     def _post(self, urlpart, post_data, log_post_data=True):
-        headers={'Accept': 'application/json', 'Authorization': 'Bearer ' + self.token }
         url=f'{self.base_url}/{self.admin_path}/{urlpart}'
         log.info('_post url: {}\n'.format(url))
         if log_post_data:
             log.info('_post data: {}\n'.format(post_data))
         try:
-            resp = requests.post(url, headers=headers, timeout=7, data=post_data)
+            resp = requests.post(url, headers=self.headers, timeout=7, data=post_data)
             resp.raise_for_status()
             if resp.ok:
                 _json = json.loads(resp.content)
@@ -106,15 +107,51 @@ class Synapse_admin (object):
             log.error("RequestException: %s\n", erre)
             return None
 
-    def user_list(self, _from=0, _limit=100, _guests=False, _deactivated=False,
-          _name=None, _user_id=None): # if --options missing they are None too, let's stick with that.
-        _deactivated_s = 'true' if _deactivated else 'false'
-        _guests_s = 'true' if _guests else 'false'
-        urlpart = f'v2/users?from={_from}&limit={_limit}&guests={_guests_s}&deactivated={_deactivated_s}'
+    def _put(self, urlpart, put_data, log_put_data=True):
+        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
+        log.info('_put url: {}\n'.format(url))
+        if log_put_data:
+            log.info('_put data: {}\n'.format(put_data))
+        try:
+            resp = requests.put(url, headers=self.headers, timeout=7, data=put_data)
+            resp.raise_for_status()
+            if resp.ok:
+                _json = json.loads(resp.content)
+                return _json
+            else:
+                log.warning("No valid response from Synapse. Returning None.")
+                return None
+        except reqerrors.HTTPError as errh:
+            log.error("HTTPError: %s\n", errh)
+            return None
+        except reqerrors.ConnectionError as errc:
+            log.error("ConnectionError: %s\n", errc)
+            return None
+        except reqerrors.Timeout as errt:
+            log.error("Timeout: %s\n", errt)
+            return None
+        except reqerrors.RequestException as erre:
+            log.error("RequestException: %s\n", erre)
+            return None
+
+    def user_list(self, _from, _limit, _guests, _deactivated,
+          _name, _user_id):
+        urlpart = f'v2/users?from={_from}&limit={_limit}'
         # optional filters
+        if _guests == False:
+            urlpart+= f'&guests=false' # true is API default
+        elif _guests == True:
+            urlpart+= f'&guests=true'
+        # no else - fall back to API default if None, which is "true"
+
+        # only add when present, deactivated=false will never be added
+        if _deactivated:
+            urlpart+= f'&deactivated=true' # false is API default
+
+        # either of both is added, never both, Click MutEx prevents it
         if _name:
             urlpart+= f'&name={_name}'
-        elif _user_id:
+        if _user_id:
             urlpart+= f'&user_id={_user_id}'
         return self._get(urlpart)
 
@@ -134,6 +171,35 @@ class Synapse_admin (object):
             data.update({"logout_devices": no_logout})
         json_data = json.dumps(data)
         return self._post(urlpart, json_data, log_post_data=False)
+
+    def user_details(self, user_id): # called "Query User Account" in API docs.
+        urlpart = f'v2/users/{user_id}'
+        return self._get(urlpart)
+
+    def user_modify(self, user_id, password, display_name, threepid, avatar_url,
+          admin, deactivation):
+        'threepid is a tuple in a tuple'
+        urlpart = f'v2/users/{user_id}'
+        data = {}
+        if password:
+            data.update({"password": password})
+        if display_name:
+            data.update({"displayname": display_name})
+        if threepid:
+            threep_list = [
+                {'medium': k, 'address': i} for k,i in dict(threepid).items()
+            ]
+            data.update({'threepids': threep_list})
+        if avatar_url:
+            data.update({"avatar_url": avatar_url})
+        if admin:
+            data.update({"admin": admin})
+        if deactivation == 'deactivate':
+            data.update({"deactivated": True})
+        if deactivation == 'activate':
+            data.update({"deactivated": False})
+        json_data = json.dumps(data)
+        return self._put(urlpart, json_data, log_put_data=True)
 
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f'v1/rooms?from={_from}&limit={limit}'
@@ -433,26 +499,29 @@ def user(ctx):
 #### user commands start here ###
 @user.command(name='list', context_settings=cont_set)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
-      help="offset user listing by given number. This option is also used for pagination.")
+      help='''offset user listing by given number. This option is also used for
+      pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help="limit user listing to given number")
-@click.option('--no-guests', '-N', is_flag=True, default=True, show_default=True,
-      help="don't show guest users")
-@click.option('--deactivated', '-d', is_flag=True, default=False, show_default=True,
-      help="also show deactivated/erased users")
-#@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
-#                help='')
-@click.option('--name', '-n', type=str,
-      help="""search users by name - the full matrix ID's (@user:server) and
-      display names""")
-@click.option('--user-id', '-i', type=str,
-      help="search users by id - the left part before the colon of the matrix ID's (@user:server)")
+@click.option('--guests/--no-guests', '-g/-G', default=None, show_default=True,
+      help="show guest users.")
+@click.option('--deactivated', '-d', is_flag=True, default=False,
+      help="also show deactivated/erased users", show_default=True)
+@optgroup.group('Search options', cls=MutuallyExclusiveOptionGroup,
+                help='')
+@optgroup.option('--name', '-n', type=str,
+      help='''search users by name - filters to only return users with user ID
+      localparts or displaynames that contain this value (localpart is the left
+      part before the colon of the matrix ID (@user:server)''')
+@optgroup.option('--user-id', '-i', type=str,
+      help='''search users by ID - filters to only return users with Matrix IDs
+      (@user:server) that contain this value''')
 @click.pass_context
-def list_user_cmd(ctx, from_, limit, no_guests, deactivated, name, user_id):
+def list_user_cmd(ctx, from_, limit, guests, deactivated, name, user_id):
     log.info(f'user list options: {ctx.params}\n')
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    users = synadm.user_list(from_, limit, no_guests, deactivated, name, user_id)
+    users = synadm.user_list(from_, limit, guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
@@ -500,6 +569,7 @@ def deactivate(ctx, user_id, gdpr_erase):
     m_kick+= '  - Deletion of third-party-IDs (to prevent the user requesting '
     m_kick+= 'a password)\n' if ctx.obj['view'] == 'raw' else 'a password)'
     click.echo(m_kick)
+    ctx.invoke(user_details_cmd, user_id=user_id)
     ctx.invoke(membership, user_id=user_id)
     m_erase_or_deact = '"gdpr-erase"' if gdpr_erase else 'deactivate'
     m_erase_or_deact_p = '"gdpr-erased"' if gdpr_erase else 'deactivated'
@@ -521,11 +591,6 @@ def deactivate(ctx, user_id, gdpr_erase):
                       deactivated['id_server_unbind_result']))
     else:
         click.echo('Abort.')
-
-
-
-
-
 
 
 @user.command(context_settings=cont_set)
@@ -592,8 +657,8 @@ def membership(ctx, user_id):
       for pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help='maximum amount of users to return.')
-def search_user_cmd(ctx, search_term, from_, limit):
-    '''a simplified shortcut to \'synadm user list -d -n <search-term>\'
+def user_search_cmd(ctx, search_term, from_, limit):
+    '''a simplified shortcut to \'synadm user list -d -g -n <search-term>\'
     (Searches for users by name/matrix-ID, including deactivated users
     as well as guest users). Also it executes a case-insensitive search
     compared to the original command.'''
@@ -605,10 +670,139 @@ def search_user_cmd(ctx, search_term, from_, limit):
         search_term_nocap = search_term
 
     click.echo("\nUser search results for '{}':\n".format(search_term_nocap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap)
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap,
+          deactivated=True, guests=True)
     click.echo("\nUser search results for '{}':\n".format(search_term_cap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap)
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap,
+          deactivated=True, guests=True)
 
+
+@user.command(name='details', context_settings=cont_set)
+@click.pass_context
+@click.argument('user_id', type=str)
+def user_details_cmd(ctx, user_id):
+    '''view details of a user account.'''
+    log.info(f'user details options: {ctx.params}\n')
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
+    user = synadm.user_details(user_id)
+    if user == None:
+        click.echo('User details could not be fetched.')
+        raise SystemExit(1)
+
+    if ctx.obj['view'] == 'raw':
+        pprint(user)
+    else:
+        tab_user = get_table(user, listify=True)
+        click.echo(tab_user)
+
+
+#user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
+user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
+
+@user.command(context_settings=cont_set)
+@click.pass_context
+@click.argument('user_id', type=str)
+@user_detail.option('--password-prompt', '-p', is_flag=True,
+      help="set password interactively.")
+@user_detail.option('--password', '-P', type=str,
+      help="set password on command line.")
+@user_detail.option('--display-name', '-n', type=str,
+      help='''set display name. defaults to the value of user_id''')
+@user_detail.option('--threepid', '-t', type=str, multiple=True, nargs=2,
+      help='''add a third-party identifier. This can be an email address or a
+      phone number. Threepids are used for several things: For use when
+      logging in, as an alternative to the user id. In the case of email, as
+      an alternative contact to help with account recovery, as well as
+      to receive notifications of missed messages. Format: medium
+      value (eg. --threepid email <user@example.org>). This option can also
+      be stated multiple times, i.e. a user can have multiple threepids
+      configured.''')
+@user_detail.option('--avatar-url', '-v', type=str,
+      help='''set avatar URL. Must be a MXC URI
+      (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).''')
+@user_detail.option('--admin/--no-admin', '-a/-u', default=None,
+      help='''grant user admin permission. Eg user is allowed to use the admin
+      API''', show_default=True,)
+@user_detail.option('--activate', 'deactivation', flag_value='activate',
+      help='''re-activate user.''')
+@user_detail.option('--deactivate', 'deactivation', flag_value='deactivate',
+      help='''deactivate user. Use with caution! Deactivating a user
+      removes their active access tokens, resets their password, kicks them out
+      of all rooms and deletes third-party identifiers (to prevent the user
+      requesting a password reset). See also "user deactivate" command.''')
+def modify(ctx, user_id, password, password_prompt, display_name, threepid,
+      avatar_url, admin, deactivation):
+    '''create or modify a local user. Provide matrix user ID (@user:server)
+    as argument.'''
+    synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
+          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
+    log.info(f'user modify options: {ctx.params}\n')
+
+    # sanity checks that can't easily be handled by Click.
+    if password_prompt and password:
+        log.error('Use either "-p" or "-P secret", not both.')
+        raise SystemExit(1)
+    if deactivation == 'activate' and not (password_prompt or password):
+        m_act = 'Need to set password when activating a user. Add either "-p" '
+        m_act+= 'or "-P secret" to your command.'
+        log.error(m_act)
+        raise SystemExit(1)
+    if deactivation == 'deactivate' and (password_prompt or password):
+        m_act = "Deactivating a user and setting a password doesn't make sense."
+        log.error(m_act)
+        raise SystemExit(1)
+
+    click.echo('Current user account settings:')
+    ctx.invoke(user_details_cmd, user_id=user_id)
+    click.echo()
+    click.echo('User account settings after modification:')
+    for key,value in ctx.params.items():
+        if key in ['user_id', 'password', 'password_prompt']: # skip these
+            continue
+        elif key == 'threepid':
+            if value != ():
+                for t_key, t_val in value:
+                    click.echo(f'{key}: {t_key} {t_val}')
+                    if t_key not in ['email', 'msisdn']:
+                        m_m =f'{t_key} is probably not a supported medium type. '
+                        m_m+='Are you sure you want to add it?. Supported medium '
+                        m_m+='types according to the current matrix spec are: '
+                        m_m+='email, msisdn'
+                        log.warning(m_m)
+        elif value not in [None, {}, []]: # only show non-empty (aka changed)
+            click.echo(f'{key}: {value}')
+
+    if password_prompt:
+        pw = click.prompt('Password', hide_input=True, confirmation_prompt=True)
+    elif password:
+        click.echo('Password will be set as provided on command line')
+        pw = password
+    else:
+        pw = None
+
+    sure = click.prompt("\nAre you sure you want to modify user? (y/N)",
+          type=bool, default=False, show_default=False)
+    if sure:
+        modified = synadm.user_modify(user_id, pw, display_name, threepid,
+              avatar_url, admin, deactivation)
+
+        if modified == None:
+            click.echo("User could not be modified.")
+            raise SystemExit(1)
+
+        if ctx.obj['view'] == 'raw':
+            pprint(modified)
+        else:
+            if modified != {}:
+                tab_mod = get_table(modified, listify=True)
+                click.echo(tab_mod)
+                click.echo('User successfully modified.')
+            else:
+                click.echo('Synapse returned: {}'.format(
+                      modified))
+    else:
+        click.echo('Abort.')
 
 
 
