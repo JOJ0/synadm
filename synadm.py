@@ -753,7 +753,7 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
         raise SystemExit(1)
 
     click.echo('Current user account settings:')
-    #ctx.invoke(query, user_id=user_id)
+    ctx.invoke(user_details_cmd, user_id=user_id)
     click.echo()
     click.echo('User account settings after modification:')
     for key,value in ctx.params.items():
