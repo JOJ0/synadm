@@ -206,7 +206,7 @@ If you need help with installing, usage or contribution or have anything else on
 ### How can I help?
 
 * Install `synadm` and report back whether or not the installation process worked on the OS you're running.
-* Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see [implementation examples chapter](#example-of-implementing-a-feature), it really isn't hard, take a look!
+* Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see [implementation examples chapter](#implementation-examples), it really isn't hard, take a look!
 * If you don't code, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on #synadm:peek-a-boo.at or #matrix-dev:matrix.org.
 
 Thanks in advance for any help! I can't do this without you!
