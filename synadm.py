@@ -199,7 +199,7 @@ class Synapse_admin (object):
         if deactivation == 'activate':
             data.update({"deactivated": False})
         json_data = json.dumps(data)
-        return self._put(urlpart, json_data, log_put_data=True)
+        return self._put(urlpart, json_data, log_put_data=False)
 
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f'v1/rooms?from={_from}&limit={limit}'
@@ -737,7 +737,7 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
     as argument.'''
     synadm = Synapse_admin(ctx.obj['config'].user, ctx.obj['config'].token,
           ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    log.info(f'user modify options: {ctx.params}\n')
+    #log.info(f'user modify options: {ctx.params}\n')
 
     # sanity checks that can't easily be handled by Click.
     if password_prompt and password:
