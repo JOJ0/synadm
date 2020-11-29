@@ -196,7 +196,7 @@ python3 setup.py install
 
 ## Get in touch / feedback / support
 
-If you need help with installing, usage or contribution or have anything else on your mind, just join public matrix room #synadm:peek-a-boo.at and get in touch. I am also hanging around on #matrix-dev:matrix.org and #synapse:mastrix.org regularily. Just ask for a jojo ;-)
+If you need help with installing, usage or contribution or have anything else on your mind, just join public matrix room #synadm:peek-a-boo.at and get in touch. I am also hanging around on #matrix-dev:matrix.org and #synapse:matrix.org regularily. Just ask for a jojo ;-)
 
 
 
