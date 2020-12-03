@@ -296,28 +296,25 @@ class Config(object):
             conf = self._read_yaml(self.config_yaml)
 
         self.user = self._get_config_entry(conf, 'user')
-        self.token = self._get_config_entry(conf, 'token')
+        self.token = self._get_config_entry(conf, 'token', hide_log=True)
         self.base_url = self._get_config_entry(conf, 'base_url')
         self.admin_path = self._get_config_entry(conf, 'admin_api_path')
         self.view = self._get_config_entry(conf, 'view')
 
-    def _get_config_entry(self, conf_dict, yaml_key, default=''):
+    def _get_config_entry(self, conf_dict, yaml_key, hide_log=False):
         try:
-            if conf_dict[yaml_key] == '':
-                value = default
-                log.warning('Empty entry in configuration file: "{}"'.format(yaml_key))
+            if conf_dict[yaml_key] == '': # Type- or KeyError would raise here
+                log.warning(f'Empty entry in configuration file: "{yaml_key}"')
                 self.incomplete = True
             else:
                 value = conf_dict[yaml_key]
-                log.debug('Configuration entry "{}": {}'.format(yaml_key,
-                      conf_dict[yaml_key]))
+                log_value = 'SECRET' if hide_log else value
+                log.debug(f'Configuration entry "{yaml_key}": {log_value}')
         except KeyError:
-            value = default
-            log.warning('Missing entry in configuration file: "{}"'.format(yaml_key))
+            log.warning(f'Missing entry in configuration file: "{yaml_key}"')
             self.incomplete = True
         except TypeError:
-            value = default
-            log.debug('Can\'t fetch value from empty configuration file.')
+            log.debug(f"Can't fetch value from empty configuration file.")
             self.incomplete = True
             self.empty = True
         return value
