@@ -302,6 +302,7 @@ class Config(object):
         self.view = self._get_config_entry(conf, 'view')
 
     def _get_config_entry(self, conf_dict, yaml_key, hide_log=False):
+        value = ''
         try:
             if conf_dict[yaml_key] == '': # Type- or KeyError would raise here
                 log.warning(f'Empty entry in configuration file: "{yaml_key}"')
