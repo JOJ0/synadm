@@ -43,18 +43,17 @@ def logger_init():
     log.addHandler(f_handle)
     return log
 
-class Synapse_admin (object):
-    def __init__(self, user, token, base_url, admin_path):
-        self.user = user
+class Http_request:
+    def __init__(self, token, base_url, path):
         self.token = token
         self.base_url = base_url.strip('/')
-        self.admin_path = admin_path.strip('/')
+        self.path = path.strip('/')
         self.headers = {'Accept': 'application/json',
                         'Authorization': 'Bearer ' + self.token
         }
 
     def _get(self, urlpart):
-        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
+        url=f'{self.base_url}/{self.path}/{urlpart}'
         log.info('_get url: {}\n'.format(url))
         try:
             resp = requests.get(url, headers=self.headers, timeout=7)
@@ -81,7 +80,7 @@ class Synapse_admin (object):
             return None
 
     def _post(self, urlpart, post_data, log_post_data=True):
-        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
+        url=f'{self.base_url}/{self.path}/{urlpart}'
         log.info('_post url: {}\n'.format(url))
         if log_post_data:
             log.info('_post data: {}\n'.format(post_data))
@@ -108,7 +107,7 @@ class Synapse_admin (object):
             return None
 
     def _put(self, urlpart, put_data, log_put_data=True):
-        url=f'{self.base_url}/{self.admin_path}/{urlpart}'
+        url=f'{self.base_url}/{self.path}/{urlpart}'
         log.info('_put url: {}\n'.format(url))
         if log_put_data:
             log.info('_put data: {}\n'.format(put_data))
@@ -133,6 +132,11 @@ class Synapse_admin (object):
         except reqerrors.RequestException as erre:
             log.error("RequestException: %s\n", erre)
             return None
+
+class Synapse_admin(Http_request):
+    def __init__(self, user, token, base_url, admin_path):
+        super().__init__(token, base_url, admin_path)
+        self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
           _name, _user_id):
