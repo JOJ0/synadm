@@ -96,6 +96,8 @@ Configuration will be saved in `~/.config/synadm.yaml`
 
 *Note: To find out your admin user's token in Element-Web: Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"*
 
+*Note: Be aware that once you configured `synadm`, your admin user's token is saved in the configuration file. If you want to protect it, it is your responsibilty to change file permissions accordingly. When `synadm` first creates this file, it uses whatever default [umask](https://en.wikipedia.org/wiki/Umask) your system provides.*
+
 ## Usage
 
 
