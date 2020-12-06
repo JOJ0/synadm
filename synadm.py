@@ -245,6 +245,19 @@ class Synapse_admin(Http_request):
         urlpart = f'v1/server_version'
         return self._get(urlpart)
 
+class Matrix_client(Http_request):
+    def __init__(self, user, token, base_url, client_path):
+        super().__init__(token, base_url, client_path)
+        self.user = user
+
+    def user_login(self, user_id, password):
+        urlpart = f'r0/login/{user_id}'
+        data = {"password": password,
+                "type": "m.login.password",
+                "user": f"{user_id}"}
+        json_data = json.dumps(data)
+        return self._post(urlpart, json_data, log_post_data=False)
+
 def modify_usage_error(main_command):
     '''a method to append the help menu to an usage error
     :param main_command: top-level group or command object constructed by click wrapper
