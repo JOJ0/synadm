@@ -256,7 +256,7 @@ class Matrix_client(Http_request):
                 "type": "m.login.password",
                 "user": f"{user_id}"}
         json_data = json.dumps(data)
-        return self._post(urlpart, json_data, log_post_data=False)
+        return self._post(urlpart, json_data, log_post_data=True)
 
 def modify_usage_error(main_command):
     '''a method to append the help menu to an usage error
@@ -317,6 +317,7 @@ class Config(object):
         self.base_url = self._get_config_entry(conf, 'base_url')
         self.admin_path = self._get_config_entry(conf, 'admin_api_path')
         self.view = self._get_config_entry(conf, 'view')
+        self.login = self._get_config_entry(conf, 'login')
 
     def _get_config_entry(self, conf_dict, yaml_key, hide_log=False):
         value = ''
@@ -435,11 +436,23 @@ def synadm(ctx, verbose, raw, table, config_file):
 
 
 ### the config command starts here ###
+login_or_token = MutuallyExclusiveOptionGroup('', help='', hidden=False)
+
 @synadm.command(context_settings=cont_set)
 @click.option('--user', '-u', type=str, default='admin',
-    help="admin user for accessing the Synapse admin API's",)
-@click.option('--token', '-t', type=str,
-    help="admin user's access token for the Synapse admin API's",)
+    help="admin user for accessing the Synapse admin API's")
+@login_or_token.option('--token', '-t', type=str,
+    help="""admin user's access token for the Synapse admin API's. The token
+    will be saved in the configuration file (default: ~/.config/synadm.yaml).
+    Make sure you set permissions on this file accordingly.""")
+@login_or_token.option('--login', '-l', is_flag=True,
+    help="""login using configured admin user and be prompted for password on
+    each synadm call instead of permanently saving a token in the
+    configuration file.""")
+@login_or_token.option('--login-once', '-L', is_flag=True,
+    help="""login using configured admin user and be prompted for password
+    only once, then save token permanently in the configuration
+    file.""")
 @click.option('--base-url', '-b', type=str, default='http://localhost:8008',
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
@@ -455,27 +468,67 @@ def synadm(ctx, verbose, raw, table, config_file):
     be overridden by using global switches -r and -t (eg 'synadm -r user
     list')""", show_default=True)
 @click.pass_context
-def config(ctx, user, token, base_url, admin_api_path, view):
+def config(ctx, user, token, base_url, admin_api_path, view, login, login_once):
     """modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options."""
     click.echo('Running configurator...')
     cfg = ctx.obj['config']
+
     # get defaults for prompts from either config file or commandline
-    user_default = cfg.user if cfg.user else user
-    token_default = cfg.token if cfg.token else token
     base_url_default = cfg.base_url if cfg.base_url else base_url
     admin_path_default = cfg.admin_path if cfg.admin_path else admin_api_path
     view_default = cfg.view if cfg.view else view
+    user_default = cfg.user if cfg.user else user
+    if cfg.login:
+        login_default = cfg.login
+    else:
+        if login:
+            login_default = "always"
+        elif login_once:
+            login_default = "once"
+        elif token:
+            login_default = "never"
+        else:
+            login_default = "once"
+    token_default = cfg.token if cfg.token else token
+
     # prompts
-    api_user = click.prompt("Synapse admin user name", default=user_default)
-    api_token = click.prompt("Synapse admin user token", default=token_default)
     api_base_url = click.prompt("Synapse base URL", default=base_url_default)
     api_admin_path = click.prompt("Synapse admin API path", default=admin_path_default)
     api_view = click.prompt("How should data be viewed by default?",
            default=view_default, type=click.Choice(['table', 'raw']))
+    api_user = click.prompt("Synapse admin user matrix ID (@user:server))",
+          default=user_default)
+    api_login = click.prompt("""How should login be handled?
+    "always" - Prompt for password on each synadm launch
+    "once" - Prompt for password once, then save token
+    "never" - Never ask for password, prompt for token in next step""",
+          default=login_default, type=click.Choice(['always', 'once', 'never']),
+          show_default=True, show_choices=False)
+    if api_login == "never":
+        api_token = click.prompt("Synapse admin user token", default=token_default)
+    elif api_login == "once":
+        api_token = token_default
+        if cfg.token != None or cfg.token != '':
+            m_replace = 'Configuration file contains an existing token '
+            m_replace+= 'already, do you really want to login an replace it?'
+            replace = click.confirm(m_replace)
+            if replace:
+                api_token = None
+                while api_token == None:
+                    admin_pw = click.prompt(text='Password', confirmation_prompt=False,
+                          hide_input=True)
+                    mtx = Matrix_client(api_user, '', api_base_url, '/_matrix/client')
+                    api_token = mtx.user_login(api_user, admin_pw)
+            else:
+                click.echo('Not changing existing token in configuration file.')
+                api_token = cfg.token
+    else: # FIXME logic for always logging in not implemented yet
+        api_token = None
 
-    conf_dict = {"user": api_user, "token": api_token, "base_url": api_base_url,
-          "admin_api_path": api_admin_path, "view": api_view}
+    conf_dict = {"user": api_user, "token": api_token, "base_url":
+          api_base_url, "admin_api_path": api_admin_path, "view": api_view,
+          "login": api_login}
     cfg.write(conf_dict)
 
 
