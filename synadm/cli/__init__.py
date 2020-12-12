@@ -2,8 +2,6 @@
 """
 
 from synadm import api
-from pathlib import Path
-from tabulate import tabulate
 
 import os
 import sys
@@ -12,6 +10,7 @@ import click
 import logging
 import pprint
 import json
+import tabulate
 
 
 def humanize(data):
@@ -22,11 +21,11 @@ def humanize(data):
     """
     if type(data) is list and type(data[0]) is dict:
         headers = {header: header for header in data[0]}
-        return tabulate(data, tablefmt="simple", headers=headers)
+        return tabulate.tabulate(data, tablefmt="simple", headers=headers)
     elif type(data) is list:
         return "\n".join(data)
     elif type(data) is dict:
-        return tabulate(data.items(), tablefmt="simple")
+        return tabulate.tabulate(data.items(), tablefmt="simple")
 
 
 class APIClient:
@@ -61,23 +60,23 @@ class APIClient:
     def init_logger(self, verbose):
         log_path = os.path.expanduser("~/.local/share/synadm/debug.log")
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
-        log = logging.getLogger('synadm')
-        log.setLevel(logging.DEBUG) # level of logger itself
-        f_handle = logging.FileHandler(log_path, encoding='utf-8') # create file handler
-        f_handle.setLevel(logging.DEBUG) # which logs even debug messages
-        c_handle = logging.StreamHandler() # console handler with a higher log level
+        log = logging.getLogger("synadm")
+        log.setLevel(logging.DEBUG)  # level of logger itself
+        f_handle = logging.FileHandler(log_path, encoding="utf-8")  # create file handler
+        f_handle.setLevel(logging.DEBUG)
+        c_handle = logging.StreamHandler()  # console handler with a higher log level
         c_handle.setLevel(
             logging.DEBUG if verbose > 1 else
             logging.INFO if verbose == 1 else
             logging.WARNING
         )
         # create formatters and add it to the handlers
-        f_form = logging.Formatter('%(asctime)s %(name)-8s %(levelname)-7s %(message)s',
-                datefmt='%Y-%m-%d %H:%M:%S')
-        c_form = logging.Formatter('%(levelname)-5s %(message)s')
+        f_form = logging.Formatter("%(asctime)s %(name)-8s %(levelname)-7s %(message)s",
+                datefmt="%Y-%m-%d %H:%M:%S")
+        c_form = logging.Formatter("%(levelname)-5s %(message)s")
         c_handle.setFormatter(c_form)
         f_handle.setFormatter(f_form)
-        log.addHandler(c_handle) # add the handlers to logger
+        log.addHandler(c_handle)  # add the handlers to logger
         log.addHandler(f_handle)
         return log
 
@@ -112,35 +111,35 @@ class APIClient:
         click.echo(APIClient.FORMATTERS[self.format](data))
 
 
-@click.group(invoke_without_command=False, context_settings=dict(help_option_names=['-h', '--help']))
-@click.option('--verbose', '-v', count=True, default=False,
+@click.group(invoke_without_command=False, context_settings=dict(help_option_names=["-h", "--help"]))
+@click.option("--verbose", "-v", count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
-@click.option('--output', '-o', default="human",
+@click.option("--output", "-o", default="human",
       help="print raw json data (overrides default setting)")
-@click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
+@click.option("--config-file", "-c", type=click.Path(), default="~/.config/synadm.yaml",
       help="configuration file path", show_default=True)
 @click.pass_context
 def root(ctx, verbose, output, config_file):
     ctx.obj = APIClient(config_file, verbose, output)
-    if ctx.invoked_subcommand != 'config' and not ctx.obj.read_config():
+    if ctx.invoked_subcommand != "config" and not ctx.obj.read_config():
         click.echo("Please setup synadm: " + sys.argv[0] + " config")
         raise SystemExit(2)
 
 
 @root.command()
-@click.option('--user', '-u', type=str, default='admin',
+@click.option("--user", "-u", type=str, default="admin",
     help="admin user for accessing the Synapse admin API's",)
-@click.option('--token', '-t', type=str,
+@click.option("--token", "-t", type=str,
     help="admin user's access token for the Synapse admin API's",)
-@click.option('--base-url', '-b', type=str, default='http://localhost:8008',
+@click.option("--base-url", "-b", type=str, default="http://localhost:8008",
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
     configured to expose its admin API's to the outside world it could also be
     https://example.org:8448""", show_default=True)
-@click.option('--admin-api-path', '-p', type=str, default='/_synapse/admin',
+@click.option("--admin-api-path", "-p", type=str, default="/_synapse/admin",
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
-@click.option('--output', type=click.Choice(['human', 'json', 'yaml', 'pprint']), default='human',
+@click.option("--output", type=click.Choice(["human", "json", "yaml", "pprint"]), default="human",
     help="""how should synadm display data by default? 'table' gives a
     tabular view but needs your terminal to be quite width. 'raw' shows
     formatted json exactely as the API responded. Note that this can always
@@ -150,7 +149,7 @@ def root(ctx, verbose, output, config_file):
 def config(api, user, token, base_url, admin_api_path, output):
     """modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options."""
-    click.echo('Running configurator...')
+    click.echo("Running configurator...")
     api.write_config({
         "user": click.prompt("Synapse admin user name",
             default=api.config.get("user", user)),
@@ -162,7 +161,7 @@ def config(api, user, token, base_url, admin_api_path, output):
             default=api.config.get("admin_api_path", admin_api_path)),
         "format": click.prompt("How should data be viewed by default?",
             default=api.config.get("format", output),
-            type=click.Choice(['human', 'json', 'yaml', 'pprint']))
+            type=click.Choice(["human", "json", "yaml", "pprint"]))
     })
 
 
