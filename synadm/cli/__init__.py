@@ -106,11 +106,6 @@ def modify_usage_error(main_command):
     click.exceptions.UsageError.show = show
 
 
-# change default help options
-#usage: @click.command(context_settings=cont_set)
-cont_set = dict(help_option_names=['-h', '--help'])
-
-
 # handle logging and configuration prerequisites
 log = logger_init()
 
@@ -199,7 +194,7 @@ class Config(object):
             raise SystemExit(2)
 
 
-@click.group(invoke_without_command=False, context_settings=cont_set)
+@click.group(invoke_without_command=False, context_settings=dict(help_option_names=['-h', '--help']))
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
 @click.option('--output', '-o', default="human",
@@ -228,7 +223,7 @@ def root(ctx, verbose, output, config_file):
         _eventually_run_config()
 
 
-@root.command(context_settings=cont_set)
+@root.command()
 @click.option('--user', '-u', type=str, default='admin',
     help="admin user for accessing the Synapse admin API's",)
 @click.option('--token', '-t', type=str,

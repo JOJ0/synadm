@@ -1,4 +1,4 @@
-from synadm.cli import root, cont_set, log
+from synadm.cli import root
 from synadm import api
 
 from pprint import pprint
@@ -6,13 +6,13 @@ from pprint import pprint
 import click
 
 
-@root.group(context_settings=cont_set)
+@root.group()
 def room():
     """list/delete rooms, show/invite/join members, ...
     """
 
 
-@room.command(name='list', context_settings=cont_set)
+@room.command(name='list')
 @click.pass_obj
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="""offset room listing by given number. This option is also used
@@ -47,7 +47,7 @@ def list_room_cmd(api, from_, limit, name, sort, reverse):
         api.output(rooms)
 
 
-@room.command(context_settings=cont_set)
+@room.command()
 @click.argument('room_id', type=str)
 @click.pass_obj
 def details(api, room_id):
@@ -58,7 +58,7 @@ def details(api, room_id):
     api.output(room)
 
 
-@room.command(context_settings=cont_set)
+@room.command()
 @click.argument('room_id', type=str)
 @click.pass_obj
 def members(api, room_id):
@@ -76,7 +76,7 @@ def members(api, room_id):
         api.output(members)
 
 
-@room.command(context_settings=cont_set)
+@room.command()
 @click.pass_obj
 @click.pass_context
 @click.argument('room_id', type=str)
@@ -119,7 +119,7 @@ def delete(ctx, api, room_id, new_room_user_id, room_name, message, block, no_pu
         click.echo('Abort.')
 
 
-@room.command(name='search', context_settings=cont_set)
+@room.command(name='search')
 @click.pass_context
 @click.argument('search-term', type=str)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,

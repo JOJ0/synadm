@@ -1,18 +1,18 @@
-from synadm.cli import root, log, cont_set
+from synadm.cli import root
 from synadm import api
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup, RequiredAnyOptionGroup
 
 import click
 
 
-@root.group(context_settings=cont_set)
+@root.group()
 def user():
     """list, add, modify, deactivate/erase users,
        reset passwords.
     """
 
 
-@user.command(name='list', context_settings=cont_set)
+@user.command(name='list')
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help='''offset user listing by given number. This option is also used for
       pagination.''')
@@ -52,7 +52,7 @@ def list_user_cmd(api, from_, limit, guests, deactivated, name, user_id):
         api.output(users)
 
 
-@user.command(context_settings=cont_set)
+@user.command()
 @click.argument('user_id', type=str)
       #help='the matrix user ID to deactivate/erase (user:server')
 @click.option('--gdpr-erase', '-e', is_flag=True, default=False,
@@ -99,7 +99,7 @@ def deactivate(ctx, api, user_id, gdpr_erase):
         click.echo('Abort.')
 
 
-@user.command(context_settings=cont_set)
+@user.command()
 @click.argument('user_id', type=str)
 @click.option('--no-logout', '-n', is_flag=True, default=False,
       help="don't log user out of all sessions on all devices.")
@@ -123,7 +123,7 @@ def password(api, user_id, password, no_logout):
         api.output(changed)
 
 
-@user.command(context_settings=cont_set)
+@user.command()
 @click.argument('user_id', type=str)
 @click.pass_obj
 def membership(api, user_id):
@@ -144,7 +144,7 @@ def membership(api, user_id):
         api.output(joined_rooms)
 
                 
-@user.command(name='search', context_settings=cont_set)
+@user.command(name='search')
 @click.pass_context
 @click.argument('search-term', type=str)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
@@ -172,7 +172,7 @@ def user_search_cmd(ctx, search_term, from_, limit):
           deactivated=True, guests=True)
 
 
-@user.command(name='details', context_settings=cont_set)
+@user.command(name='details')
 @click.pass_obj
 @click.argument('user_id', type=str)
 def user_details_cmd(api, user_id):
@@ -187,7 +187,7 @@ def user_details_cmd(api, user_id):
 #user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
 user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 
-@user.command(context_settings=cont_set)
+@user.command()
 @click.pass_context
 @click.pass_obj
 @click.argument('user_id', type=str)
@@ -225,16 +225,16 @@ def modify(ctx, api, user_id, password, password_prompt, display_name, threepid,
     as argument.''' 
     # sanity checks that can't easily be handled by Click.
     if password_prompt and password:
-        log.error('Use either "-p" or "-P secret", not both.')
+        click.echo('Use either "-p" or "-P secret", not both.')
         raise SystemExit(1)
     if deactivation == 'activate' and not (password_prompt or password):
         m_act = 'Need to set password when activating a user. Add either "-p" '
         m_act+= 'or "-P secret" to your command.'
-        log.error(m_act)
+        click.echo(m_act)
         raise SystemExit(1)
     if deactivation == 'deactivate' and (password_prompt or password):
         m_act = "Deactivating a user and setting a password doesn't make sense."
-        log.error(m_act)
+        click.echo(m_act)
         raise SystemExit(1)
 
     click.echo('Current user account settings:')
@@ -253,7 +253,7 @@ def modify(ctx, api, user_id, password, password_prompt, display_name, threepid,
                         m_m+='Are you sure you want to add it?. Supported medium '
                         m_m+='types according to the current matrix spec are: '
                         m_m+='email, msisdn'
-                        log.warning(m_m)
+                        click.echo(m_m)
         elif value not in [None, {}, []]: # only show non-empty (aka changed)
             click.echo(f'{key}: {value}')
 
