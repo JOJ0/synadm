@@ -5,5 +5,4 @@ from synadm.cli import user, room
 
 
 if __name__ == "__main__":
-    cli.create_config_dir()
     cli.root(obj={})
