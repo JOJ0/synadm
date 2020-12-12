@@ -6,6 +6,7 @@ from pathlib import Path
 from tabulate import tabulate
 
 import os
+import sys
 import yaml
 import click
 import logging
@@ -39,11 +40,42 @@ class APIClient(api.Synapse_admin):
         "yaml": yaml.dump
     }
 
-    def __init__(self, config, format="raw"):
-        self.config = config
+    CONFIG = {
+        "user": None,
+        "token": None,
+        "base_url": None,
+        "admin_path": "/_synapse/admin",
+    }
+
+    def __init__(self, config_path, format):
+        self.config = APIClient.CONFIG.copy()
+        self.config_path = os.path.expanduser(config_path)
+        self.read_config()
         self.format = format
-        super(APIClient, self).__init__(log, config.user, config.token,
-            config.base_url, config.admin_path)
+        super(APIClient, self).__init__(log,
+            self.config["user"], self.config["token"],
+            self.config["base_url"], self.config["admin_path"])
+
+    def read_config(self):
+        try:
+            with open(self.config_path) as handle:
+                self.config.update(yaml.load(handle, Loader=yaml.SafeLoader))
+            log.debug("configuration read: {}".format(self.config))
+        except Exception as error:
+            log.error("{} while reading configuration file".format(error))
+        for key, value in self.config.items():
+            if value is None:
+                log.error(f"config entry {key} missing")
+                log.error("please run: " + sys.argv[0] + " config")
+                raise SystemExit(2)
+
+    def write_config(self, config):
+        try:
+            with open(self.config_yaml, "w") as handle:
+                yaml.dump(data, handle, default_flow_style=False,
+                                 allow_unicode=True)
+        except Exception as error:
+            log.error(" trying to write configuration")
 
     def output(self, data):
         click.echo(APIClient.FORMATTERS[self.format](data))
@@ -110,85 +142,6 @@ def modify_usage_error(main_command):
 log = logger_init()
 
 
-class Config(object):
-    def __init__(self, config_yaml):
-        self.config_yaml = os.path.expanduser(config_yaml)
-        self.incomplete = False # save whether reconfiguration is necessary
-        self.empty = False # save whether synadm.yaml was just created and is empty
-        try:
-            conf = self._read_yaml(self.config_yaml)
-            log.debug("Successfully read configuration from {}".format(
-                  self.config_yaml))
-        except IOError:
-            log.debug('Creating empty configuration file.')
-            Path(self.config_yaml).touch()
-            conf = self._read_yaml(self.config_yaml)
-
-        self.user = self._get_config_entry(conf, 'user')
-        self.token = self._get_config_entry(conf, 'token', hide_log=True)
-        self.base_url = self._get_config_entry(conf, 'base_url')
-        self.admin_path = self._get_config_entry(conf, 'admin_api_path')
-        self.view = self._get_config_entry(conf, 'view')
-
-    def _get_config_entry(self, conf_dict, yaml_key, hide_log=False):
-        value = ''
-        try:
-            if conf_dict[yaml_key] == '': # Type- or KeyError would raise here
-                log.warning(f'Empty entry in configuration file: "{yaml_key}"')
-                self.incomplete = True
-            else:
-                value = conf_dict[yaml_key]
-                log_value = 'SECRET' if hide_log else value
-                log.debug(f'Configuration entry "{yaml_key}": {log_value}')
-        except KeyError:
-            log.warning(f'Missing entry in configuration file: "{yaml_key}"')
-            self.incomplete = True
-        except TypeError:
-            log.debug(f"Can't fetch value from empty configuration file.")
-            self.incomplete = True
-            self.empty = True
-        return value
-
-    def write(self, config_values):
-        click.echo('Writing configuration to {}'.format(
-              self.config_yaml))
-        self._write_yaml(config_values)
-        click.echo('Done.')
-
-    def _read_yaml(self, yamlfile):
-        """expects path/file"""
-        try:
-            with open(str(yamlfile), "r") as fyamlfile:
-                return yaml.load(fyamlfile, Loader=yaml.SafeLoader)
-        except IOError as errio:
-            log.error("Can't find %s.", yamlfile)
-            raise errio
-        except yaml.parser.ParserError as errparse:
-            log.error("ParserError in %s.", yamlfile)
-            raise SystemExit(3)
-        except yaml.scanner.ScannerError as errscan:
-            log.error("ScannerError in %s.", yamlfile)
-            raise SystemExit(3)
-        except Exception as err:
-            log.error(" trying to load %s.", yamlfile)
-            raise err
-
-    def _write_yaml(self, data):
-        """data expects dict, self.config_yaml expects path/file"""
-        try:
-            with open(self.config_yaml, "w") as fconfig_yaml:
-                yaml.dump(data, fconfig_yaml, default_flow_style=False,
-                                 allow_unicode=True)
-                return True
-        except IOError as errio:
-            log.error("IOError: could not write file %s \n\n", self.config_yaml)
-            raise errio
-        except Exception as err:
-            log.error(" trying to write %s \n\n", self.config_yaml)
-            raise err
-            raise SystemExit(2)
-
-
 @click.group(invoke_without_command=False, context_settings=dict(help_option_names=['-h', '--help']))
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
@@ -198,24 +151,12 @@ class Config(object):
       help="configuration file path", show_default=True)
 @click.pass_context
 def root(ctx, verbose, output, config_file):
-    def _eventually_run_config():
-        if ctx.invoked_subcommand != 'config':
-            ctx.invoke(config)
-            click.echo("Now try running your command again!")
-            raise SystemExit(1)
-        return None  # do nothing if it's config command already
-
     if verbose == 1:
         log.handlers[0].setLevel(logging.INFO)
     elif verbose > 1:
         log.handlers[0].setLevel(logging.DEBUG)
-
-    configuration = Config(config_file)
-    ctx.obj = APIClient(configuration, output)
+    ctx.obj = APIClient(config_file, output)
     log.debug("ctx.obj: {}\n".format(ctx.obj))
-
-    if configuration.incomplete:
-        _eventually_run_config()
 
 
 @root.command()
@@ -262,7 +203,7 @@ def config(api, user, token, base_url, admin_api_path, view):
     cfg.write(conf_dict)
 
 
-@root.command(context_settings=cont_set)
+@root.command()
 @click.pass_obj
 def version(api):
     version = api.version()
