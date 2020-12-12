@@ -1,11 +1,10 @@
-from synadm.cli import root
-from synadm import api
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup, RequiredAnyOptionGroup
+from synadm import api, cli
 
 import click
+import click_option_group
 
 
-@root.group()
+@cli.root.group()
 def user():
     """ list, add, modify, deactivate/erase users, reset passwords.
     """
@@ -21,13 +20,14 @@ def user():
       help="show guest users.")
 @click.option("--deactivated", "-d", is_flag=True, default=False,
       help="also show deactivated/erased users", show_default=True)
-@optgroup.group("Search options", cls=MutuallyExclusiveOptionGroup,
+@click_option_group.optgroup.group("Search options",
+                cls=click_option_group.MutuallyExclusiveOptionGroup,
                 help="")
-@optgroup.option("--name", "-n", type=str,
+@click_option_group.optgroup.option("--name", "-n", type=str,
       help="""search users by name - filters to only return users with user ID
       localparts or displaynames that contain this value (localpart is the left
       part before the colon of the matrix ID (@user:server)""")
-@optgroup.option("--user-id", "-i", type=str,
+@click_option_group.optgroup.option("--user-id", "-i", type=str,
       help="""search users by ID - filters to only return users with Matrix IDs
       (@user:server) that contain this value""")
 @click.pass_obj
@@ -182,7 +182,7 @@ def user_details_cmd(api, user_id):
     api.output(user)
 
 
-user_detail = RequiredAnyOptionGroup("", help="", hidden=False)
+user_detail = click_option_group.RequiredAnyOptionGroup("", help="", hidden=False)
 
 @user.command()
 @click.argument("user_id", type=str)

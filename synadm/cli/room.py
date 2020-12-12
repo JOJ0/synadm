@@ -1,12 +1,9 @@
-from synadm.cli import root
-from synadm import api
-
-from pprint import pprint
+from synadm import api, cli
 
 import click
 
 
-@root.group()
+@cli.root.group()
 def room():
     """ list/delete rooms, show/invite/join members, ...
     """
