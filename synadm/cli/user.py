@@ -1,4 +1,4 @@
-from synadm.cli import root, log, cont_set, get_table
+from synadm.cli import root, log, cont_set
 from synadm import api
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup, RequiredAnyOptionGroup
 
@@ -6,8 +6,7 @@ import click
 
 
 @root.group(context_settings=cont_set)
-@click.pass_context
-def user(ctx):
+def user():
     """list, add, modify, deactivate/erase users,
        reset passwords.
     """
@@ -32,30 +31,25 @@ def user(ctx):
 @optgroup.option('--user-id', '-i', type=str,
       help='''search users by ID - filters to only return users with Matrix IDs
       (@user:server) that contain this value''')
-@click.pass_context
-def list_user_cmd(ctx, from_, limit, guests, deactivated, name, user_id):
-    log.info(f'user list options: {ctx.params}\n')
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    users = synadm.user_list(from_, limit, guests, deactivated, name, user_id)
+@click.pass_obj
+def list_user_cmd(api, from_, limit, guests, deactivated, name, user_id):
+    users = api.user_list(from_, limit, guests, deactivated, name, user_id)
     if users == None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(users)
-    else:
+    if api.format == "human":
         click.echo(
               "\nTotal users on homeserver (excluding deactivated): {}\n".format(
               users['total']))
         if int(users['total']) != 0:
-            tab_users = get_table(users['users'])
-            click.echo(tab_users)
+            api.output(users["users"])
         if 'next_token' in users:
             m_n ="\nThere is more users than shown, use '--from {}' ".format(
                   users['next_token'])
             m_n+="to go to next page.\n"
             click.echo(m_n)
+    else:
+        api.output(users)
 
 
 @user.command(context_settings=cont_set)
@@ -66,24 +60,21 @@ def list_user_cmd(ctx, from_, limit, guests, deactivated, name, user_id):
       user will still be visible by anyone that was in the room when these
       messages were sent, but hidden from users joining the room
       afterwards.""", show_default=True)
+@click.pass_obj
 @click.pass_context
-def deactivate(ctx, user_id, gdpr_erase):
+def deactivate(ctx, api, user_id, gdpr_erase):
     """deactivate or gdpr-erase a user. Provide matrix user ID (@user:server)
     as argument. It removes active access tokens, resets the password, and
     deletes third-party IDs (to prevent the user requesting a password
     reset).
     """
-    log.info(f'user deactivate options: {ctx.params}\n')
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-
     #ctx.invoke(query, user_id=user_id) # FIXME implement user query cmd
     m_kick = '\nNote that deactivating/gdpr-erasing a user leads to the following:\n'
     m_kick+= '  - Removal from all joined rooms\n'
     m_kick+= '  - Removal of all active access tokens\n'
     m_kick+= '  - Password reset\n'
     m_kick+= '  - Deletion of third-party-IDs (to prevent the user requesting '
-    m_kick+= 'a password)\n' if ctx.obj['view'] == 'raw' else 'a password)'
+    m_kick+= 'a password)'
     click.echo(m_kick)
     ctx.invoke(user_details_cmd, user_id=user_id)
     ctx.invoke(membership, user_id=user_id)
@@ -92,19 +83,18 @@ def deactivate(ctx, user_id, gdpr_erase):
     sure = click.prompt("\nAre you sure you want to {} this user? (y/N)".format(
           m_erase_or_deact), type=bool, default=False, show_default=False)
     if sure:
-        deactivated = synadm.user_deactivate(user_id, gdpr_erase)
+        deactivated = api.user_deactivate(user_id, gdpr_erase)
         if deactivated == None:
             click.echo("User could not be {}.".format(m_erase_or_deact))
             raise SystemExit(1)
-
-        if ctx.obj['view'] == 'raw':
-            pprint(deactivated)
-        else:
+        if api.format == "human":
             if deactivated['id_server_unbind_result'] == 'success':
                 click.echo('User successfully {}.'.format(m_erase_or_deact_p))
             else:
                 click.echo('Synapse returned: {}'.format(
                       deactivated['id_server_unbind_result']))
+        else:
+            api.output(deactivated)
     else:
         click.echo('Abort.')
 
@@ -115,54 +105,43 @@ def deactivate(ctx, user_id, gdpr_erase):
       help="don't log user out of all sessions on all devices.")
 @click.option('--password', '-p', prompt=True, hide_input=True,
               confirmation_prompt=True, help="new password")
-@click.pass_context
-def password(ctx, user_id, password, no_logout):
+@click.pass_obj
+def password(api, user_id, password, no_logout):
     """change a user's password. To prevent the user from being logged out of all
        sessions use option -n
     """
-    m='user password options: user_id: {}, password: secrect, no_logout: {}'.format(
-            ctx.params['user_id'], ctx.params['no_logout'])
-    log.info(m)
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    changed = synadm.user_password(user_id, password, no_logout)
+    changed = api.user_password(user_id, password, no_logout)
     if changed == None:
         click.echo("Password could not be reset.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(changed)
-    else:
+    if api.format == "human":
         if changed == {}:
             click.echo('Password reset successfully.')
         else:
             click.echo('Synapse returned: {}'.format(changed))
+    else:
+        api.output(changed)
 
 
 @user.command(context_settings=cont_set)
 @click.argument('user_id', type=str)
-@click.pass_context
-def membership(ctx, user_id):
+@click.pass_obj
+def membership(api, user_id):
     '''list all rooms a user is member of. Provide matrix user ID (@user:server) as argument.'''
-    log.info(f'user membership options: {ctx.params}\n')
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    joined_rooms = synadm.user_membership(user_id)
+    joined_rooms = api.user_membership(user_id)
     if joined_rooms == None:
         click.echo("Membership could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(joined_rooms)
-    else:
+    if api.format == "human":
         click.echo(
               "\nUser is member of {} rooms.\n".format(
               joined_rooms['total']))
         if int(joined_rooms['total']) != 0:
             # joined_rooms is just a list, we don't need get_table() tabulate wrapper
             # (it's for key-value json data aka dicts). Just simply print the list:
-            for room in joined_rooms['joined_rooms']:
-                click.echo(room)
+            api.output(joined_rooms['joined_rooms'])
+    else:
+        api.output(joined_rooms)
 
                 
 @user.command(name='search', context_settings=cont_set)
@@ -194,23 +173,15 @@ def user_search_cmd(ctx, search_term, from_, limit):
 
 
 @user.command(name='details', context_settings=cont_set)
-@click.pass_context
+@click.pass_obj
 @click.argument('user_id', type=str)
-def user_details_cmd(ctx, user_id):
+def user_details_cmd(api, user_id):
     '''view details of a user account.'''
-    log.info(f'user details options: {ctx.params}\n')
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    user = synadm.user_details(user_id)
+    user = api.user_details(user_id)
     if user == None:
         click.echo('User details could not be fetched.')
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(user)
-    else:
-        tab_user = get_table(user, listify=True)
-        click.echo(tab_user)
+    api.output(user)
 
 
 #user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
@@ -218,6 +189,7 @@ user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 
 @user.command(context_settings=cont_set)
 @click.pass_context
+@click.pass_obj
 @click.argument('user_id', type=str)
 @user_detail.option('--password-prompt', '-p', is_flag=True,
       help="set password interactively.")
@@ -247,14 +219,10 @@ user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
       removes their active access tokens, resets their password, kicks them out
       of all rooms and deletes third-party identifiers (to prevent the user
       requesting a password reset). See also "user deactivate" command.''')
-def modify(ctx, user_id, password, password_prompt, display_name, threepid,
+def modify(ctx, api, user_id, password, password_prompt, display_name, threepid,
       avatar_url, admin, deactivation):
     '''create or modify a local user. Provide matrix user ID (@user:server)
-    as argument.'''
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    #log.info(f'user modify options: {ctx.params}\n')
-
+    as argument.''' 
     # sanity checks that can't easily be handled by Click.
     if password_prompt and password:
         log.error('Use either "-p" or "-P secret", not both.')
@@ -300,22 +268,20 @@ def modify(ctx, user_id, password, password_prompt, display_name, threepid,
     sure = click.prompt("\nAre you sure you want to modify user? (y/N)",
           type=bool, default=False, show_default=False)
     if sure:
-        modified = synadm.user_modify(user_id, pw, display_name, threepid,
+        modified = api.user_modify(user_id, pw, display_name, threepid,
               avatar_url, admin, deactivation)
 
         if modified == None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
-
-        if ctx.obj['view'] == 'raw':
-            pprint(modified)
-        else:
+        if api.format == "human":
             if modified != {}:
-                tab_mod = get_table(modified, listify=True)
-                click.echo(tab_mod)
+                api.output(modified)
                 click.echo('User successfully modified.')
             else:
                 click.echo('Synapse returned: {}'.format(
                       modified))
+        else:
+            api.output(modified)
     else:
         click.echo('Abort.')

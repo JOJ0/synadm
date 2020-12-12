@@ -9,6 +9,45 @@ import os
 import yaml
 import click
 import logging
+import pprint
+import json
+
+
+def humanize(data):
+    """ Try to display data in a human-readable form:
+    - lists of dicts are displayed as tables
+    - dicts are displayed as pivoted tables
+    - lists are displayed as a simple list
+    """
+    if type(data) is list and type(data[0]) is dict:
+        headers = {header: header for header in data[0]}
+        return tabulate(data, tablefmt="simple", headers=headers)
+    elif type(data) is list:
+        return "\n".join(data)
+    elif type(data) is dict:
+        return tabulate(data.items(), tablefmt="simple")
+
+
+class APIClient(api.Synapse_admin):
+    """ API client enriched with CLI-level functions
+    """
+
+    FORMATTERS = {
+        "human": humanize,
+        "pprint": pprint.pformat,
+        "json": json.dumps,
+        "yaml": yaml.dump
+    }
+
+    def __init__(self, config, format="raw"):
+        self.config = config
+        self.format = format
+        super(APIClient, self).__init__(log, config.user, config.token,
+            config.base_url, config.admin_path)
+
+    def output(self, data):
+        click.echo(APIClient.FORMATTERS[self.format](data))
+        
 
 
 def create_config_dir():
@@ -65,27 +104,6 @@ def modify_usage_error(main_command):
         main_command()
 
     click.exceptions.UsageError.show = show
-
-
-def get_table(data, listify=False):
-    '''expects lists of dicts, fetches header information from first list element
-       and saves as a dict (tabulate expects headers arg as dict)
-       then uses tabulate to return a pretty printed tables. The listify argument is used
-       to wrap very simple "one-dimensional" API responses into a list so tabulate accepts it.'''
-
-    data_list = []
-    if listify == False:
-        data_list = data
-        log.debug('get_table using data as is. Got this: {}'.format(data_list))
-    else:
-        data_list.append(data)
-        log.debug('get_table listified data. Now looks like this: {}'.format(data_list))
-
-    headers_dict = {}
-    for header in data_list[0]:
-        headers_dict.update({header: header})
-    return tabulate(data_list, tablefmt="simple",
-          headers=headers_dict)
 
 
 # change default help options
@@ -184,14 +202,12 @@ class Config(object):
 @click.group(invoke_without_command=False, context_settings=cont_set)
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
-@click.option('--raw', '-r', is_flag=True, default=False,
+@click.option('--output', '-o', default="human",
       help="print raw json data (overrides default setting)")
-@click.option('--table', '-t', is_flag=True, default=False,
-      help="print tables (overrides default setting)")
 @click.option('--config-file', '-c', type=click.Path(), default='~/.config/synadm.yaml',
       help="configuration file path", show_default=True)
 @click.pass_context
-def root(ctx, verbose, raw, table, config_file):
+def root(ctx, verbose, output, config_file):
     def _eventually_run_config():
         if ctx.invoked_subcommand != 'config':
             ctx.invoke(config)
@@ -205,17 +221,7 @@ def root(ctx, verbose, raw, table, config_file):
         log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
 
     configuration = Config(config_file)
-
-    if raw and table:
-        view = configuration.view
-    elif raw:
-        view = 'raw'
-    elif table:
-        view = 'table'
-    else:
-        view = configuration.view
-
-    ctx.obj = {'config': configuration, 'view': view }
+    ctx.obj = APIClient(configuration, output)
     log.debug("ctx.obj: {}\n".format(ctx.obj))
 
     if configuration.incomplete:
@@ -241,12 +247,12 @@ def root(ctx, verbose, raw, table, config_file):
     formatted json exactely as the API responded. Note that this can always
     be overridden by using global switches -r and -t (eg 'synadm -r user
     list')""", show_default=True)
-@click.pass_context
-def config(ctx, user, token, base_url, admin_api_path, view):
+@click.pass_obj
+def config(api, user, token, base_url, admin_api_path, view):
     """modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options."""
     click.echo('Running configurator...')
-    cfg = ctx.obj['config']
+    cfg = api.config
     # get defaults for prompts from either config file or commandline
     user_default = cfg.user if cfg.user else user
     token_default = cfg.token if cfg.token else token
@@ -267,18 +273,10 @@ def config(ctx, user, token, base_url, admin_api_path, view):
 
 
 @root.command(context_settings=cont_set)
-@click.pass_context
-def version(ctx):
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-
-    version = synadm.version()
+@click.pass_obj
+def version(api):
+    version = api.version()
     if version == None:
         click.echo("Version could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(version)
-    else:
-        click.echo("Synapse version: {}".format(version['server_version']))
-        click.echo("Python version: {}".format(version['python_version']))
+    api.output(version)

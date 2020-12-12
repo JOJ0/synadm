@@ -1,4 +1,4 @@
-from synadm.cli import root, cont_set, log, get_table
+from synadm.cli import root, cont_set, log
 from synadm import api
 
 from pprint import pprint
@@ -13,7 +13,7 @@ def room():
 
 
 @room.command(name='list', context_settings=cont_set)
-@click.pass_context
+@click.pass_obj
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help="""offset room listing by given number. This option is also used
       for pagination.""")
@@ -22,7 +22,7 @@ def room():
 @click.option('--name', '-n', type=str,
       help="""Filter rooms by their room name. Search term can be contained in
       any part of the room name)""")
-@click.option('--order-by', '-o', type=click.Choice(['name', 'canonical_alias',
+@click.option('--sort', '-s', type=click.Choice(['name', 'canonical_alias',
       'joined_members', 'joined_local_members', 'version', 'creator',
       'encryption', 'federatable', 'public', 'join_rules', 'guest_access',
       'history_visibility', 'state_events']),
@@ -30,69 +30,54 @@ def room():
 @click.option('--reverse', '-r', is_flag=True, default=False,
       help="""Direction of room order. If set it will reverse the sort order of
       --order-by method.""")
-def list_room_cmd(ctx, from_, limit, name, order_by, reverse):
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    rooms = synadm.room_list(from_, limit, name, order_by, reverse)
+def list_room_cmd(api, from_, limit, name, sort, reverse):
+    rooms = api.room_list(from_, limit, name, sort, reverse)
     if rooms == None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(rooms)
-    else:
+    if api.format == "human":
         if int(rooms['total_rooms']) != 0:
-            tab_rooms = get_table(rooms['rooms'])
-            click.echo(tab_rooms)
+            api.output(rooms['rooms'])
         if 'next_batch' in rooms:
             m_n = "\nThere is more rooms than shown, use '--from {}' ".format(
                   rooms['next_batch'])
             m_n+="to go to next page.\n"
             click.echo(m_n)
+    else:
+        api.output(rooms)
 
 
 @room.command(context_settings=cont_set)
 @click.argument('room_id', type=str)
-@click.pass_context
-def details(ctx, room_id):
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    room = synadm.room_details(room_id)
+@click.pass_obj
+def details(api, room_id):
+    room = api.room_details(room_id)
     if room == None:
         click.echo("Room details could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(room)
-    else:
-        if room != {}:
-            tab_room = get_table(room, listify=True)
-            click.echo(tab_room)
+    api.output(room)
 
 
 @room.command(context_settings=cont_set)
 @click.argument('room_id', type=str)
-@click.pass_context
-def members(ctx, room_id):
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-    members = synadm.room_members(room_id)
+@click.pass_obj
+def members(api, room_id):
+    members = api.room_members(room_id)
     if members == None:
         click.echo("Room members could not be fetched.")
         raise SystemExit(1)
-
-    if ctx.obj['view'] == 'raw':
-        pprint(members)
-    else:
+    if api.format == "human":
         click.echo(
               "\nTotal members in room: {}\n".format(
               members['total']))
         if int(members['total']) != 0:
-            for member in members['members']:
-                click.echo(member)
+            api.output(members["members"])
+    else:
+        api.output(members)
 
 
 @room.command(context_settings=cont_set)
+@click.pass_obj
 @click.pass_context
 @click.argument('room_id', type=str)
 @click.option('--new-room-user-id', '-u', type=str,
@@ -117,28 +102,19 @@ def members(ctx, room_id):
 @click.option('--no-purge', is_flag=True, default=False, show_default=True,
       help='''Prevent removing of all traces of the room from your
       database.''')
-def delete(ctx, room_id, new_room_user_id, room_name, message, block, no_purge):
-    synadm = api.Synapse_admin(log, ctx.obj['config'].user, ctx.obj['config'].token,
-          ctx.obj['config'].base_url, ctx.obj['config'].admin_path)
-
+def delete(ctx, api, room_id, new_room_user_id, room_name, message, block, no_purge):
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
 
     sure = click.prompt("\nAre you sure you want to delete this room? (y/N)",
           type=bool, default=False, show_default=False)
     if sure:
-        room_del = synadm.room_delete(room_id, new_room_user_id, room_name,
+        room_del = api.room_delete(room_id, new_room_user_id, room_name,
               message, block, no_purge)
         if room_del == None:
             click.echo("Room not deleted.")
             raise SystemExit(1)
-
-        if ctx.obj['view'] == 'raw':
-            pprint(room_del)
-        else:
-            if room_del != {}:
-                tab_room = get_table(room_del, listify=True)
-                click.echo(tab_room)
+        api.output(room_del)
     else:
         click.echo('Abort.')
 
