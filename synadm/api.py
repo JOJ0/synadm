@@ -5,7 +5,6 @@ documentaiton.
 """
 
 import requests
-import json
 
 
 class Synapse_admin(object):
@@ -28,14 +27,11 @@ class Synapse_admin(object):
         self.log.info("{} url: {}\n".format(method, url))
         try:
             resp = getattr(requests, method)(
-                url, data=data,
-                headers=self.headers,
-                timeout=7
+                url, json=data, headers=self.headers,  timeout=7
             )
             resp.raise_for_status()
             if resp.ok:
-                _json = json.loads(resp.content)
-                return _json
+                return resp.json()
             else:
                 self.log.warning("No valid response from Synapse. Returning None.")
                 return None
@@ -79,7 +75,7 @@ class Synapse_admin(object):
 
     def user_deactivate(self, user_id, gdpr_erase):
         urlpart = f"v1/deactivate/{user_id}"
-        data = '{"erase": true}' if gdpr_erase else {}
+        data = {"erase": True} if gdpr_erase else {}
         return self.query("post", urlpart, data)
 
     def user_password(self, user_id, password, no_logout):
@@ -87,8 +83,7 @@ class Synapse_admin(object):
         data = {"new_password": password}
         if no_logout:
             data.update({"logout_devices": no_logout})
-        json_data = json.dumps(data)
-        return self.query("post", urlpart, json_data)
+        return self.query("post", urlpart, data)
 
     def user_details(self, user_id): # called "Query User Account" in API docs.
         urlpart = f"v2/users/{user_id}"
@@ -117,8 +112,7 @@ class Synapse_admin(object):
             data.update({"deactivated": True})
         if deactivation == "activate":
             data.update({"deactivated": False})
-        json_data = json.dumps(data)
-        return self.query("put", urlpart, json_data)
+        return self.query("put", urlpart, data)
 
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f"v1/rooms?from={_from}&limit={limit}"
@@ -153,8 +147,7 @@ class Synapse_admin(object):
             data.update({"room_name": room_name})
         if message:
             data.update({"message": message})
-        json_data = json.dumps(data)
-        return self.query("post", urlpart, json_data)
+        return self.query("post", urlpart, data)
 
     def version(self):
         urlpart = f"v1/server_version"
