@@ -36,8 +36,6 @@ class Synapse_admin(object):
                 return None
         except requests.exceptions.HTTPError as errh:
             self.log.error("HTTPError: %s\n", errh)
-            #if "Not found" in errh.response.text:
-            #    self.log.warning("AcousticBrainz doesn't have this recording yet. Consider submitting it!")
             return None
         except requests.exceptions.ConnectionError as errc:
             self.log.error("ConnectionError: %s\n", errc)

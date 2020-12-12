@@ -163,20 +163,15 @@ class Config(object):
         except IOError as errio:
             log.error("Can't find %s.", yamlfile)
             raise errio
-            #raise SystemExit(3)
-            #return False
         except yaml.parser.ParserError as errparse:
             log.error("ParserError in %s.", yamlfile)
-            #raise errparse
             raise SystemExit(3)
         except yaml.scanner.ScannerError as errscan:
             log.error("ScannerError in %s.", yamlfile)
-            #raise errscan
             raise SystemExit(3)
         except Exception as err:
             log.error(" trying to load %s.", yamlfile)
             raise err
-            #raise SystemExit(3)
 
     def _write_yaml(self, data):
         """data expects dict, self.config_yaml expects path/file"""
@@ -208,12 +203,12 @@ def root(ctx, verbose, output, config_file):
             ctx.invoke(config)
             click.echo("Now try running your command again!")
             raise SystemExit(1)
-        return None # do nothing if it's config command already
+        return None  # do nothing if it's config command already
 
     if verbose == 1:
-        log.handlers[0].setLevel(logging.INFO) # set cli handler to INFO,
+        log.handlers[0].setLevel(logging.INFO)
     elif verbose > 1:
-        log.handlers[0].setLevel(logging.DEBUG) # or to DEBUG level
+        log.handlers[0].setLevel(logging.DEBUG)
 
     configuration = Config(config_file)
     ctx.obj = APIClient(configuration, output)

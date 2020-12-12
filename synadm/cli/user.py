@@ -68,7 +68,6 @@ def deactivate(ctx, api, user_id, gdpr_erase):
     deletes third-party IDs (to prevent the user requesting a password
     reset).
     """
-    #ctx.invoke(query, user_id=user_id) # FIXME implement user query cmd
     m_kick = '\nNote that deactivating/gdpr-erasing a user leads to the following:\n'
     m_kick+= '  - Removal from all joined rooms\n'
     m_kick+= '  - Removal of all active access tokens\n'
@@ -137,8 +136,6 @@ def membership(api, user_id):
               "\nUser is member of {} rooms.\n".format(
               joined_rooms['total']))
         if int(joined_rooms['total']) != 0:
-            # joined_rooms is just a list, we don't need get_table() tabulate wrapper
-            # (it's for key-value json data aka dicts). Just simply print the list:
             api.output(joined_rooms['joined_rooms'])
     else:
         api.output(joined_rooms)
@@ -184,7 +181,6 @@ def user_details_cmd(api, user_id):
     api.output(user)
 
 
-#user_detail = RequiredAnyOptionGroup('At least one of the following options is required', help='', hidden=False)
 user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 
 @user.command()
