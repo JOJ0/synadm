@@ -22,12 +22,12 @@ class Synapse_admin(object):
             "Authorization": "Bearer " + self.token
         }
 
-    def query(self, method, urlpart, data=None):
+    def query(self, method, urlpart, params=None, data=None):
         url=f"{self.base_url}/{self.admin_path}/{urlpart}"
         self.log.info("{} url: {}\n".format(method, url))
         try:
             resp = getattr(requests, method)(
-                url, json=data, headers=self.headers,  timeout=7
+                url, json=data, headers=self.headers, params=params, timeout=7
             )
             resp.raise_for_status()
             if resp.ok:
@@ -35,39 +35,21 @@ class Synapse_admin(object):
             else:
                 self.log.warning("No valid response from Synapse. Returning None.")
                 return None
-        except requests.exceptions.HTTPError as errh:
-            self.log.error("HTTPError: %s\n", errh)
-            return None
-        except requests.exceptions.ConnectionError as errc:
-            self.log.error("ConnectionError: %s\n", errc)
-            return None
-        except requests.exceptions.Timeout as errt:
-            self.log.error("Timeout: %s\n", errt)
-            return None
-        except requests.exceptions.RequestException as erre:
-            self.log.error("RequestException: %s\n", erre)
+        except Exception as error:
+            self.log.error("%s while querying synapse: %s", type(error).__name__, error)
             return None
 
     def user_list(self, _from, _limit, _guests, _deactivated,
           _name, _user_id):
-        urlpart = f"v2/users?from={_from}&limit={_limit}"
-        # optional filters
-        if _guests == False:
-            urlpart+= f"&guests=false" # true is API default
-        elif _guests == True:
-            urlpart+= f"&guests=true"
-        # no else - fall back to API default if None, which is "true"
-
-        # only add when present, deactivated=false will never be added
-        if _deactivated:
-            urlpart+= f"&deactivated=true" # false is API default
-
-        # either of both is added, never both, Click MutEx prevents it
-        if _name:
-            urlpart+= f"&name={_name}"
-        if _user_id:
-            urlpart+= f"&user_id={_user_id}"
-        return self.query("get", urlpart)
+        urlpart = f"v2/users"
+        return self.query("get", urlpart, params={
+            "from": _from,
+            "limit": _limit,
+            "guests": str(_guests).lower() if type(_guests) is bool else None,
+            "deactivated": "true" if _deactivated else None,
+            "name": _name,
+            "user_id": _user_id
+        })
 
     def user_membership(self, user_id):
         urlpart = f"v1/users/{user_id}/joined_rooms"
@@ -75,15 +57,16 @@ class Synapse_admin(object):
 
     def user_deactivate(self, user_id, gdpr_erase):
         urlpart = f"v1/deactivate/{user_id}"
-        data = {"erase": True} if gdpr_erase else {}
-        return self.query("post", urlpart, data)
+        return self.query("post", urlpart, data={
+            "erase": gdpr_erase
+        })
 
     def user_password(self, user_id, password, no_logout):
         urlpart = f"v1/reset_password/{user_id}"
         data = {"new_password": password}
         if no_logout:
             data.update({"logout_devices": no_logout})
-        return self.query("post", urlpart, data)
+        return self.query("post", urlpart, data=data)
 
     def user_details(self, user_id): # called "Query User Account" in API docs.
         urlpart = f"v2/users/{user_id}"
@@ -100,10 +83,9 @@ class Synapse_admin(object):
         if display_name:
             data.update({"displayname": display_name})
         if threepid:
-            threep_list = [
+            data.update({"threepids": [
                 {"medium": k, "address": i} for k,i in dict(threepid).items()
-            ]
-            data.update({"threepids": threep_list})
+            ]})
         if avatar_url:
             data.update({"avatar_url": avatar_url})
         if admin:
@@ -112,17 +94,17 @@ class Synapse_admin(object):
             data.update({"deactivated": True})
         if deactivation == "activate":
             data.update({"deactivated": False})
-        return self.query("put", urlpart, data)
+        return self.query("put", urlpart, data=data)
 
     def room_list(self, _from, limit, name, order_by, reverse):
-        urlpart = f"v1/rooms?from={_from}&limit={limit}"
-        if name:
-            urlpart+= f"&search_term={name}"
-        if order_by:
-            urlpart+= f"&order_by={order_by}"
-        if reverse:
-            urlpart+= f"&dir=b"
-        return self.query("get", urlpart)
+        urlpart = f"v1/rooms"
+        return self.query("get", urlpart, params={
+            "from": _from,
+            "limit": limit,
+            "search_term": name,
+            "order_by": order_by,
+            "dir": "b" if reverse else None
+        })
 
     def room_details(self, room_id):
         urlpart = f"v1/rooms/{room_id}"
@@ -147,7 +129,7 @@ class Synapse_admin(object):
             data.update({"room_name": room_name})
         if message:
             data.update({"message": message})
-        return self.query("post", urlpart, data)
+        return self.query("post", urlpart, data=data)
 
     def version(self):
         urlpart = f"v1/server_version"
