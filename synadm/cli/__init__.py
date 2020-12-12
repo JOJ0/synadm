@@ -112,27 +112,6 @@ class APIClient:
         click.echo(APIClient.FORMATTERS[self.format](data))
 
 
-def modify_usage_error(main_command):
-    '''a method to append the help menu to an usage error
-    :param main_command: top-level group or command object constructed by click wrapper
-    '''
-    from click._compat import get_text_stderr
-    from click.utils import echo
-    def show(self, file=None):
-        import sys
-        if file is None:
-            file = get_text_stderr()
-        color = None
-        if self.ctx is not None:
-            color = self.ctx.color
-            echo(self.ctx.get_usage() + '\n', file=file, color=color)
-        echo('Error: %s\n' % self.format_message(), file=file, color=color)
-        sys.argv = [sys.argv[0]]
-        main_command()
-
-    click.exceptions.UsageError.show = show
-
-
 @click.group(invoke_without_command=False, context_settings=dict(help_option_names=['-h', '--help']))
 @click.option('--verbose', '-v', count=True, default=False,
       help="enable INFO (-v) or DEBUG (-vv) logging on console")
