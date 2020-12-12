@@ -41,8 +41,7 @@ class Synapse_admin(object):
 
     def user_list(self, _from, _limit, _guests, _deactivated,
           _name, _user_id):
-        urlpart = f"v2/users"
-        return self.query("get", urlpart, params={
+        return self.query("get", "v2/users", params={
             "from": _from,
             "limit": _limit,
             "guests": str(_guests).lower() if type(_guests) is bool else None,
@@ -52,31 +51,26 @@ class Synapse_admin(object):
         })
 
     def user_membership(self, user_id):
-        urlpart = f"v1/users/{user_id}/joined_rooms"
-        return self.query("get", urlpart)
+        return self.query("get", f"v1/users/{user_id}/joined_rooms")
 
     def user_deactivate(self, user_id, gdpr_erase):
-        urlpart = f"v1/deactivate/{user_id}"
-        return self.query("post", urlpart, data={
+        return self.query("post", f"v1/deactivate/{user_id}", data={
             "erase": gdpr_erase
         })
 
     def user_password(self, user_id, password, no_logout):
-        urlpart = f"v1/reset_password/{user_id}"
         data = {"new_password": password}
         if no_logout:
             data.update({"logout_devices": no_logout})
-        return self.query("post", urlpart, data=data)
+        return self.query("post", f"v1/reset_password/{user_id}", data=data)
 
     def user_details(self, user_id): # called "Query User Account" in API docs.
-        urlpart = f"v2/users/{user_id}"
-        return self.query("get", urlpart)
+        return self.query("get", f"v2/users/{user_id}")
 
     def user_modify(self, user_id, password, display_name, threepid, avatar_url,
           admin, deactivation):
         """ threepid is a tuple in a tuple
         """
-        urlpart = f"v2/users/{user_id}"
         data = {}
         if password:
             data.update({"password": password})
@@ -94,11 +88,10 @@ class Synapse_admin(object):
             data.update({"deactivated": True})
         if deactivation == "activate":
             data.update({"deactivated": False})
-        return self.query("put", urlpart, data=data)
+        return self.query("put", f"v2/users/{user_id}", data=data)
 
     def room_list(self, _from, limit, name, order_by, reverse):
-        urlpart = f"v1/rooms"
-        return self.query("get", urlpart, params={
+        return self.query("get", "v1/rooms", params={
             "from": _from,
             "limit": limit,
             "search_term": name,
@@ -107,16 +100,13 @@ class Synapse_admin(object):
         })
 
     def room_details(self, room_id):
-        urlpart = f"v1/rooms/{room_id}"
-        return self.query("get", urlpart)
+        return self.query("get", f"v1/rooms/{room_id}")
 
     def room_members(self, room_id):
-        urlpart = f"v1/rooms/{room_id}/members"
-        return self.query("get", urlpart)
+        return self.query("get", f"v1/rooms/{room_id}/members")
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
           block, no_purge):
-        urlpart = f"v1/rooms/{room_id}/delete"
         purge = False if no_purge else True
         data = {
             "block": block, # data with proper defaults from cli
@@ -129,8 +119,7 @@ class Synapse_admin(object):
             data.update({"room_name": room_name})
         if message:
             data.update({"message": message})
-        return self.query("post", urlpart, data=data)
+        return self.query("post", f"v1/rooms/{room_id}/delete", data=data)
 
     def version(self):
-        urlpart = f"v1/server_version"
-        return self.query("get", urlpart)
+        return self.query("get", "v1/server_version")
