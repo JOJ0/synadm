@@ -23,65 +23,15 @@ class Synapse_admin(object):
             "Authorization": "Bearer " + self.token
         }
 
-    def _get(self, urlpart):
+    def query(self, method, urlpart, data=None):
         url=f"{self.base_url}/{self.admin_path}/{urlpart}"
-        self.log.info("_get url: {}\n".format(url))
+        self.log.info("{} url: {}\n".format(method, url))
         try:
-            resp = requests.get(url, headers=self.headers, timeout=7)
-            resp.raise_for_status()
-            if resp.ok:
-                _json = json.loads(resp.content)
-                return _json
-            else:
-                self.log.warning("No valid response from Synapse. Returning None.")
-                return None
-        except requests.exceptions.HTTPError as errh:
-            self.log.error("HTTPError: %s\n", errh)
-            return None
-        except requests.exceptions.ConnectionError as errc:
-            self.log.error("ConnectionError: %s\n", errc)
-            return None
-        except requests.exceptions.Timeout as errt:
-            self.log.error("Timeout: %s\n", errt)
-            return None
-        except requests.exceptions.RequestException as erre:
-            self.log.error("RequestException: %s\n", erre)
-            return None
-
-    def _post(self, urlpart, post_data, log_post_data=True):
-        url=f"{self.base_url}/{self.admin_path}/{urlpart}"
-        self.log.info("_post url: {}\n".format(url))
-        if log_post_data:
-            self.log.info("_post data: {}\n".format(post_data))
-        try:
-            resp = requests.post(url, headers=self.headers, timeout=7, data=post_data)
-            resp.raise_for_status()
-            if resp.ok:
-                _json = json.loads(resp.content)
-                return _json
-            else:
-                self.log.warning("No valid response from Synapse. Returning None.")
-                return None
-        except requests.exceptions.HTTPError as errh:
-            self.log.error("HTTPError: %s\n", errh)
-            return None
-        except requests.exceptions.ConnectionError as errc:
-            self.log.error("ConnectionError: %s\n", errc)
-            return None
-        except requests.exceptions.Timeout as errt:
-            self.log.error("Timeout: %s\n", errt)
-            return None
-        except requests.exceptions.RequestException as erre:
-            self.log.error("RequestException: %s\n", erre)
-            return None
-
-    def _put(self, urlpart, put_data, log_put_data=True):
-        url=f"{self.base_url}/{self.admin_path}/{urlpart}"
-        self.log.info("_put url: {}\n".format(url))
-        if log_put_data:
-            self.log.info("_put data: {}\n".format(put_data))
-        try:
-            resp = requests.put(url, headers=self.headers, timeout=7, data=put_data)
+            resp = getattr(requests, method)(
+                url, data=data,
+                headers=self.headers,
+                timeout=7
+            )
             resp.raise_for_status()
             if resp.ok:
                 _json = json.loads(resp.content)
@@ -121,16 +71,16 @@ class Synapse_admin(object):
             urlpart+= f"&name={_name}"
         if _user_id:
             urlpart+= f"&user_id={_user_id}"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def user_membership(self, user_id):
         urlpart = f"v1/users/{user_id}/joined_rooms"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def user_deactivate(self, user_id, gdpr_erase):
         urlpart = f"v1/deactivate/{user_id}"
         data = '{"erase": true}' if gdpr_erase else {}
-        return self._post(urlpart, data)
+        return self.query("post", urlpart, data)
 
     def user_password(self, user_id, password, no_logout):
         urlpart = f"v1/reset_password/{user_id}"
@@ -138,11 +88,11 @@ class Synapse_admin(object):
         if no_logout:
             data.update({"logout_devices": no_logout})
         json_data = json.dumps(data)
-        return self._post(urlpart, json_data, log_post_data=False)
+        return self.query("post", urlpart, json_data)
 
     def user_details(self, user_id): # called "Query User Account" in API docs.
         urlpart = f"v2/users/{user_id}"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def user_modify(self, user_id, password, display_name, threepid, avatar_url,
           admin, deactivation):
@@ -168,7 +118,7 @@ class Synapse_admin(object):
         if deactivation == "activate":
             data.update({"deactivated": False})
         json_data = json.dumps(data)
-        return self._put(urlpart, json_data, log_put_data=False)
+        return self.query("put", urlpart, json_data)
 
     def room_list(self, _from, limit, name, order_by, reverse):
         urlpart = f"v1/rooms?from={_from}&limit={limit}"
@@ -178,15 +128,15 @@ class Synapse_admin(object):
             urlpart+= f"&order_by={order_by}"
         if reverse:
             urlpart+= f"&dir=b"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def room_details(self, room_id):
         urlpart = f"v1/rooms/{room_id}"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def room_members(self, room_id):
         urlpart = f"v1/rooms/{room_id}/members"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
           block, no_purge):
@@ -204,8 +154,8 @@ class Synapse_admin(object):
         if message:
             data.update({"message": message})
         json_data = json.dumps(data)
-        return self._post(urlpart, json_data)
+        return self.query("post", urlpart, json_data)
 
     def version(self):
         urlpart = f"v1/server_version"
-        return self._get(urlpart)
+        return self.query("get", urlpart)
