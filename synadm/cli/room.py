@@ -77,8 +77,6 @@ def members(api, room_id):
 
 
 @room.command()
-@click.pass_obj
-@click.pass_context
 @click.argument('room_id', type=str)
 @click.option('--new-room-user-id', '-u', type=str,
       help='''If set, a new room will be created with this user ID as the
@@ -102,6 +100,8 @@ def members(api, room_id):
 @click.option('--no-purge', is_flag=True, default=False, show_default=True,
       help='''Prevent removing of all traces of the room from your
       database.''')
+@click.pass_obj
+@click.pass_context
 def delete(ctx, api, room_id, new_room_user_id, room_name, message, block, no_purge):
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
@@ -120,13 +120,13 @@ def delete(ctx, api, room_id, new_room_user_id, room_name, message, block, no_pu
 
 
 @room.command(name='search')
-@click.pass_context
 @click.argument('search-term', type=str)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help='''offset room listing by given number. This option is also used
       for pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help='Maximum amount of rooms to return.')
+@click.pass_context
 def search_room_cmd(ctx, search_term, from_, limit):
     '''a simplified shortcut to \'synadm room list -n <search-term>\'. Also
     it executes a case-insensitive search compared to the original

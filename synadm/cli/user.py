@@ -142,13 +142,13 @@ def membership(api, user_id):
 
                 
 @user.command(name='search')
-@click.pass_context
 @click.argument('search-term', type=str)
 @click.option('--from', '-f', 'from_', type=int, default=0, show_default=True,
       help='''offset user listing by given number. This option is also used
       for pagination.''')
 @click.option('--limit', '-l', type=int, default=100, show_default=True,
       help='maximum amount of users to return.')
+@click.pass_context
 def user_search_cmd(ctx, search_term, from_, limit):
     '''a simplified shortcut to \'synadm user list -d -g -n <search-term>\'
     (Searches for users by name/matrix-ID, including deactivated users
@@ -170,8 +170,8 @@ def user_search_cmd(ctx, search_term, from_, limit):
 
 
 @user.command(name='details')
-@click.pass_obj
 @click.argument('user_id', type=str)
+@click.pass_obj
 def user_details_cmd(api, user_id):
     '''view details of a user account.'''
     user = api.user_details(user_id)
@@ -184,8 +184,6 @@ def user_details_cmd(api, user_id):
 user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
 
 @user.command()
-@click.pass_context
-@click.pass_obj
 @click.argument('user_id', type=str)
 @user_detail.option('--password-prompt', '-p', is_flag=True,
       help="set password interactively.")
@@ -215,6 +213,8 @@ user_detail = RequiredAnyOptionGroup('', help='', hidden=False)
       removes their active access tokens, resets their password, kicks them out
       of all rooms and deletes third-party identifiers (to prevent the user
       requesting a password reset). See also "user deactivate" command.''')
+@click.pass_obj
+@click.pass_context
 def modify(ctx, api, user_id, password, password_prompt, display_name, threepid,
       avatar_url, admin, deactivation):
     '''create or modify a local user. Provide matrix user ID (@user:server)
