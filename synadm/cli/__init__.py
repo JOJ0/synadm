@@ -1,16 +1,16 @@
 """ CLI base functions and settings
 """
 
-from synadm import api
-
 import os
 import sys
-import yaml
-import click
 import logging
 import pprint
 import json
+import click
+import yaml
 import tabulate
+
+from synadm import api
 
 
 def humanize(data):
@@ -19,16 +19,17 @@ def humanize(data):
     - dicts are displayed as pivoted tables
     - lists are displayed as a simple list
     """
-    if type(data) is list and type(data[0]) is dict:
+    if isinstance(data, list) and isinstance(data[0], dict):
         headers = {header: header for header in data[0]}
         return tabulate.tabulate(data, tablefmt="simple", headers=headers)
-    elif type(data) is list:
+    if isinstance(data, list):
         return "\n".join(data)
-    elif type(data) is dict:
+    if isinstance(data, dict):
         return tabulate.tabulate(data.items(), tablefmt="simple")
+    return None
 
 
-class APIClient:
+class APIHelper:
     """ API client enriched with CLI-level functions, used as a proxy to the
     client object
     """
@@ -47,17 +48,12 @@ class APIClient:
         "admin_path": "/_synapse/admin",
     }
 
-    def __init__(self, config_path, verbose, format):
-        self.config = APIClient.CONFIG.copy()
+    def __init__(self, config_path, verbose, output_format):
+        self.config = APIHelper.CONFIG.copy()
         self.config_path = os.path.expanduser(config_path)
-        self.format = format
-        self.log = self.init_logger(verbose)
+        self.output_format = output_format
         self.api = None
-
-    def __getattr__(self, name):
-        """ Proxy methods to the actual API
-        """
-        return getattr(self.api, name)
+        self.init_logger(verbose)
 
     def init_logger(self, verbose):
         """ Log both to console (defaults to INFO) and file (DEBUG)
@@ -83,7 +79,7 @@ class APIClient:
         file_handler.setFormatter(file_formatter)
         log.addHandler(console_handler)
         log.addHandler(file_handler)
-        return log
+        self.log = log
 
     def load(self):
         """ Load the configuration and initializes the client
@@ -91,12 +87,12 @@ class APIClient:
         try:
             with open(self.config_path) as handle:
                 self.config.update(yaml.load(handle, Loader=yaml.SafeLoader))
-            self.log.debug("configuration read: {}".format(self.config))
+            self.log.debug("configuration read: %s", self.config)
         except Exception as error:
-            self.log.error("{} while reading configuration file".format(error))
+            self.log.error("%s while reading configuration file", error)
         for key, value in self.config.items():
             if not value:
-                self.log.error(f"config entry {key} missing")
+                self.log.error("config entry %s missing", key)
                 return False
         self.api = api.SynapseAdmin(
             self.log,
@@ -114,12 +110,12 @@ class APIClient:
                 yaml.dump(config, handle, default_flow_style=False,
                           allow_unicode=True)
         except Exception as error:
-            self.log.error("{} trying to write configuration".format(error))
+            self.log.error("%s trying to write configuration", error)
 
     def output(self, data):
         """ Output data object using the configured formatter
         """
-        click.echo(APIClient.FORMATTERS[self.format](data))
+        click.echo(APIHelper.FORMATTERS[self.output_format](data))
 
 
 @click.group(
@@ -139,13 +135,13 @@ class APIClient:
 def root(ctx, verbose, output, config_file):
     """ Synapse Administration toolkit
     """
-    ctx.obj = APIClient(config_file, verbose, output)
+    ctx.obj = APIHelper(config_file, verbose, output)
     if ctx.invoked_subcommand != "config" and not ctx.obj.load():
         click.echo("Please setup synadm: " + sys.argv[0] + " config")
         raise SystemExit(2)
 
 
-@root.command()
+@root.command(name="config")
 @click.option(
     "--user", "-u", type=str, default="admin",
     help="admin user for accessing the Synapse admin API's",)
@@ -171,36 +167,38 @@ def root(ctx, verbose, output, config_file):
     be overridden by using global switches -r and -t (eg 'synadm -r user
     list')""", show_default=True)
 @click.pass_obj
-def config(api, user, token, base_url, admin_api_path, output):
+def config_cmd(helper, user, token, base_url, admin_api_path, output):
     """ Modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options.
     """
     click.echo("Running configurator...")
-    api.write_config({
+    helper.write_config({
         "user": click.prompt(
-            "Synapse admin user name", default=api.config.get("user", user)),
+            "Synapse admin user name",
+            default=helper.config.get("user", user)),
         "token": click.prompt(
             "Synapse admin user token",
-            default=api.config.get("token", token)),
+            default=helper.config.get("token", token)),
         "base_url": click.prompt(
-            "Synapse base URL", default=api.config.get("base_url", base_url)),
+            "Synapse base URL",
+            default=helper.config.get("base_url", base_url)),
         "admin_api_path": click.prompt(
             "Synapse admin API path",
-            default=api.config.get("admin_api_path", admin_api_path)),
+            default=helper.config.get("admin_api_path", admin_api_path)),
         "format": click.prompt(
             "How should data be viewed by default?",
-            default=api.config.get("format", output),
+            default=helper.config.get("format", output),
             type=click.Choice(["human", "json", "yaml", "pprint"]))
     })
 
 
 @root.command()
 @click.pass_obj
-def version(api):
+def version(helper):
     """ Get the synapse server version
     """
-    version = api.version()
-    if version is None:
+    version_info = helper.api.version()
+    if version_info is None:
         click.echo("Version could not be fetched.")
         raise SystemExit(1)
-    api.output(version)
+    helper.output(version_info)

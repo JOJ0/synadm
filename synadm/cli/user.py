@@ -1,7 +1,10 @@
-from synadm import cli
+""" User-related CLI commands
+"""
 
 import click
 import click_option_group
+
+from synadm import cli
 
 
 @cli.root.group()
@@ -38,22 +41,25 @@ def user():
     help="""search users by ID - filters to only return users with Matrix IDs
     (@user:server) that contain this value""")
 @click.pass_obj
-def list_user_cmd(api, from_, limit, guests, deactivated, name, user_id):
-    users = api.user_list(from_, limit, guests, deactivated, name, user_id)
+def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
+    """ list and search for users
+    """
+    users = helper.api.user_list(from_, limit, guests, deactivated, name,
+                                 user_id)
     if users is None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
-    if api.format == "human":
+    if helper.output_format == "human":
         click.echo("Total users on homeserver (excluding deactivated): {}"
                    .format(users["total"]))
         if int(users["total"]) != 0:
-            api.output(users["users"])
+            helper.output(users["users"])
         if "next_token" in users:
             click.echo("There is more users than shown, use '--from {}' "
                        .format(users["next_token"]) +
                        "to go to next page")
     else:
-        api.output(users)
+        helper.output(users)
 
 
 @user.command()
@@ -66,7 +72,7 @@ def list_user_cmd(api, from_, limit, guests, deactivated, name, user_id):
     afterwards.""", show_default=True)
 @click.pass_obj
 @click.pass_context
-def deactivate(ctx, api, user_id, gdpr_erase):
+def deactivate(ctx, helper, user_id, gdpr_erase):
     """ deactivate or gdpr-erase a user. Provide matrix user ID (@user:server)
     as argument. It removes active access tokens, resets the password, and
     deletes third-party IDs (to prevent the user requesting a password
@@ -86,23 +92,23 @@ def deactivate(ctx, api, user_id, gdpr_erase):
                         .format(m_erase_or_deact),
                         type=bool, default=False, show_default=False)
     if sure:
-        deactivated = api.user_deactivate(user_id, gdpr_erase)
+        deactivated = helper.api.user_deactivate(user_id, gdpr_erase)
         if deactivated is None:
             click.echo("User could not be {}.".format(m_erase_or_deact))
             raise SystemExit(1)
-        if api.format == "human":
+        if helper.output_format == "human":
             if deactivated["id_server_unbind_result"] == "success":
                 click.echo("User successfully {}.".format(m_erase_or_deact_p))
             else:
                 click.echo("Synapse returned: {}".format(
                       deactivated["id_server_unbind_result"]))
         else:
-            api.output(deactivated)
+            helper.output(deactivated)
     else:
         click.echo("Abort.")
 
 
-@user.command()
+@user.command(name="password")
 @click.argument("user_id", type=str)
 @click.option(
     "--no-logout", "-n", is_flag=True, default=False,
@@ -111,41 +117,41 @@ def deactivate(ctx, api, user_id, gdpr_erase):
     "--password", "-p", prompt=True, hide_input=True,
     confirmation_prompt=True, help="new password")
 @click.pass_obj
-def password(api, user_id, password, no_logout):
+def password_cmd(helper, user_id, password, no_logout):
     """ change a user's password. To prevent the user from being logged out of all
     sessions use option -n
     """
-    changed = api.user_password(user_id, password, no_logout)
+    changed = helper.api.user_password(user_id, password, no_logout)
     if changed is None:
         click.echo("Password could not be reset.")
         raise SystemExit(1)
-    if api.format == "human":
+    if helper.output_format == "human":
         if changed == {}:
             click.echo("Password reset successfully.")
         else:
             click.echo("Synapse returned: {}".format(changed))
     else:
-        api.output(changed)
+        helper.output(changed)
 
 
 @user.command()
 @click.argument("user_id", type=str)
 @click.pass_obj
-def membership(api, user_id):
+def membership(helper, user_id):
     """ list all rooms a user is member of. Provide matrix user ID
     (@user:server) as argument.
     """
-    joined_rooms = api.user_membership(user_id)
+    joined_rooms = helper.api.user_membership(user_id)
     if joined_rooms is None:
         click.echo("Membership could not be fetched.")
         raise SystemExit(1)
-    if api.format == "human":
+    if helper.output_format == "human":
         click.echo("User is member of {} rooms."
                    .format(joined_rooms["total"]))
         if int(joined_rooms["total"]) != 0:
-            api.output(joined_rooms["joined_rooms"])
+            helper.output(joined_rooms["joined_rooms"])
     else:
-        api.output(joined_rooms)
+        helper.output(joined_rooms)
 
 
 @user.command(name="search")
@@ -164,32 +170,26 @@ def user_search_cmd(ctx, search_term, from_, limit):
     as well as guest users). Also it executes a case-insensitive search
     compared to the original command.
     """
-    if search_term[0].isupper():
-        search_term_cap = search_term
-        search_term_nocap = search_term[0].lower() + search_term[1:]
-    else:
-        search_term_cap = search_term[0].upper() + search_term[1:]
-        search_term_nocap = search_term
-
-    click.echo("User search results for '{}':".format(search_term_nocap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_nocap,
-               deactivated=True, guests=True)
-    click.echo("User search results for '{}':".format(search_term_cap))
-    ctx.invoke(list_user_cmd, from_=from_, limit=limit, name=search_term_cap,
-               deactivated=True, guests=True)
+    click.echo("User search results for '{}':".format(search_term.lower()))
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit,
+               name=search_term.lower(), deactivated=True, guests=True)
+    click.echo("User search results for '{}':"
+               .format(search_term.capitalize()))
+    ctx.invoke(list_user_cmd, from_=from_, limit=limit,
+               name=search_term.capitalize(), deactivated=True, guests=True)
 
 
 @user.command(name="details")
 @click.argument("user_id", type=str)
 @click.pass_obj
-def user_details_cmd(api, user_id):
+def user_details_cmd(helper, user_id):
     """ view details of a user account.
     """
-    user = api.user_details(user_id)
-    if user is None:
+    user_data = helper.api.user_details(user_id)
+    if user_data is None:
         click.echo("User details could not be fetched.")
         raise SystemExit(1)
-    api.output(user)
+    helper.output(user_data)
 
 
 user_detail = click_option_group.RequiredAnyOptionGroup(hidden=False)
@@ -235,7 +235,7 @@ user_detail = click_option_group.RequiredAnyOptionGroup(hidden=False)
     requesting a password reset). See also "user deactivate" command.""")
 @click.pass_obj
 @click.pass_context
-def modify(ctx, api, user_id, password, password_prompt, display_name,
+def modify(ctx, helper, user_id, password, password_prompt, display_name,
            threepid, avatar_url, admin, deactivation):
     """ create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
@@ -259,7 +259,7 @@ def modify(ctx, api, user_id, password, password_prompt, display_name,
     for key, value in ctx.params.items():
         if key in ["user_id", "password", "password_prompt"]:  # skip these
             continue
-        elif key == "threepid":
+        if key == "threepid":
             if value != ():
                 for t_key, t_val in value:
                     click.echo(f"{key}: {t_key} {t_val}")
@@ -273,28 +273,28 @@ def modify(ctx, api, user_id, password, password_prompt, display_name,
             click.echo(f"{key}: {value}")
 
     if password_prompt:
-        pw = click.prompt("Password", hide_input=True,
-                          confirmation_prompt=True)
+        password = click.prompt("Password", hide_input=True,
+                                confirmation_prompt=True)
     elif password:
         click.echo("Password will be set as provided on command line")
-        pw = password
     else:
-        pw = None
+        password = None
     sure = click.prompt("Are you sure you want to modify user? (y/N)",
                         type=bool, default=False, show_default=False)
     if sure:
-        modified = api.user_modify(user_id, pw, display_name, threepid,
-                                   avatar_url, admin, deactivation)
+        modified = helper.api.user_modify(
+            user_id, password, display_name, threepid,
+            avatar_url, admin, deactivation)
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
-        if api.format == "human":
+        if helper.output_format == "human":
             if modified != {}:
-                api.output(modified)
+                helper.output(modified)
                 click.echo("User successfully modified.")
             else:
                 click.echo("Synapse returned: {}".format(modified))
         else:
-            api.output(modified)
+            helper.output(modified)
     else:
         click.echo("Abort.")

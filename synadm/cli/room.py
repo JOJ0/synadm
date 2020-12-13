@@ -1,6 +1,9 @@
-from synadm import cli
+""" Room-related CLI commands
+"""
 
 import click
+
+from synadm import cli
 
 
 @cli.root.group()
@@ -32,47 +35,53 @@ def room():
     "--reverse", "-r", is_flag=True, default=False,
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
-def list_room_cmd(api, from_, limit, name, sort, reverse):
-    rooms = api.room_list(from_, limit, name, sort, reverse)
+def list_room_cmd(helper, from_, limit, name, sort, reverse):
+    """ list and search for rooms
+    """
+    rooms = helper.api.room_list(from_, limit, name, sort, reverse)
     if rooms is None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
-    if api.format == "human":
+    if helper.output_format == "human":
         if int(rooms["total_rooms"]) != 0:
-            api.output(rooms["rooms"])
+            helper.output(rooms["rooms"])
         if "next_batch" in rooms:
             click.echo("There is more rooms than shown, use '--from {}'"
                        .format(rooms["next_batch"]))
     else:
-        api.output(rooms)
+        helper.output(rooms)
 
 
 @room.command()
 @click.argument("room_id", type=str)
 @click.pass_obj
-def details(api, room_id):
-    room = api.room_details(room_id)
-    if room is None:
+def details(helper, room_id):
+    """ get room details
+    """
+    room_details = helper.api.room_details(room_id)
+    if room_details is None:
         click.echo("Room details could not be fetched.")
         raise SystemExit(1)
-    api.output(room)
+    helper.output(room_details)
 
 
 @room.command()
 @click.argument("room_id", type=str)
 @click.pass_obj
-def members(api, room_id):
-    members = api.room_members(room_id)
-    if members is None:
+def members(helper, room_id):
+    """ list current room members
+    """
+    room_members = helper.api.room_members(room_id)
+    if room_members is None:
         click.echo("Room members could not be fetched.")
         raise SystemExit(1)
-    if api.format == "human":
+    if helper.output_format == "human":
         click.echo("Total members in room: {}"
-                   .format(members["total"]))
-        if int(members["total"]) != 0:
-            api.output(members["members"])
+                   .format(room_members["total"]))
+        if int(room_members["total"]) != 0:
+            helper.output(room_members["members"])
     else:
-        api.output(members)
+        helper.output(room_members)
 
 
 @room.command()
@@ -106,19 +115,22 @@ def members(api, room_id):
     database.""")
 @click.pass_obj
 @click.pass_context
-def delete(ctx, api, room_id, new_room_user_id, room_name, message, block,
+def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
            no_purge):
+    """ delete and possibly purge a room
+    """
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
     sure = click.prompt("Are you sure you want to delete this room? (y/N)",
                         type=bool, default=False, show_default=False)
     if sure:
-        room_del = api.room_delete(room_id, new_room_user_id, room_name,
-                                   message, block, no_purge)
+        room_del = helper.api.room_delete(
+            room_id, new_room_user_id, room_name,
+            message, block, no_purge)
         if room_del is None:
             click.echo("Room not deleted.")
             raise SystemExit(1)
-        api.output(room_del)
+        helper.output(room_del)
     else:
         click.echo("Abort.")
 
@@ -137,14 +149,10 @@ def search_room_cmd(ctx, search_term, from_, limit):
     """a simplified shortcut to \'synadm room list -n <search-term>\'. Also
     it executes a case-insensitive search compared to the original
     command."""
-    if search_term[0].isupper():
-        search_term_cap = search_term
-        search_term_nocap = search_term[0].lower() + search_term[1:]
-    else:
-        search_term_cap = search_term[0].upper() + search_term[1:]
-        search_term_nocap = search_term
-
-    click.echo("Room search results for '{}':".format(search_term_nocap))
-    ctx.invoke(list_room_cmd, from_=from_, limit=limit, name=search_term_nocap)
-    click.echo("Room search results for '{}':".format(search_term_cap))
-    ctx.invoke(list_room_cmd, from_=from_, limit=limit, name=search_term_cap)
+    click.echo("Room search results for '{}':".format(search_term.lower()))
+    ctx.invoke(list_room_cmd, from_=from_, limit=limit,
+               name=search_term.lower())
+    click.echo("Room search results for '{}':"
+               .format(search_term.capitalize()))
+    ctx.invoke(list_room_cmd, from_=from_, limit=limit,
+               name=search_term.capitalize())

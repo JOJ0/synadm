@@ -7,7 +7,7 @@ documentaiton.
 import requests
 
 
-class SynapseAdmin(object):
+class SynapseAdmin:
     """ Synapse API client
     """
 
@@ -36,11 +36,11 @@ class SynapseAdmin(object):
             resp.raise_for_status()
             if resp.ok:
                 return resp.json()
-            else:
-                self.log.warning("No valid response from Synapse")
+            self.log.warning("No valid response from Synapse")
         except Exception as error:
             self.log.error("%s while querying synapse: %s",
                            type(error).__name__, error)
+        return None
 
     def user_list(self, _from, _limit, _guests, _deactivated,
                   _name, _user_id):
@@ -49,7 +49,8 @@ class SynapseAdmin(object):
         return self.query("get", "v2/users", params={
             "from": _from,
             "limit": _limit,
-            "guests": str(_guests).lower() if type(_guests) is bool else None,
+            "guests": (str(_guests).lower() if isinstance(_guests, bool)
+                       else None),
             "deactivated": "true" if _deactivated else None,
             "name": _name,
             "user_id": _user_id
