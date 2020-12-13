@@ -1,8 +1,0 @@
-#!/usr/bin/env python3
-
-from synadm import cli
-from synadm.cli import user, room
-
-
-if __name__ == "__main__":
-    cli.root(obj={})
