@@ -29,7 +29,8 @@ def humanize(data):
 
 
 class APIClient:
-    """ API client enriched with CLI-level functions
+    """ API client enriched with CLI-level functions, used as a proxy to the
+    client object
     """
 
     FORMATTERS = {
@@ -54,32 +55,39 @@ class APIClient:
         self.api = None
 
     def __getattr__(self, name):
-        return getattr(self.api, name)          
+        """ Proxy methods to the actual API
+        """
+        return getattr(self.api, name)
 
     def init_logger(self, verbose):
+        """ Log both to console (defaults to INFO) and file (DEBUG)
+        """
         log_path = os.path.expanduser("~/.local/share/synadm/debug.log")
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
         log = logging.getLogger("synadm")
-        log.setLevel(logging.DEBUG)  # level of logger itself
-        f_handle = logging.FileHandler(log_path, encoding="utf-8")  # create file handler
-        f_handle.setLevel(logging.DEBUG)
-        c_handle = logging.StreamHandler()  # console handler with a higher log level
-        c_handle.setLevel(
+        log.setLevel(logging.DEBUG)
+        file_handler = logging.FileHandler(log_path, encoding="utf-8")
+        file_handler.setLevel(logging.DEBUG)
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(
             logging.DEBUG if verbose > 1 else
             logging.INFO if verbose == 1 else
             logging.WARNING
         )
-        # create formatters and add it to the handlers
-        f_form = logging.Formatter("%(asctime)s %(name)-8s %(levelname)-7s %(message)s",
-                datefmt="%Y-%m-%d %H:%M:%S")
-        c_form = logging.Formatter("%(levelname)-5s %(message)s")
-        c_handle.setFormatter(c_form)
-        f_handle.setFormatter(f_form)
-        log.addHandler(c_handle)  # add the handlers to logger
-        log.addHandler(f_handle)
+        file_formatter = logging.Formatter(
+            "%(asctime)s %(name)-8s %(levelname)-7s %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        )
+        console_formatter = logging.Formatter("%(levelname)-5s %(message)s")
+        console_handler.setFormatter(console_formatter)
+        file_handler.setFormatter(file_formatter)
+        log.addHandler(console_handler)
+        log.addHandler(file_handler)
         return log
 
-    def read_config(self):
+    def load(self):
+        """ Load the configuration and initializes the client
+        """
         try:
             with open(self.config_path) as handle:
                 self.config.update(yaml.load(handle, Loader=yaml.SafeLoader))
@@ -90,7 +98,7 @@ class APIClient:
             if not value:
                 self.log.error(f"config entry {key} missing")
                 return False
-        self.api = api.Synapse_admin(
+        self.api = api.SynapseAdmin(
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["admin_path"]
@@ -98,47 +106,65 @@ class APIClient:
         return True
 
     def write_config(self, config):
+        """ Write a new version of the configuration to file
+        """
         try:
             os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
             with open(self.config_path, "w") as handle:
                 yaml.dump(config, handle, default_flow_style=False,
-                    allow_unicode=True)
+                          allow_unicode=True)
         except Exception as error:
             self.log.error("{} trying to write configuration".format(error))
 
     def output(self, data):
+        """ Output data object using the configured formatter
+        """
         click.echo(APIClient.FORMATTERS[self.format](data))
 
 
-@click.group(invoke_without_command=False, context_settings=dict(help_option_names=["-h", "--help"]))
-@click.option("--verbose", "-v", count=True, default=False,
-      help="enable INFO (-v) or DEBUG (-vv) logging on console")
-@click.option("--output", "-o", default="human",
-      help="print raw json data (overrides default setting)")
-@click.option("--config-file", "-c", type=click.Path(), default="~/.config/synadm.yaml",
-      help="configuration file path", show_default=True)
+@click.group(
+    invoke_without_command=False,
+    context_settings=dict(help_option_names=["-h", "--help"]))
+@click.option(
+    "--verbose", "-v", count=True, default=False,
+    help="enable INFO (-v) or DEBUG (-vv) logging on console")
+@click.option(
+    "--output", "-o", default="human",
+    help="print raw json data (overrides default setting)")
+@click.option(
+    "--config-file", "-c", type=click.Path(),
+    default="~/.config/synadm.yaml",
+    help="configuration file path", show_default=True)
 @click.pass_context
 def root(ctx, verbose, output, config_file):
+    """ Synapse Administration toolkit
+    """
     ctx.obj = APIClient(config_file, verbose, output)
-    if ctx.invoked_subcommand != "config" and not ctx.obj.read_config():
+    if ctx.invoked_subcommand != "config" and not ctx.obj.load():
         click.echo("Please setup synadm: " + sys.argv[0] + " config")
         raise SystemExit(2)
 
 
 @root.command()
-@click.option("--user", "-u", type=str, default="admin",
+@click.option(
+    "--user", "-u", type=str, default="admin",
     help="admin user for accessing the Synapse admin API's",)
-@click.option("--token", "-t", type=str,
+@click.option(
+    "--token", "-t", type=str,
     help="admin user's access token for the Synapse admin API's",)
-@click.option("--base-url", "-b", type=str, default="http://localhost:8008",
+@click.option(
+    "--base-url", "-b", type=str, default="http://localhost:8008",
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
     configured to expose its admin API's to the outside world it could also be
     https://example.org:8448""", show_default=True)
-@click.option("--admin-api-path", "-p", type=str, default="/_synapse/admin",
+@click.option(
+    "--admin-api-path", "-p", type=str, default="/_synapse/admin",
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
-@click.option("--output", type=click.Choice(["human", "json", "yaml", "pprint"]), default="human",
+@click.option(
+    "--output", type=click.Choice(["human", "json", "yaml", "pprint"]),
+    default="human",
     help="""how should synadm display data by default? 'table' gives a
     tabular view but needs your terminal to be quite width. 'raw' shows
     formatted json exactely as the API responded. Note that this can always
@@ -146,19 +172,23 @@ def root(ctx, verbose, output, config_file):
     list')""", show_default=True)
 @click.pass_obj
 def config(api, user, token, base_url, admin_api_path, output):
-    """modify synadm's configuration. configuration details are asked
-    interactively but can also be provided using command line options."""
+    """ Modify synadm's configuration. configuration details are asked
+    interactively but can also be provided using command line options.
+    """
     click.echo("Running configurator...")
     api.write_config({
-        "user": click.prompt("Synapse admin user name",
-            default=api.config.get("user", user)),
-        "token": click.prompt("Synapse admin user token",
+        "user": click.prompt(
+            "Synapse admin user name", default=api.config.get("user", user)),
+        "token": click.prompt(
+            "Synapse admin user token",
             default=api.config.get("token", token)),
-        "base_url": click.prompt("Synapse base URL",
-            default=api.config.get("base_url", base_url)),
-        "admin_api_path": click.prompt("Synapse admin API path",
+        "base_url": click.prompt(
+            "Synapse base URL", default=api.config.get("base_url", base_url)),
+        "admin_api_path": click.prompt(
+            "Synapse admin API path",
             default=api.config.get("admin_api_path", admin_api_path)),
-        "format": click.prompt("How should data be viewed by default?",
+        "format": click.prompt(
+            "How should data be viewed by default?",
             default=api.config.get("format", output),
             type=click.Choice(["human", "json", "yaml", "pprint"]))
     })
@@ -167,8 +197,10 @@ def config(api, user, token, base_url, admin_api_path, output):
 @root.command()
 @click.pass_obj
 def version(api):
+    """ Get the synapse server version
+    """
     version = api.version()
-    if version == None:
+    if version is None:
         click.echo("Version could not be fetched.")
         raise SystemExit(1)
     api.output(version)
