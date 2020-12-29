@@ -35,10 +35,10 @@ class APIHelper:
     """
 
     FORMATTERS = {
-        "human": humanize,
         "pprint": pprint.pformat,
         "json": json.dumps,
-        "yaml": yaml.dump
+        "yaml": yaml.dump,
+        "human": humanize
     }
 
     CONFIG = {
@@ -52,9 +52,13 @@ class APIHelper:
         self.config = APIHelper.CONFIG.copy()
         self.config_path = os.path.expanduser(config_path)
         self.batch = batch
-        self.output_format = output_format
         self.api = None
         self.init_logger(verbose)
+        for name, formatter in APIHelper.FORMATTERS.items():
+            self.output_format = name
+            self.formatter = formatter
+            if name.startswith(output_format):
+                break
 
     def init_logger(self, verbose):
         """ Log both to console (defaults to INFO) and file (DEBUG)
@@ -116,7 +120,7 @@ class APIHelper:
     def output(self, data):
         """ Output data object using the configured formatter
         """
-        click.echo(APIHelper.FORMATTERS[self.output_format](data))
+        click.echo(self.formatter(data))
 
 
 @click.group(
