@@ -121,8 +121,11 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
     """
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
-    sure = click.prompt("Are you sure you want to delete this room? (y/N)",
-                        type=bool, default=False, show_default=False)
+    sure = (
+        helper.batch or
+        click.prompt("Are you sure you want to delete this room? (y/N)",
+                     type=bool, default=False, show_default=False)
+    )
     if sure:
         room_del = helper.api.room_delete(
             room_id, new_room_user_id, room_name,

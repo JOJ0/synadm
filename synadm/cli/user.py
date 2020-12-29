@@ -88,9 +88,12 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     ctx.invoke(membership, user_id=user_id)
     m_erase_or_deact = "gdpr-erase" if gdpr_erase else "deactivate"
     m_erase_or_deact_p = "gdpr-erased" if gdpr_erase else "deactivated"
-    sure = click.prompt("Are you sure you want to {} this user? (y/N)"
-                        .format(m_erase_or_deact),
-                        type=bool, default=False, show_default=False)
+    sure = (
+        helper.batch or
+        click.prompt("Are you sure you want to {} this user? (y/N)"
+                     .format(m_erase_or_deact),
+                     type=bool, default=False, show_default=False)
+    )
     if sure:
         deactivated = helper.api.user_deactivate(user_id, gdpr_erase)
         if deactivated is None:
@@ -279,8 +282,11 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         click.echo("Password will be set as provided on command line")
     else:
         password = None
-    sure = click.prompt("Are you sure you want to modify user? (y/N)",
-                        type=bool, default=False, show_default=False)
+    sure = (
+        helper.batch or
+        click.prompt("Are you sure you want to modify user? (y/N)",
+                     type=bool, default=False, show_default=False)
+    )
     if sure:
         modified = helper.api.user_modify(
             user_id, password, display_name, threepid,

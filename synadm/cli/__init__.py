@@ -48,9 +48,10 @@ class APIHelper:
         "admin_path": "/_synapse/admin",
     }
 
-    def __init__(self, config_path, verbose, output_format):
+    def __init__(self, config_path, verbose, batch, output_format):
         self.config = APIHelper.CONFIG.copy()
         self.config_path = os.path.expanduser(config_path)
+        self.batch = batch
         self.output_format = output_format
         self.api = None
         self.init_logger(verbose)
@@ -125,6 +126,9 @@ class APIHelper:
     "--verbose", "-v", count=True, default=False,
     help="enable INFO (-v) or DEBUG (-vv) logging on console")
 @click.option(
+    "--batch/--no-batch", default=False,
+    help="enable batch behavior (no interactive prompts)")
+@click.option(
     "--output", "-o", default="human",
     help="print raw json data (overrides default setting)")
 @click.option(
@@ -132,13 +136,16 @@ class APIHelper:
     default="~/.config/synadm.yaml",
     help="configuration file path", show_default=True)
 @click.pass_context
-def root(ctx, verbose, output, config_file):
+def root(ctx, verbose, batch, output, config_file):
     """ Synapse Administration toolkit
     """
-    ctx.obj = APIHelper(config_file, verbose, output)
+    ctx.obj = APIHelper(config_file, verbose, batch, output)
     if ctx.invoked_subcommand != "config" and not ctx.obj.load():
-        click.echo("Please setup synadm: " + sys.argv[0] + " config")
-        raise SystemExit(2)
+        if batch:
+            click.echo("Please setup synadm: " + sys.argv[0] + " config")
+            raise SystemExit(2)
+        else:
+            ctx.invoke(config_cmd)
 
 
 @root.command(name="config")
