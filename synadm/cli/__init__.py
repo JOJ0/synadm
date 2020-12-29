@@ -202,3 +202,7 @@ def version(helper):
         click.echo("Version could not be fetched.")
         raise SystemExit(1)
     helper.output(version_info)
+
+
+# Import additional commands
+from synadm.cli import room, user
