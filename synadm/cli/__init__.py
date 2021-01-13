@@ -44,7 +44,7 @@ class APIHelper:
     CONFIG = {
         "user": "",
         "token": "",
-        "base_url": "",
+        "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
     }
 
