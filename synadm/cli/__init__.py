@@ -144,7 +144,8 @@ def root(ctx, verbose, batch, output, config_file):
     """ Synapse Administration toolkit
     """
     ctx.obj = APIHelper(config_file, verbose, batch, output)
-    if ctx.invoked_subcommand != "config" and not ctx.obj.load():
+    helper_loaded = ctx.obj.load()
+    if ctx.invoked_subcommand != "config" and not helper_loaded:
         if batch:
             click.echo("Please setup synadm: " + sys.argv[0] + " config")
             raise SystemExit(2)
@@ -201,6 +202,7 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
             default=helper.config.get("format", output),
             type=click.Choice(["human", "json", "yaml", "pprint"]))
     })
+    helper.load()
 
 
 @root.command()
