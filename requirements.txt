@@ -1,0 +1,5 @@
+click
+requests
+pyyaml
+tabulate
+click_option_group
