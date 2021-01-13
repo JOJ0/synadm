@@ -166,7 +166,7 @@ def root(ctx, verbose, batch, output, config_file):
     configured to expose its admin API's to the outside world it could also be
     https://example.org:8448""", show_default=True)
 @click.option(
-    "--admin-api-path", "-p", type=str, default="/_synapse/admin",
+    "--admin-path", "-p", type=str, default="/_synapse/admin",
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
 @click.option(
@@ -178,7 +178,7 @@ def root(ctx, verbose, batch, output, config_file):
     be overridden by using global switches -r and -t (eg 'synadm -r user
     list')""", show_default=True)
 @click.pass_obj
-def config_cmd(helper, user, token, base_url, admin_api_path, output):
+def config_cmd(helper, user, token, base_url, admin_path, output):
     """ Modify synadm's configuration. configuration details are asked
     interactively but can also be provided using command line options.
     """
@@ -193,9 +193,9 @@ def config_cmd(helper, user, token, base_url, admin_api_path, output):
         "base_url": click.prompt(
             "Synapse base URL",
             default=helper.config.get("base_url", base_url)),
-        "admin_api_path": click.prompt(
+        "admin_path": click.prompt(
             "Synapse admin API path",
-            default=helper.config.get("admin_api_path", admin_api_path)),
+            default=helper.config.get("admin_path", admin_path)),
         "format": click.prompt(
             "How should data be viewed by default?",
             default=helper.config.get("format", output),
