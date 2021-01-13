@@ -133,8 +133,11 @@ class APIHelper:
     "--batch/--no-batch", default=False,
     help="enable batch behavior (no interactive prompts)")
 @click.option(
-    "--output", "-o", default="human",
-    help="print raw json data (overrides default setting)")
+    "--output", "-o", default="yaml",
+    type=click.Choice(["yaml", "json", "human", "pprint"]),
+    show_choices=True,
+    help="""override default output format. Abbreviation is possible
+    (eg. '-o pp', '-o h', ...)""")
 @click.option(
     "--config-file", "-c", type=click.Path(),
     default="~/.config/synadm.yaml",
@@ -171,13 +174,15 @@ def root(ctx, verbose, batch, output, config_file):
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""", show_default=True)
 @click.option(
-    "--output", type=click.Choice(["human", "json", "yaml", "pprint"]),
-    default="human",
-    help="""how should synadm display data by default? 'table' gives a
-    tabular view but needs your terminal to be quite width. 'raw' shows
-    formatted json exactely as the API responded. Note that this can always
-    be overridden by using global switches -r and -t (eg 'synadm -r user
-    list')""", show_default=True)
+    "--output", type=click.Choice(["yaml", "json", "human", "pprint"]),
+    default="yaml",
+    help="""how should synadm display data by default? 'human' gives a
+    tabular or list view depending on the fetched data. This mode needs your
+    terminal to be quite wide! 'json' displays exactely as the API responded.
+    'pprint' shows nicely formatted json. 'yaml' is the currently recommended
+    output format. It doesn't need as much terminal width as 'human' does.
+    Note that the default output format can always be overridden by using
+    global switch -o (eg 'synadm -o pprint user list')""", show_default=True)
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, output):
     """ Modify synadm's configuration. configuration details are asked
@@ -198,9 +203,9 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
             "Synapse admin API path",
             default=helper.config.get("admin_path", admin_path)),
         "format": click.prompt(
-            "How should data be viewed by default?",
+            "Default output format",
             default=helper.config.get("format", output),
-            type=click.Choice(["human", "json", "yaml", "pprint"]))
+            type=click.Choice(["yaml", "json", "human", "pprint"]))
     })
     helper.load()
 
