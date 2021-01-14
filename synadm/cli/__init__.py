@@ -61,7 +61,7 @@ class APIHelper:
                 break
 
     def init_logger(self, verbose):
-        """ Log both to console (defaults to INFO) and file (DEBUG)
+        """ Log both to console (defaults to WARNING) and file (DEBUG)
         """
         log_path = os.path.expanduser("~/.local/share/synadm/debug.log")
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
@@ -87,7 +87,7 @@ class APIHelper:
         self.log = log
 
     def load(self):
-        """ Load the configuration and initializes the client
+        """ Load the configuration and initialize the client
         """
         try:
             with open(self.config_path) as handle:
@@ -158,53 +158,56 @@ def root(ctx, verbose, batch, output, config_file):
 
 @root.command(name="config")
 @click.option(
-    "--user", "-u", type=str, default="admin",
-    help="admin user for accessing the Synapse admin API's",)
+    "--user", "-u", type=str,
+    help="admin user for accessing the Synapse admin API's")
 @click.option(
     "--token", "-t", type=str,
-    help="admin user's access token for the Synapse admin API's",)
+    help="admin user's access token for the Synapse admin API's")
 @click.option(
-    "--base-url", "-b", type=str, default="http://localhost:8008",
+    "--base-url", "-b", type=str,
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
     configured to expose its admin API's to the outside world it could also be
-    https://example.org:8448""", show_default=True)
+    https://example.org:8448""")
 @click.option(
-    "--admin-path", "-p", type=str, default="/_synapse/admin",
+    "--admin-path", "-p", type=str,
     help="""the path Synapse provides its admin API's, usually the default is
-    alright for most installations.""", show_default=True)
+    alright for most installations.""")
 @click.option(
-    "--output", type=click.Choice(["yaml", "json", "human", "pprint"]),
-    default="yaml",
+    "--output", "-o", type=click.Choice(["yaml", "json", "human", "pprint"]),
     help="""how should synadm display data by default? 'human' gives a
     tabular or list view depending on the fetched data. This mode needs your
     terminal to be quite wide! 'json' displays exactely as the API responded.
     'pprint' shows nicely formatted json. 'yaml' is the currently recommended
     output format. It doesn't need as much terminal width as 'human' does.
     Note that the default output format can always be overridden by using
-    global switch -o (eg 'synadm -o pprint user list')""", show_default=True)
+    global switch -o (eg 'synadm -o pprint user list')""")
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, output):
-    """ Modify synadm's configuration. configuration details are asked
-    interactively but can also be provided using command line options.
+    """ Modify synadm's configuration. Configuration details are generally
+    always asked interactively. Command line options override the suggested
+    defaults in the prompts.
     """
+
     click.echo("Running configurator...")
     helper.write_config({
         "user": click.prompt(
             "Synapse admin user name",
-            default=helper.config.get("user", user)),
+            default=user if user else helper.config.get("user", user)),
         "token": click.prompt(
             "Synapse admin user token",
-            default=helper.config.get("token", token)),
+            default=token if token else helper.config.get("token", token)),
         "base_url": click.prompt(
             "Synapse base URL",
-            default=helper.config.get("base_url", base_url)),
+            default=base_url if base_url else helper.config.get(
+                "base_url", base_url)),
         "admin_path": click.prompt(
             "Synapse admin API path",
-            default=helper.config.get("admin_path", admin_path)),
+            default=admin_path if admin_path else helper.config.get(
+                "admin_path", admin_path)),
         "format": click.prompt(
             "Default output format",
-            default=helper.config.get("format", output),
+            default=output if output else helper.config.get("format", output),
             type=click.Choice(["yaml", "json", "human", "pprint"]))
     })
     helper.load()
