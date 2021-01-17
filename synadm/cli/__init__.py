@@ -169,8 +169,8 @@ def root(ctx, verbose, batch, output, config_file):
     "--base-url", "-b", type=str,
     help="""the base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
-    configured to expose its admin API's to the outside world it could also be
-    https://example.org:8448""")
+    configured to expose its admin API's to the outside world it might as
+    well be something like this: https://example.org:8448""")
 @click.option(
     "--admin-path", "-p", type=str,
     help="""the path Synapse provides its admin API's, usually the default is
@@ -183,7 +183,7 @@ def root(ctx, verbose, batch, output, config_file):
     'pprint' shows nicely formatted json. 'yaml' is the currently recommended
     output format. It doesn't need as much terminal width as 'human' does.
     Note that the default output format can always be overridden by using
-    global switch -o (eg 'synadm -o pprint user list')""")
+    global switch -o (eg 'synadm -o pprint user list').""")
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, output):
     """ Modify synadm's configuration. Configuration details are generally

@@ -38,7 +38,7 @@ class SynapseAdmin:
                 return resp.json()
             self.log.warning("No valid response from Synapse")
         except Exception as error:
-            self.log.error("%s while querying synapse: %s",
+            self.log.error("%s while querying Synapse: %s",
                            type(error).__name__, error)
         return None
 
