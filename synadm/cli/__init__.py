@@ -116,6 +116,14 @@ class APIHelper:
             with open(self.config_path, "w") as handle:
                 yaml.dump(config, handle, default_flow_style=False,
                           allow_unicode=True)
+            if os.name == "posix":
+                click.echo("Restricting access to config file to user only")
+                os.chmod(self.config_path, 0o600)
+            else:
+                click.echo(
+                    f"Unsupported OS, please adjust permissions of {self.config_path} manually"
+                )
+
             return True
         except Exception as error:
             self.log.error("%s trying to write configuration", error)
