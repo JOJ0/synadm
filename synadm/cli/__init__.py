@@ -114,8 +114,10 @@ class APIHelper:
             with open(self.config_path, "w") as handle:
                 yaml.dump(config, handle, default_flow_style=False,
                           allow_unicode=True)
+            return True
         except Exception as error:
             self.log.error("%s trying to write configuration", error)
+            return False
 
     def output(self, data):
         """ Output data object using the configured formatter
@@ -188,6 +190,25 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
     """
+
+    if helper.batch:
+        if not all([user, token, base_url, admin_path, output]):
+            click.echo(
+                "Missing config options for batch configuration!"
+            )
+            raise SystemExit(3)
+        else:
+            click.echo("Saving to config file.")
+            if helper.write_config({
+                "user": user,
+                "token": token,
+                "base_url": base_url,
+                "admin_path": admin_path,
+                "format": output
+            }):
+                raise SystemExit(0)
+            else:
+                raise SystemExit(4)
 
     click.echo("Running configurator...")
     helper.write_config({
