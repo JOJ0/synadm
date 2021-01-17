@@ -46,6 +46,7 @@ class APIHelper:
         "token": "",
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
+        "timeout": 7
     }
 
     def __init__(self, config_path, verbose, batch, output_format):
@@ -102,7 +103,8 @@ class APIHelper:
         self.api = api.SynapseAdmin(
             self.log,
             self.config["user"], self.config["token"],
-            self.config["base_url"], self.config["admin_path"]
+            self.config["base_url"], self.config["admin_path"],
+            self.config["timeout"]
         )
         return True
 
@@ -176,6 +178,10 @@ def root(ctx, verbose, batch, output, config_file):
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""")
 @click.option(
+    "--timeout", "-w", type=int,
+    help="""the timeout for http queries to admin API's or Matrix Client
+    API's. The default is 7 seconds. """)
+@click.option(
     "--output", "-o", type=click.Choice(["yaml", "json", "human", "pprint"]),
     help="""how should synadm display data by default? 'human' gives a
     tabular or list view depending on the fetched data. This mode needs your
@@ -185,14 +191,14 @@ def root(ctx, verbose, batch, output, config_file):
     Note that the default output format can always be overridden by using
     global switch -o (eg 'synadm -o pprint user list').""")
 @click.pass_obj
-def config_cmd(helper, user, token, base_url, admin_path, output):
+def config_cmd(helper, user, token, base_url, admin_path, output, timeout):
     """ Modify synadm's configuration. Configuration details are generally
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
     """
 
     if helper.batch:
-        if not all([user, token, base_url, admin_path, output]):
+        if not all([user, token, base_url, admin_path, output, timeout]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -204,7 +210,8 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
                 "token": token,
                 "base_url": base_url,
                 "admin_path": admin_path,
-                "format": output
+                "format": output,
+                "timeout": timeout
             }):
                 raise SystemExit(0)
             else:
@@ -229,7 +236,11 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
         "format": click.prompt(
             "Default output format",
             default=output if output else helper.config.get("format", output),
-            type=click.Choice(["yaml", "json", "human", "pprint"]))
+            type=click.Choice(["yaml", "json", "human", "pprint"])),
+        "timeout": click.prompt(
+            "Default http timeout",
+            default=timeout if timeout else helper.config.get(
+                "timeout", timeout)),
     })
     if not helper.load():
         click.echo("Configuration incomplete, quitting.")

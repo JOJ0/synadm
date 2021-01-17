@@ -11,7 +11,7 @@ class SynapseAdmin:
     """ Synapse API client
     """
 
-    def __init__(self, log, user, token, base_url, admin_path):
+    def __init__(self, log, user, token, base_url, admin_path, timeout):
         self.log = log
         self.user = user
         self.token = token
@@ -21,6 +21,7 @@ class SynapseAdmin:
             "Accept": "application/json",
             "Authorization": "Bearer " + self.token
         }
+        self.timeout = timeout
 
     def query(self, method, urlpart, params=None, data=None):
         """ Generic wrapper around requests methods, handles logging
@@ -30,7 +31,7 @@ class SynapseAdmin:
         self.log.info("Querying %s on %s", method, url)
         try:
             resp = getattr(requests, method)(
-                url, headers=self.headers, timeout=7,
+                url, headers=self.headers, timeout=self.timeout,
                 params=params, json=data
             )
             resp.raise_for_status()
