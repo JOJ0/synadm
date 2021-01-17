@@ -231,7 +231,9 @@ def config_cmd(helper, user, token, base_url, admin_path, output):
             default=output if output else helper.config.get("format", output),
             type=click.Choice(["yaml", "json", "human", "pprint"]))
     })
-    helper.load()
+    if not helper.load():
+        click.echo("Configuration incomplete, quitting.")
+        raise SystemExit(5)
 
 
 @root.command()
