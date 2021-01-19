@@ -258,7 +258,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 
     click.echo("Current user account settings:")
     ctx.invoke(user_details_cmd, user_id=user_id)
-    click.echo("User account settings after modification:")
+    click.echo("User account settings to be modified:")
     for key, value in ctx.params.items():
         if key in ["user_id", "password", "password_prompt"]:  # skip these
             continue
@@ -267,19 +267,21 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
                 for t_key, t_val in value:
                     click.echo(f"{key}: {t_key} {t_val}")
                     if t_key not in ["email", "msisdn"]:
-                        click.echo(
+                        helper.log.warning(
                             f"{t_key} is probably not a supported medium "
-                            "type. Are you sure you want to add it?. "
-                            "Supported medium types according to the current "
-                            "matrix spec are: email, msisdn")
+                            "type. Threepid medium types according to the "
+                            "current matrix spec are: email, msisdn.")
         elif value not in [None, {}, []]:  # only show non-empty (aka changed)
             click.echo(f"{key}: {value}")
 
     if password_prompt:
-        password = click.prompt("Password", hide_input=True,
-                                confirmation_prompt=True)
+        if helper.batch:
+            click.echo("Password prompt not available in batch mode. Use -P.")
+        else:
+            password = click.prompt("Password", hide_input=True,
+                                    confirmation_prompt=True)
     elif password:
-        click.echo("Password will be set as provided on command line")
+        click.echo("Password will be set as provided on command line.")
     else:
         password = None
     sure = (
