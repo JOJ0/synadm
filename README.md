@@ -280,11 +280,16 @@ python3 setup.py develop
 
 ### Implementation examples
 
-Without much talk, have a look at this commit: https://github.com/JOJ0/synadm/commit/4978794751aaad23369988da66ccc8e87bc638c4#diff-a676a1667b53bcb8aad4097acb601e227a6b60a6168625e364d250ed47bf7619
+Without much talk, have a look at this method: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/cli/user.py#L185
 
-It implements command `synadm room details <room_id>`. Pretty straight forward, right? Help me out and code such a little feature! Thanks! :-)
+and this one: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L80
 
-And another one, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`: https://github.com/JOJ0/synadm/commit/274f6bf50ceaa175313aab25da4699ea745ee2ea#diff-a676a1667b53bcb8aad4097acb601e227a6b60a6168625e364d250ed47bf7619
+That's all it needs to implement command `synadm user details <user_id>`.
+
+And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/0af918fdeee40bc1d3df7b734a46e76bb31148b9/synadm/cli/user.py#L114
+
+and again it needs a backend method in api.py:
+https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
 
 
 ### More detailed implementation example
