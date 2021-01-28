@@ -147,6 +147,70 @@ class SynapseAdmin:
             data.update({"message": message})
         return self.query("post", f"v1/rooms/{room_id}/delete", data=data)
 
+    def room_media_list(self, room_id):
+        """ Get a list of known media in an (unencrypted) room.
+        """
+        return self.query("get", f"v1/room/{room_id}/media")
+
+    def media_quarantine(self, server_name, media_id):
+        """ Quarantine a single piece of local or remote media
+        """
+        return self.query(
+            "post", f"v1/media/quarantine/{server_name}/{media_id}/", data={}
+        )
+
+    def room_media_quarantine(self, room_id):
+        """ Quarantine all local and remote media in a room
+        """
+        return self.query(
+            "post", f"v1/room/{room_id}/media/quarantine", data={}
+        )
+
+    def user_media_quarantine(self, user_id):
+        """ Quarantine all local and remote media of a user
+        """
+        return self.query(
+            "post", f"v1/user/{user_id}/media/quarantine", data={}
+        )
+
+    def media_delete(self, server_name, media_id):
+        """ Delete a specific (local) media_id
+        """
+        return self.query(
+            "delete", f"v1/media/{server_name}/{media_id}/", data={}
+        )
+
+    def media_delete_by_date_or_size(self, server_name, before_ts,
+                                     size_gt=None, keep_profiles=None):
+        """ Delete local media by date and/or size FIXME and/or?
+        """
+        return self.query(
+            "post", f"v1/media/{server_name}/delete", data={}, params={
+                "server_name": server_name,
+                "before_ts": before_ts,
+                "size_gt": size_gt if size_gt else None,
+                "keep_profiles": "false" if keep_profiles is False else None
+            }
+        )
+
+    def media_protect(self, media_id):
+        """ Protect a single piece of local or remote media
+
+        from being quarantined
+        """
+        return self.query(
+            "post", f"v1/media/protect/{media_id}/", data={}
+        )
+
+    def purge_remote_media(self, user_id, before_ts):
+        """ Purge old cached remote media
+        """
+        return self.query(
+            "post", f"v1/purge_media_cache/{before_ts}", data={}, params={
+                "before_ts": before_ts
+            }
+        )
+
     def version(self):
         """ Get the server version
         """

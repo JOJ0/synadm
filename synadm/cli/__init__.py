@@ -268,4 +268,4 @@ def version(helper):
 
 
 # Import additional commands
-from synadm.cli import room, user
+from synadm.cli import room, user, media
