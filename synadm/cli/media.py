@@ -53,8 +53,10 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     """
     if media_id and not server_name:
         click.echo("Server name missing.")
+        media_quarantined = None
     elif server_name and not media_id:
         click.echo("Media ID missing.")
+        media_quarantined = None
     if media_id and server_name:
         media_quarantined = helper.api.media_quarantine(server_name, media_id)
     elif room_id:
