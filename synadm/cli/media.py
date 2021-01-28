@@ -66,3 +66,16 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
         click.echo("Media could not be quarantined.")
         raise SystemExit(1)
     helper.output(media_quarantined)
+
+
+@media.command(name="protect")
+@click.argument("media_id", type=str)
+@click.pass_obj
+def media_protect_cmd(helper, media_id):
+    """ protect specific media from being quarantined
+    """
+    media_protected = helper.api.media_protect(media_id)
+    if media_protected is None:
+        click.echo("Media could not be protected.")
+        raise SystemExit(1)
+    helper.output(media_protected)

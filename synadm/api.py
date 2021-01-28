@@ -193,6 +193,15 @@ class SynapseAdmin:
             }
         )
 
+    def media_protect(self, media_id):
+        """ Protect a single piece of local or remote media
+
+        from being quarantined
+        """
+        return self.query(
+            "post", f"v1/media/protect/{media_id}/", data={}
+        )
+
     def purge_remote_media(self, user_id, before_ts):
         """ Purge old cached remote media
         """
