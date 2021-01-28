@@ -45,8 +45,8 @@ def media_list_cmd(helper, room_id):
     be quarantined.""")
 @click.option(
     "--server-name", "-s", type=str,
-    help="""the local server name, mandatory when --media-id is used. FIXME
-    this should be fetched from somewhere automatically.""")
+    help="""the server name of the media, mandatory when --media-id is used.
+    """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     """ quarantine media in rooms, by users or by media ID
@@ -57,7 +57,7 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     elif server_name and not media_id:
         click.echo("Media ID missing.")
         media_quarantined = None
-    if media_id and server_name:
+    elif media_id and server_name:
         media_quarantined = helper.api.media_quarantine(server_name, media_id)
     elif room_id:
         media_quarantined = helper.api.room_media_quarantine(room_id)
