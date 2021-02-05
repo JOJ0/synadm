@@ -159,3 +159,14 @@ def search_room_cmd(ctx, search_term, from_, limit):
                .format(search_term.capitalize()))
     ctx.invoke(list_room_cmd, from_=from_, limit=limit,
                name=search_term.capitalize())
+
+
+@room.command()
+@click.argument("room_id", type=str)
+@click.argument("user_id", type=str)
+@click.pass_obj
+def make_admin(helper, room_id, user_id):
+    """ Make a user into an admin of a room
+    """
+    out = helper.api.room_make_admin(room_id, user_id)
+    helper.output(out)
