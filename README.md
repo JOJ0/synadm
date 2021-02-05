@@ -155,10 +155,11 @@ python3 setup.py install
 * [ ] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md)
 * [ ] [Event reports API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/event_reports.md)
 * [ ] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
-  * [ ] `room media list <room id>`
-  * [ ] `media quarantine <server name> <media id>`
-  * [ ] `room media quarantine <room id>`
-  * [ ] `user media quarantine <room id>`
+  * [x] `media list <room id>`
+  * [x] `media quarantine -s <server name> -i <media id>`
+  * [x] `media quarantine -r <room id>`
+  * [x] `media quarantine -u <room id>`
+  * [x] `media protect <media id>`
   * [ ] `media delete <server name> <media id>`
 * [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
   * [ ] `room history purge <room id>`
@@ -183,8 +184,8 @@ python3 setup.py install
 * [ ] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
   * [x] `user details <user id>`
   * [ ] `user query <user id>` (alias of `user details`)
-  * [x] `user modify <user id>`
-  * [ ] `user create <user id>` (alias of `user create`)
+  * [x] `user modify <user id>` (also used for user creation)
+  * [ ] `user create <user id>` (alias of `user modify ...`)
   * [x] `user list`
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
