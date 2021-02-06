@@ -72,9 +72,10 @@ class SynapseAdmin:
     def user_password(self, user_id, password, no_logout):
         """ Set the user password, and logs the user out if requested
         """
-        data = {"new_password": password}
-        if no_logout:
-            data.update({"logout_devices": no_logout})
+        data = {
+            "new_password": password,
+            "logout_devices": not no_logout,
+        }
         return self.query("post", f"v1/reset_password/{user_id}", data=data)
 
     def user_details(self, user_id):
