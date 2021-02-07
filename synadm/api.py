@@ -205,7 +205,7 @@ class SynapseAdmin:
             "post", f"v1/media/protect/{media_id}/", data={}
         )
 
-    def purge_remote_media(self, user_id, before_ts):
+    def purge_media_cache(self, user_id, before_ts):
         """ Purge old cached remote media
         """
         return self.query(
