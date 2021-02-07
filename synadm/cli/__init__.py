@@ -55,6 +55,9 @@ class APIHelper:
         self.batch = batch
         self.api = None
         self.init_logger(verbose)
+        self.requests_debug = False
+        if verbose >= 3:
+            self.requests_debug = True
         for name, formatter in APIHelper.FORMATTERS.items():
             self.output_format = name
             self.formatter = formatter
@@ -104,7 +107,7 @@ class APIHelper:
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["admin_path"],
-            self.config["timeout"]
+            self.config["timeout"], self.requests_debug
         )
         return True
 

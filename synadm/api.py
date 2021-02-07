@@ -5,13 +5,14 @@ documentaiton.
 """
 
 import requests
+from http.client import HTTPConnection
 
 
 class SynapseAdmin:
     """ Synapse API client
     """
 
-    def __init__(self, log, user, token, base_url, admin_path, timeout):
+    def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
         self.log = log
         self.user = user
         self.token = token
@@ -22,6 +23,8 @@ class SynapseAdmin:
             "Authorization": "Bearer " + self.token
         }
         self.timeout = timeout
+        if debug:
+            HTTPConnection.debuglevel = 1
 
     def query(self, method, urlpart, params=None, data=None):
         """ Generic wrapper around requests methods, handles logging
