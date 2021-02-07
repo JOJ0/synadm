@@ -6,6 +6,7 @@ documentaiton.
 
 import requests
 from http.client import HTTPConnection
+import datetime
 
 
 class SynapseAdmin:
@@ -205,12 +206,20 @@ class SynapseAdmin:
             "post", f"v1/media/protect/{media_id}/", data={}
         )
 
-    def purge_media_cache(self, user_id, before_ts):
+    def purge_media_cache(self, days, before, _before_ts):
         """ Purge old cached remote media
         """
+        if days:
+            before_ts = int((
+                datetime.datetime.now() - datetime.timedelta(days=days)
+            ).timestamp() * 1000)
+        if before:
+            before_ts = before.timestamp() * 1000
+        if before_ts:
+            before_ts = _before_ts
         return self.query(
-            "post", f"v1/purge_media_cache/{before_ts}", data={}, params={
-                "before_ts": before_ts
+            "post", "v1/purge_media_cache", data={}, params={
+                "before_ts": str(before_ts)
             }
         )
 

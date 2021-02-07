@@ -81,3 +81,32 @@ def media_protect_cmd(helper, media_id):
         click.echo("Media could not be protected.")
         raise SystemExit(1)
     helper.output(media_protected)
+
+
+@media.command(name="purge")
+@click_option_group.optgroup.group(
+    "Purge by",
+    cls=click_option_group.RequiredAnyOptionGroup,
+    help="")
+@click_option_group.optgroup.option(
+    "--days", "-d", type=int,
+    help="""Purge all media that was last accessed before this number of days.
+    """)
+@click_option_group.optgroup.option(
+    "--before", "-b", type=click.DateTime(),
+    help="""Purge all media that was last accessed before this date/time. Eg.
+    '2021-01-01', see above for available date/time formats.""")
+@click_option_group.optgroup.option(
+    "--before-ts", "-t", type=int,
+    help="""Purge all media that was last accessed before this unix
+    timestamp in ms.
+    """)
+@click.pass_obj
+def media_purge_cmd(helper, days, before, before_ts):
+    """ Purge old cached remote media
+    """
+    media_purged = helper.api.purge_media_cache(days, before, before_ts)
+    if media_purged is None:
+        click.echo("Media cache could not be purged.")
+        raise SystemExit(1)
+    helper.output(media_purged)
