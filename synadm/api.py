@@ -222,8 +222,8 @@ class SynapseAdmin:
                            _before_ts)
             before_ts = _before_ts  # Click checks for int already
 
-        self.log.info("Purging all media older than timestamp: %s,",
-                      str(before_ts))
+        self.log.info("Purging cached remote media older than timestamp: %d,",
+                      before_ts)
         self.log.info("which is the date: %s",
                       datetime.datetime.fromtimestamp(before_ts / 1000))
 
