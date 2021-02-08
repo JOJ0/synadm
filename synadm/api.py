@@ -222,11 +222,12 @@ class SynapseAdmin:
             before_ts = _before_ts
         self.log.info("Purging all media older than timestamp: %s",
                       str(before_ts))
-        return self.query(
-            "post", "v1/purge_media_cache", data={}, params={
-                "before_ts": str(before_ts)
-            }
-        )
+        self.log.warning("This synadm command is not finished yet!")
+        #return self.query(
+        #    "post", "v1/purge_media_cache", data={}, params={
+        #        "before_ts": str(before_ts)
+        #    }
+        #)
 
     def version(self):
         """ Get the server version
