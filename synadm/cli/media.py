@@ -86,7 +86,7 @@ def media_protect_cmd(helper, media_id):
 @media.command(name="purge")
 @click_option_group.optgroup.group(
     "Purge by",
-    cls=click_option_group.RequiredAnyOptionGroup,
+    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
     help="")
 @click_option_group.optgroup.option(
     "--days", "-d", type=int,

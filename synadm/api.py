@@ -209,6 +209,9 @@ class SynapseAdmin:
     def purge_media_cache(self, days, before, _before_ts):
         """ Purge old cached remote media
         """
+        self.log.debug("purge_media_cache received days: %s", days)
+        self.log.debug("purge_media_cache received before: %s", before)
+        self.log.debug("purge_media_cache received _before_ts: %s", _before_ts)
         if days:
             before_ts = int((
                 datetime.datetime.now() - datetime.timedelta(days=days)
@@ -217,6 +220,8 @@ class SynapseAdmin:
             before_ts = before.timestamp() * 1000
         if before_ts:
             before_ts = _before_ts
+        self.log.info("Purging all media older than timestamp: %s",
+                      str(before_ts))
         return self.query(
             "post", "v1/purge_media_cache", data={}, params={
                 "before_ts": str(before_ts)
