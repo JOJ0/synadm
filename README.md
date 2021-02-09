@@ -160,36 +160,38 @@ python3 setup.py install
   * [x] `media quarantine -u <room id>`
   * [x] `media protect <media id>`
   * [ ] `media delete <server name> <media id>`
+  * [x] `media purge --before <date>` (purge remote media API)
 * [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
-  * [ ] `room history purge <room id>`
-  * [ ] `room history purge_status <purge id>`
-* [ ] [Purge remote media API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_remote_media.rst)
-* [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (covered by `room delete` already)
+  * [ ] `history purge <room id>`
+  * [ ] `history purge-status <purge id>`
+* [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Register API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/register_api.rst)
 * [ ] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
   * [ ] `room join`
-* [ ] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
+* [x] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
   * [x] `room list`
   * [x] `room search <search-term>` (shortcut to `room list -n <search-term>`)
   * [x] `room details <room id>`
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
-  * [ ] `room count`
-  * [ ] `room top-complexity`
-  * [ ] `room top-members`
+  * [ ] Additional commands derived from rooms API's
+    * [ ] `room count`
+    * [ ] `room top-complexity`
+    * [ ] `room top-members`
 * [ ] [Server notices API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/server_notices.md)
-* [x] ~~[Shutdown room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/shutdown_room.md)~~ (covered by `room delete` already)
+* [x] ~~[Shutdown room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/shutdown_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Statistics API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/statistics.md)
-* [ ] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
+* [x] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
   * [x] `user details <user id>`
-  * [ ] `user query <user id>` (alias of `user details`)
   * [x] `user modify <user id>` (also used for user creation)
-  * [ ] `user create <user id>` (alias of `user modify ...`)
   * [x] `user list`
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
-  * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
+  * [ ] Additional commands derived from user API's
+      * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
+      * [ ] `user query <user id>` (alias of `user details`)
+      * [ ] `user create <user id>` (alias of `user modify ...`)
 * [x] [Version API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/version_api.rst)
   * [x] `version`
 
