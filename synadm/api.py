@@ -47,6 +47,23 @@ class SynapseAdmin:
                            type(error).__name__, error)
         return None
 
+    def _timestamp_from_days(days):
+        """ Get a unix timestamp in ms from days ago
+        """
+        return int((
+            datetime.datetime.now() - datetime.timedelta(days=days)
+        ).timestamp() * 1000)
+
+    def _timestamp_from_datetime(_datetime):
+        """ Get a unix timestamp in ms from a datetime object
+        """
+        return int(_datetime.timestamp()) * 1000
+
+    def __datetime_from_timestamp(timestamp):
+        """ Get a datetime object from a unix timestamp in ms int
+        """
+        return datetime.datetime.fromtimestamp(timestamp / 1000)
+
     def user_list(self, _from, _limit, _guests, _deactivated,
                   _name, _user_id):
         """ List and search users
@@ -211,12 +228,10 @@ class SynapseAdmin:
         """
         if days:
             self.log.debug("Received --days: %s", days)
-            before_ts = int((
-                datetime.datetime.now() - datetime.timedelta(days=days)
-            ).timestamp() * 1000)
+            before_ts = self._timestamp_from_days(days)
         if before:
             self.log.debug("Received --before: %s", before)
-            before_ts = int(before.timestamp()) * 1000
+            before_ts = self._timestamp_from_datetime(before)
         if _before_ts:
             self.log.debug("Received --before-ts: %s",
                            _before_ts)
@@ -224,8 +239,7 @@ class SynapseAdmin:
 
         self.log.info("Purging cached remote media older than timestamp: %d,",
                       before_ts)
-        self.log.info("which is the date: %s",
-                      datetime.datetime.fromtimestamp(before_ts / 1000))
+        self.log.info("which is the date: %s", self.__datetime_from_timestamp)
 
         return self.query(
             "post", "v1/purge_media_cache", data={}, params={
