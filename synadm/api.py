@@ -38,7 +38,6 @@ class SynapseAdmin:
                 url, headers=self.headers, timeout=self.timeout,
                 params=params, json=data
             )
-            resp.raise_for_status()
             if not resp.ok:
                 self.log.warning("No valid response from Synapse")
             return resp.json()
