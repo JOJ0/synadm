@@ -163,7 +163,10 @@ def search_room_cmd(ctx, search_term, from_, limit):
 
 @room.command()
 @click.argument("room_id", type=str)
-@click.argument("user_id", type=str)
+@click.option(
+    "--user-id", "-u", type=str,
+    help="""By default the server admin (the caller) is granted power, but
+    another user can optionally be specified.""")
 @click.pass_obj
 def make_admin(helper, room_id, user_id):
     """ Make a user into an admin of a room
