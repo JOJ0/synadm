@@ -150,6 +150,15 @@ class SynapseAdmin:
             data.update({"message": message})
         return self.query("post", f"v1/rooms/{room_id}/delete", data=data)
 
+    def room_make_admin(self, room_id, user_id):
+        """ Grant a user room admin permission. If the user is not in the room,
+        and it is not publicly joinable, then invite the user.
+        """
+        data = {}
+        if user_id:
+            data.update({"user_id": user_id})
+        return self.query("post", f"v1/rooms/{room_id}/make_room_admin", data=data)
+
     def room_media_list(self, room_id):
         """ Get a list of known media in an (unencrypted) room.
         """
