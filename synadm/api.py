@@ -151,7 +151,8 @@ class SynapseAdmin:
         return self.query("post", f"v1/rooms/{room_id}/delete", data=data)
 
     def room_make_admin(self, room_id, user_id):
-        """ Make a user into an admin of a room
+        """ Grant a user room admin permission. If the user is not in the room,
+        and it is not publicly joinable, then invite the user.
         """
         data = {}
         if user_id:
