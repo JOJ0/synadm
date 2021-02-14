@@ -169,7 +169,8 @@ def search_room_cmd(ctx, search_term, from_, limit):
     another user can optionally be specified.""")
 @click.pass_obj
 def make_admin(helper, room_id, user_id):
-    """ Make a user into an admin of a room
-    """
+    """ grant a user room admin permission. If the user is not in the room,
+    and it is not publicly joinable, then invite the user. """
+
     out = helper.api.room_make_admin(room_id, user_id)
     helper.output(out)
