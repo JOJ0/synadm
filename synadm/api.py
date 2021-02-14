@@ -39,7 +39,7 @@ class SynapseAdmin:
                 params=params, json=data
             )
             if not resp.ok:
-                self.log.warning("No valid response from Synapse")
+                self.log.warning(f"Synapse returned status code {resp.status_code}")
             return resp.json()
         except Exception as error:
             self.log.error("%s while querying Synapse: %s",
