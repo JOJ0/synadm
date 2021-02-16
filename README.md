@@ -14,7 +14,6 @@
   - [Install to virtual environment](#install-to-virtual-environment)
   - [Install in development mode](#install-in-development-mode)
   - [Implementation examples](#implementation-examples)
-  - [More detailed implementation example](#more-detailed-implementation-example)
 
 
 
@@ -161,36 +160,39 @@ python3 setup.py install
   * [x] `media quarantine -u <room id>`
   * [x] `media protect <media id>`
   * [ ] `media delete <server name> <media id>`
+  * [x] `media purge --before <date>` (purge remote media API)
 * [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
-  * [ ] `room history purge <room id>`
-  * [ ] `room history purge_status <purge id>`
-* [ ] [Purge remote media API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_remote_media.rst)
-* [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (covered by `room delete` already)
+  * [ ] `history purge <room id>`
+  * [ ] `history purge-status <purge id>`
+* [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Register API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/register_api.rst)
 * [ ] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
   * [ ] `room join`
-* [ ] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
+* [x] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
   * [x] `room list`
   * [x] `room search <search-term>` (shortcut to `room list -n <search-term>`)
   * [x] `room details <room id>`
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
-  * [ ] `room count`
-  * [ ] `room top-complexity`
-  * [ ] `room top-members`
+  * [ ] Additional commands derived from rooms API's
+    * [x] `room make-admin <room id> <user id>`
+    * [ ] `room count`
+    * [ ] `room top-complexity`
+    * [ ] `room top-members`
 * [ ] [Server notices API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/server_notices.md)
-* [x] ~~[Shutdown room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/shutdown_room.md)~~ (covered by `room delete` already)
+* [x] ~~[Shutdown room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/shutdown_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Statistics API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/statistics.md)
-* [ ] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
+* [x] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
   * [x] `user details <user id>`
-  * [ ] `user query <user id>` (alias of `user details`)
   * [x] `user modify <user id>` (also used for user creation)
-  * [ ] `user create <user id>` (alias of `user modify ...`)
   * [x] `user list`
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
-  * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
+  * [ ] Additional commands derived from user API's
+      * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
+      * [ ] `user query <user id>` (alias of `user details`)
+      * [ ] `user create <user id>` (alias of `user modify ...`)
 * [x] [Version API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/version_api.rst)
   * [x] `version`
 
@@ -291,24 +293,3 @@ And another example, this time using a POST based API endpoint. It implements co
 
 and again it needs a backend method in api.py:
 https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
-
-
-### More detailed implementation example
-
-A feature based on a GET request is quite easy to implement. It needs two things
-
-- A method in the Synapse_admin class. Generation of the url as described in the above mentioned docs, and the actual execution of the GET request (using the Python *requests* module) happens here.
-- A "decorated" function that creates the necessary command line arguments and options (using the Python *Click* module)
-
-Let's have a look on a particular example. Take the following command:
-
-```
-synadm user list --deactivated --no-guests
-```
-
-- The method [user_list() in Synapse_admin class](https://github.com/JOJ0/synadm/blob/31e1b0f1dab4272452fe8772d683a1b420247e6e/synadm.py#L110-L120) has to be written first. It just builds a urlpart together to fit the need of the [user admin API docs](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst#list-accounts). It then passes the urlpart to the [_get() method](https://github.com/JOJ0/synadm/blob/31e1b0f1dab4272452fe8772d683a1b420247e6e/synadm.py#L54-L80) to execute the request. Most of network/http error handling happens here and you don't have to take care about it.
-- The cli part works like this: [This method named "list" (plus it's @decorators)](https://github.com/JOJ0/synadm/blob/31e1b0f1dab4272452fe8772d683a1b420247e6e/synadm.py#L390-L411) is all the magic behind the `... list --deactivated --no-guests` part of the command. If you take a closer look at [this decorator](https://github.com/JOJ0/synadm/blob/31e1b0f1dab4272452fe8772d683a1b420247e6e/synadm.py#L374) you see that it is a "subelement" of the click.group "user". The ["user-group" is defined here](https://github.com/JOJ0/synadm/blob/31e1b0f1dab4272452fe8772d683a1b420247e6e/synadm.py#L365-L370) .... and is responsible to make the `synadm user ...` part of the command happen.
-
-So to further clarify things: *Click* works with *command groups* and *commands*. At the time of writing this tutorial synadm consists of the following:
-
-main *group* **synadm** -> *subgroups* **user** and **room** -> each of those *subgroups* contains a *command* named **list**

@@ -38,10 +38,9 @@ class SynapseAdmin:
                 url, headers=self.headers, timeout=self.timeout,
                 params=params, json=data
             )
-            resp.raise_for_status()
-            if resp.ok:
-                return resp.json()
-            self.log.warning("No valid response from Synapse")
+            if not resp.ok:
+                self.log.warning(f"Synapse returned status code {resp.status_code}")
+            return resp.json()
         except Exception as error:
             self.log.error("%s while querying Synapse: %s",
                            type(error).__name__, error)
@@ -91,11 +90,11 @@ class SynapseAdmin:
         })
 
     def user_password(self, user_id, password, no_logout):
-        """ Set the user password, and logs the user out if requested
+        """ Set the user password, and log the user out if requested
         """
         data = {"new_password": password}
         if no_logout:
-            data.update({"logout_devices": no_logout})
+            data.update({"logout_devices": False})
         return self.query("post", f"v1/reset_password/{user_id}", data=data)
 
     def user_details(self, user_id):
@@ -167,6 +166,15 @@ class SynapseAdmin:
         if message:
             data.update({"message": message})
         return self.query("post", f"v1/rooms/{room_id}/delete", data=data)
+
+    def room_make_admin(self, room_id, user_id):
+        """ Grant a user room admin permission. If the user is not in the room,
+        and it is not publicly joinable, then invite the user.
+        """
+        data = {}
+        if user_id:
+            data.update({"user_id": user_id})
+        return self.query("post", f"v1/rooms/{room_id}/make_room_admin", data=data)
 
     def room_media_list(self, room_id):
         """ Get a list of known media in an (unencrypted) room.

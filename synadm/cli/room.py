@@ -159,3 +159,18 @@ def search_room_cmd(ctx, search_term, from_, limit):
                .format(search_term.capitalize()))
     ctx.invoke(list_room_cmd, from_=from_, limit=limit,
                name=search_term.capitalize())
+
+
+@room.command()
+@click.argument("room_id", type=str)
+@click.option(
+    "--user-id", "-u", type=str,
+    help="""By default the server admin (the caller) is granted power, but
+    another user can optionally be specified.""")
+@click.pass_obj
+def make_admin(helper, room_id, user_id):
+    """ grant a user room admin permission. If the user is not in the room,
+    and it is not publicly joinable, then invite the user. """
+
+    out = helper.api.room_make_admin(room_id, user_id)
+    helper.output(out)
