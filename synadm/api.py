@@ -245,3 +245,9 @@ class SynapseAdmin:
         """ Get the server version
         """
         return self.query("get", "v1/server_version")
+
+    def group_delete(self, group_id):
+        """ Delete a group
+        """
+        return self.query("post", f"v1/delete_group/{group_id}")
+
