@@ -219,7 +219,7 @@ class SynapseAdmin:
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
-        elif _before_ts:
+        elif _before_ts is not None:  # Could be 0 if it's an older server ;-)
             self.log.debug("Received --before-ts: %s",
                            _before_ts)
             before_ts = _before_ts  # Click checks for int already
@@ -233,7 +233,7 @@ class SynapseAdmin:
         params = {
             "server_name": server_name,
         }
-        if before_ts:
+        if before_ts is not None:
             params.update({
                 "before_ts": before_ts,
             })
