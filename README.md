@@ -159,7 +159,8 @@ python3 setup.py install
   * [x] `media quarantine -r <room id>`
   * [x] `media quarantine -u <room id>`
   * [x] `media protect <media id>`
-  * [ ] `media delete <server name> <media id>`
+  * [X] `media delete -s <server name> -i <media id>`
+  * [X] `media delete -s <server name> --before <date> --size 1024`
   * [x] `media purge --before <date>` (purge remote media API)
 * [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
   * [ ] `history purge <room id>`

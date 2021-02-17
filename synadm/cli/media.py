@@ -110,3 +110,69 @@ def media_purge_cmd(helper, days, before, before_ts):
         click.echo("Media cache could not be purged.")
         raise SystemExit(1)
     helper.output(media_purged)
+
+
+@media.command(name="delete")
+@click_option_group.optgroup.group(
+    "delete criteria",
+    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
+    help="")
+@click_option_group.optgroup.option(
+    "--media-id", "-i", type=str,
+    help="""the media with this specific media ID will be deleted.""")
+@click_option_group.optgroup.option(
+    "--days", "-d", type=int,
+    help="""delete all media that was last accessed before this number of days.
+    """)
+@click_option_group.optgroup.option(
+    "--before", "-b", type=click.DateTime(),
+    help="""delete all media that was last accessed before this date/time. Eg.
+    '2021-01-01', see above for available date/time formats.""")
+@click_option_group.optgroup.option(
+    "--before-ts", "-t", type=int,
+    help="""delete all media that was last accessed before this unix
+    timestamp in ms.""")
+@click_option_group.optgroup.group(
+    "additional switches",
+    cls=click_option_group.OptionGroup,
+    help="")
+@click_option_group.optgroup.option(
+    "--size", "--kib", type=int,
+    help="""delete all media that is larger than this size in KiB
+    (1 KiB = 1024 bytes).""")
+@click_option_group.optgroup.option(
+    "--delete-profiles", "--all", is_flag=True,
+    help="""also delete files that are still used in image data
+    (e.g user profile, room avatar). If set, these files will be
+    deleted too. Not valid when a specific media is being deleted
+    (--media-id)""")
+@click.option(
+    "--server-name", "-s", type=str,
+    help="""your local matrix server name. Note: Currently this is a mandatory
+    argument but will be automatically retrieved via the matrix API in
+    the future.""")
+@click.pass_obj
+def media_delete_cmd(helper, media_id, server_name, days, before, before_ts,
+                     size, delete_profiles):
+    """ delete media by ID, size or age
+    """
+    if not server_name:  # FIXME pull local server name programatically
+        click.echo("--server-name missing.")
+        media_deleted = None
+    elif media_id and delete_profiles:
+        click.echo("Combination of --media-id and --delete-profiles not valid.")
+        media_deleted = None
+    elif media_id and size:
+        click.echo("Combination of --media-id and --size not valid.")
+        media_deleted = None
+    elif media_id:
+        media_deleted = helper.api.media_delete(server_name, media_id)
+    else:
+        media_deleted = helper.api.media_delete_by_date_or_size(
+            server_name, days, before, before_ts, size, delete_profiles
+        )
+
+    if media_deleted is None:
+        click.echo("Media could not be deleted.")
+        raise SystemExit(1)
+    helper.output(media_deleted)
