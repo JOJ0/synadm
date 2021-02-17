@@ -132,33 +132,38 @@ def media_purge_cmd(helper, days, before, before_ts):
     "--before-ts", "-t", type=int,
     help="""delete all media that was last accessed before this unix
     timestamp in ms.""")
+@click_option_group.optgroup.group(
+    "additional switches",
+    cls=click_option_group.OptionGroup,
+    help="")
 @click_option_group.optgroup.option(
     "--size", "--kib", type=int,
     help="""delete all media that is larger than this size in KiB
     (1 KiB = 1024 bytes).""")
-@click.option(
-    "--server-name", "-s", type=str,
-    help="""the server name of the media, mandatory. FIXME default to local
-    servername (let user put into config?).""")
-@click.option(
+@click_option_group.optgroup.option(
     "--delete-profiles", "--all", is_flag=True,
-    help="""switch to also delete files that are still used in image data
+    help="""also delete files that are still used in image data
     (e.g user profile, room avatar). If set, these files will be
     deleted too. Not valid when a specific media is being deleted
     (--media-id)""")
+@click.option(
+    "--server-name", "-s", type=str,
+    help="""your local matrix server name. Note: Currently this is a mandatory
+    argument but will be automatically retrieved via the matrix API in
+    the future.""")
 @click.pass_obj
 def media_delete_cmd(helper, media_id, server_name, days, before, before_ts,
                      size, delete_profiles):
     """ delete media by ID, size or age
     """
-    if not server_name:  # FIXME sanity check - pull server name later
-        click.echo("--server-name missing.")
-        media_deleted = None
-    elif media_id and not server_name:
+    if not server_name:  # FIXME pull local server name programatically
         click.echo("--server-name missing.")
         media_deleted = None
     elif media_id and delete_profiles:
-        click.echo("Combination of --media-id and --delete-profile not valid.")
+        click.echo("Combination of --media-id and --delete-profiles not valid.")
+        media_deleted = None
+    elif media_id and size:
+        click.echo("Combination of --media-id and --size not valid.")
         media_deleted = None
     elif media_id:
         media_deleted = helper.api.media_delete(server_name, media_id)

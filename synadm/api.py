@@ -213,7 +213,6 @@ class SynapseAdmin:
                                      _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
-        before_ts = 0
         if days:
             self.log.debug("Received --days: %s", days)
             before_ts = self._timestamp_from_days(days)
