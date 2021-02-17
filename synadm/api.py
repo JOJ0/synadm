@@ -46,19 +46,19 @@ class SynapseAdmin:
                            type(error).__name__, error)
         return None
 
-    def _timestamp_from_days(days):
+    def _timestamp_from_days(self, days):
         """ Get a unix timestamp in ms from days ago
         """
         return int((
             datetime.datetime.now() - datetime.timedelta(days=days)
         ).timestamp() * 1000)
 
-    def _timestamp_from_datetime(_datetime):
+    def _timestamp_from_datetime(self, _datetime):
         """ Get a unix timestamp in ms from a datetime object
         """
         return int(_datetime.timestamp()) * 1000
 
-    def __datetime_from_timestamp(timestamp):
+    def __datetime_from_timestamp(self, timestamp):
         """ Get a datetime object from a unix timestamp in ms int
         """
         return datetime.datetime.fromtimestamp(timestamp / 1000)
