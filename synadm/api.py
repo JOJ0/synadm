@@ -209,20 +209,22 @@ class SynapseAdmin:
             "delete", f"v1/media/{server_name}/{media_id}/", data={}
         )
 
-    def media_delete_by_date_or_size(self, server_name, days, before, _before_ts,
-                                     _size_gt, delete_profiles):
+    def media_delete_by_date_or_size(self, server_name, days, before,
+                                     _before_ts, _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
         if days:
             self.log.debug("Received --days: %s", days)
             before_ts = self._timestamp_from_days(days)
-        if before:
+        elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
-        if _before_ts:
+        elif _before_ts:
             self.log.debug("Received --before-ts: %s",
                            _before_ts)
             before_ts = _before_ts  # Click checks for int already
+        else:
+            self.log.debug("Something wrong in click FIXME")
 
         self.log.info("Deleting local media older than timestamp: %d,",
                       before_ts)
