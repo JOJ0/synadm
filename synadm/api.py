@@ -209,17 +209,46 @@ class SynapseAdmin:
             "delete", f"v1/media/{server_name}/{media_id}/", data={}
         )
 
-    def media_delete_by_date_or_size(self, server_name, before_ts,
-                                     size_gt=None, keep_profiles=None):
+    def media_delete_by_date_or_size(self, server_name, days, before, _before_ts,
+                                     _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
-        return self.query(
-            "post", f"v1/media/{server_name}/delete", data={}, params={
-                "server_name": server_name,
+        before_ts = 0
+        if days:
+            self.log.debug("Received --days: %s", days)
+            before_ts = self._timestamp_from_days(days)
+        if before:
+            self.log.debug("Received --before: %s", before)
+            before_ts = self._timestamp_from_datetime(before)
+        if _before_ts:
+            self.log.debug("Received --before-ts: %s",
+                           _before_ts)
+            before_ts = _before_ts  # Click checks for int already
+
+        self.log.info("Deleting local media older than timestamp: %d,",
+                      before_ts)
+        self.log.info("which is the date: %s",
+                      self._datetime_from_timestamp(before_ts))
+        params = {
+            "server_name": server_name,
+        }
+        if before_ts:
+            params.update({
                 "before_ts": before_ts,
-                "size_gt": size_gt if size_gt else None,
-                "keep_profiles": "false" if keep_profiles is False else None
-            }
+            })
+        if _size_gt:
+            size_gt = _size_gt * 1024
+            self.log.info("Deleting local media greater than %d bytes,",
+                          before_ts)
+            params.update({
+                "size_gt": size_gt
+            })
+        if delete_profiles:
+            params.update({
+                "keep_profiles": "false"
+            })
+        return self.query(
+            "post", f"v1/media/{server_name}/delete", data={}, params=params
         )
 
     def media_protect(self, media_id):
