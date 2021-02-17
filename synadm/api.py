@@ -240,7 +240,7 @@ class SynapseAdmin:
         if _size_gt:
             size_gt = _size_gt * 1024
             self.log.info("Deleting local media greater than %d bytes,",
-                          before_ts)
+                          size_gt)
             params.update({
                 "size_gt": size_gt
             })
