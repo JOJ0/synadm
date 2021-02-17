@@ -58,7 +58,7 @@ class SynapseAdmin:
         """
         return int(_datetime.timestamp()) * 1000
 
-    def __datetime_from_timestamp(self, timestamp):
+    def _datetime_from_timestamp(self, timestamp):
         """ Get a datetime object from a unix timestamp in ms int
         """
         return datetime.datetime.fromtimestamp(timestamp / 1000)
@@ -247,7 +247,7 @@ class SynapseAdmin:
 
         self.log.info("Purging cached remote media older than timestamp: %d,",
                       before_ts)
-        self.log.info("which is the date: %s", self.__datetime_from_timestamp)
+        self.log.info("which is the date: %s", self._datetime_from_timestamp)
 
         return self.query(
             "post", "v1/purge_media_cache", data={}, params={
