@@ -306,3 +306,12 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             helper.output(modified)
     else:
         click.echo("Abort.")
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def whois(helper, user_id):
+    """ Return information about the active sessions for a specific user
+    """
+    user_data = helper.api.user_whois(user_id)
+    helper.output(user_data)
