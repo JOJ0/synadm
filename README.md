@@ -153,14 +153,14 @@ python3 setup.py install
 * [ ] [Account validity API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/account_validity.rst)
 * [ ] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md)
 * [ ] [Event reports API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/event_reports.md)
-* [ ] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
+* [x] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
   * [x] `media list <room id>`
   * [x] `media quarantine -s <server name> -i <media id>`
   * [x] `media quarantine -r <room id>`
   * [x] `media quarantine -u <room id>`
   * [x] `media protect <media id>`
-  * [X] `media delete -s <server name> -i <media id>`
-  * [X] `media delete -s <server name> --before <date> --size 1024`
+  * [x] `media delete -s <server name> -i <media id>`
+  * [x] `media delete -s <server name> --before <date> --size 1024`
   * [x] `media purge --before <date>` (purge remote media API)
 * [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
   * [ ] `history purge <room id>`
@@ -175,8 +175,8 @@ python3 setup.py install
   * [x] `room details <room id>`
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
-  * [ ] Additional commands derived from rooms API's
-    * [x] `room make-admin <room id> <user id>`
+  * [x] `room make-admin <room id> <user id>`
+  * [ ] Additional commands and aliases derived from rooms API's
     * [ ] `room count`
     * [ ] `room top-complexity`
     * [ ] `room top-members`
@@ -190,7 +190,7 @@ python3 setup.py install
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
-  * [ ] Additional commands derived from user API's
+  * [ ] Additional commands and aliases derived from user API's
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user query <user id>` (alias of `user details`)
       * [ ] `user create <user id>` (alias of `user modify ...`)
