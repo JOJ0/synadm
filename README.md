@@ -121,7 +121,7 @@ synadm user
 ```
 or
 ```
-synadm user detail
+synadm user details
 ```
 
 will show help for the particular subcommand right away. 
