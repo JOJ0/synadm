@@ -176,6 +176,7 @@ python3 setup.py install
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
   * [x] `room make-admin <room id> <user id>`
+  * [ ] `room state <room id>`
   * [ ] Additional commands and aliases derived from rooms API's
     * [ ] `room count`
     * [ ] `room top-complexity`
