@@ -49,7 +49,7 @@ class APIHelper:
         "timeout": 7
     }
 
-    def __init__(self, config_path, verbose, batch, output_format):
+    def __init__(self, config_path, verbose, batch, output_format_cli):
         self.config = APIHelper.CONFIG.copy()
         self.config_path = os.path.expanduser(config_path)
         self.batch = batch
@@ -58,11 +58,7 @@ class APIHelper:
         self.requests_debug = False
         if verbose >= 3:
             self.requests_debug = True
-        for name, formatter in APIHelper.FORMATTERS.items():
-            self.output_format = name
-            self.formatter = formatter
-            if name.startswith(output_format):
-                break
+        self.output_format_cli = output_format_cli  # override from cli
 
     def init_logger(self, verbose):
         """ Log both to console (defaults to WARNING) and file (DEBUG)
@@ -90,6 +86,16 @@ class APIHelper:
         log.addHandler(file_handler)
         self.log = log
 
+    def _set_formatter(self, _output_format):
+        for name, formatter in APIHelper.FORMATTERS.items():
+            if name.startswith(_output_format):
+                self.output_format = name
+                self.formatter = formatter
+                break
+        self.log.debug("Formatter in use: %s - %s", self.output_format,
+                       self.formatter)
+        return True
+
     def load(self):
         """ Load the configuration and initialize the client
         """
@@ -103,6 +109,10 @@ class APIHelper:
             if not value:
                 self.log.error("config entry %s missing", key)
                 return False
+        if self.output_format_cli:  # we have a cli output format override
+            self._set_formatter(self.output_format_cli)
+        else:  # we use the configured default output format
+            self._set_formatter(self.config["format"])
         self.api = api.SynapseAdmin(
             self.log,
             self.config["user"], self.config["token"],
@@ -148,11 +158,11 @@ class APIHelper:
     "--batch/--no-batch", default=False,
     help="enable batch behavior (no interactive prompts)")
 @click.option(
-    "--output", "-o", default="yaml",
-    type=click.Choice(["yaml", "json", "human", "pprint"]),
+    "--output", "-o", default="",
+    type=click.Choice(["yaml", "json", "human", "pprint",
+                       "y", "j", "h", "p", ""]),
     show_choices=True,
-    help="""override default output format. Abbreviation is possible
-    (eg. '-o pp', '-o h', ...)""")
+    help="""override default output format.""")
 @click.option(
     "--config-file", "-c", type=click.Path(),
     default="~/.config/synadm.yaml",
