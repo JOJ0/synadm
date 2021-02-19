@@ -176,6 +176,7 @@ python3 setup.py install
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
   * [x] `room make-admin <room id> <user id>`
+  * [ ] `room state <room id>`
   * [ ] Additional commands and aliases derived from rooms API's
     * [ ] `room count`
     * [ ] `room top-complexity`
@@ -190,6 +191,7 @@ python3 setup.py install
   * [x] `user deactivate <user id>`
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
+  * [ ] `user shadow_ban <user id>`
   * [ ] Additional commands and aliases derived from user API's
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user query <user id>` (alias of `user details`)
