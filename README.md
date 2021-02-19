@@ -1,5 +1,5 @@
 <!-- omit in toc -->
-# synadm - CLI frontend to Matrix-Synapse admin APIs
+# synadm - Matrix-Synapse administration CLI
 
 - [About](#about)
 - [Prerequisites](#prerequisites)
