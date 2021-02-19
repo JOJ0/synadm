@@ -11,11 +11,12 @@ def group():
     """ Manage groups (communities)
     """
 
+
 @group.command(name="delete")
 @click.argument("group_id", type=str)
 @click.pass_obj
 def delete(helper, group_id):
-    """ delete a local group
+    """ delete a local group (community)
     """
     sure = (
         helper.batch or

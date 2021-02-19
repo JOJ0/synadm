@@ -297,7 +297,7 @@ class SynapseAdmin:
         return self.query("get", "v1/server_version")
 
     def group_delete(self, group_id):
-        """ Delete a group
+        """ Delete a local group (community)
         """
         return self.query("post", f"v1/delete_group/{group_id}")
 
