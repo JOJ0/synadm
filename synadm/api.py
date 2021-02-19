@@ -129,6 +129,11 @@ class SynapseAdmin:
             data.update({"deactivated": False})
         return self.query("put", f"v2/users/{user_id}", data=data)
 
+    def user_whois(self, user_id):
+        """ Return information about the active sessions for a specific user
+        """
+        return self.query("get", f"v1/whois/{user_id}")
+
     def room_list(self, _from, limit, name, order_by, reverse):
         """ List and search rooms
         """
