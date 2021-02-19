@@ -20,7 +20,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its admin API's (https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
+A CLI tool to help admins of [Matrix Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its admin API's (https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
 
 
 
@@ -121,10 +121,10 @@ synadm user
 ```
 or
 ```
-synadm user detail
+synadm user details
 ```
 
-will show help for the particular subcommand right away. 
+will show help for the particular subcommand right away.
 
 *Note: A complete list of currently available commands is found in in chapter [implementation status / commands list](#implementation-status--commands-list)*
 
@@ -151,7 +151,7 @@ python3 setup.py install
 *Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them.*
 
 * [ ] [Account validity API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/account_validity.rst)
-* [ ] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md)
+* [x] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md)
 * [ ] [Event reports API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/event_reports.md)
 * [x] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
   * [x] `media list <room id>`
@@ -204,7 +204,7 @@ python3 setup.py install
 
 ## Get in touch / feedback / support
 
-If you need help with installing, usage or contribution or have anything else on your mind, just join public matrix room #synadm:peek-a-boo.at and get in touch. I am also hanging around on #matrix-dev:matrix.org and #synapse:matrix.org regularily. Just ask for a jojo ;-)
+If you need help with installing, usage or contribution or have anything else on your mind, just join public matrix room [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) and get in touch. I am also hanging around on [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org) and [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org) regularily. Just ask for a jojo ;-)
 
 
 
@@ -215,7 +215,7 @@ If you need help with installing, usage or contribution or have anything else on
 
 * Install `synadm` and report back whether or not the installation process worked on the OS you're running.
 * Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see [implementation examples chapter](#implementation-examples), it really isn't hard, take a look!
-* If you don't code, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on #synadm:peek-a-boo.at or #matrix-dev:matrix.org.
+* If you don't code, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) or [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org).
 
 Thanks in advance for any help! I can't do this without you!
 
