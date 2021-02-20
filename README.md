@@ -188,7 +188,7 @@ python3 setup.py install
   * [x] `user details <user id>`
   * [x] `user modify <user id>` (also used for user creation)
   * [x] `user list`
-  * [x] `user deactivate <user id>`
+  * [x] `user deactivate <user id>` (including GDPR erase)
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
   * [x] `user whois <user id>`
