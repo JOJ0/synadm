@@ -28,7 +28,7 @@ A CLI tool to help admins of [Matrix Synapse homeservers](https://github.com/mat
 ## Prerequisites
 
 - Python 3.6+
-- a running Matrix-Synapse instance
+- a running Synapse instance
 - an admin-enabled user on the instance
 - the admin user's access token
 
