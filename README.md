@@ -1,5 +1,5 @@
 <!-- omit in toc -->
-# synadm - Matrix-Synapse administration CLI
+# synadm - Matrix Synapse admin CLI
 
 - [About](#about)
 - [Prerequisites](#prerequisites)

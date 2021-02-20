@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# synadm - Matrix-Synapse admin CLI
+# synadm
 # Copyright (C) 2020-2021 Johannes Tiefenbacher
 #
 # synadm is free software: you can redistribute it and/or modify
