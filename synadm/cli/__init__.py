@@ -63,7 +63,7 @@ class APIHelper:
         "token": "",
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
-        "matrix_path": "/_matrix/client",
+        "matrix_path": "/_matrix/",
         "timeout": 7
     }
 
@@ -137,7 +137,7 @@ class APIHelper:
             self.config["base_url"], self.config["admin_path"],
             self.config["timeout"], self.requests_debug
         )
-        self.matrix_api = api.MatrixClient(
+        self.matrix_api = api.Matrix(
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["matrix_path"],
