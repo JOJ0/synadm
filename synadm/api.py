@@ -26,16 +26,15 @@ from http.client import HTTPConnection
 import datetime
 
 
-class SynapseAdmin:
-    """ Synapse API client
+class ApiRequest:
+    """ Basic API request handling and helper utilities
     """
-
-    def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
+    def __init__(self, log, user, token, base_url, path, timeout, debug):
         self.log = log
         self.user = user
         self.token = token
         self.base_url = base_url.strip("/")
-        self.admin_path = admin_path.strip("/")
+        self.path = path.strip("/")
         self.headers = {
             "Accept": "application/json",
             "Authorization": "Bearer " + self.token
@@ -48,7 +47,7 @@ class SynapseAdmin:
         """ Generic wrapper around requests methods, handles logging
         and exceptions
         """
-        url = f"{self.base_url}/{self.admin_path}/{urlpart}"
+        url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
         try:
             resp = getattr(requests, method)(
@@ -56,7 +55,9 @@ class SynapseAdmin:
                 params=params, json=data
             )
             if not resp.ok:
-                self.log.warning(f"Synapse returned status code {resp.status_code}")
+                self.log.warning(
+                    f"Synapse returned status code {resp.status_code}"
+                )
             return resp.json()
         except Exception as error:
             self.log.error("%s while querying Synapse: %s",
@@ -79,6 +80,19 @@ class SynapseAdmin:
         """ Get a datetime object from a unix timestamp in ms int
         """
         return datetime.datetime.fromtimestamp(timestamp / 1000)
+
+
+class SynapseAdmin(ApiRequest):
+    """ Synapse admin API client
+    """
+
+    def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
+        super().__init__(
+            log, user, token,
+            base_url, admin_path,
+            timeout, debug
+        )
+        self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
                   _name, _user_id):
