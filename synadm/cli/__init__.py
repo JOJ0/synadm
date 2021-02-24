@@ -63,6 +63,7 @@ class APIHelper:
         "token": "",
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
+        "matrix_path": "/_matrix/client",
         "timeout": 7
     }
 
@@ -134,6 +135,12 @@ class APIHelper:
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["admin_path"],
+            self.config["timeout"], self.requests_debug
+        )
+        self.matrix_api = api.MatrixClient(
+            self.log,
+            self.config["user"], self.config["token"],
+            self.config["base_url"], self.config["matrix_path"],
             self.config["timeout"], self.requests_debug
         )
         return True
@@ -216,6 +223,10 @@ def root(ctx, verbose, batch, output, config_file):
     help="""the path Synapse provides its admin API's, usually the default is
     alright for most installations.""")
 @click.option(
+    "--matrix-path", "-m", type=str,
+    help="""the path Synapse provides the Matrix client API's, usually the
+    default is alright for most installations.""")
+@click.option(
     "--timeout", "-w", type=int,
     help="""the timeout for http queries to admin API's or Matrix Client
     API's. The default is 7 seconds. """)
@@ -229,14 +240,16 @@ def root(ctx, verbose, batch, output, config_file):
     Note that the default output format can always be overridden by using
     global switch -o (eg 'synadm -o pprint user list').""")
 @click.pass_obj
-def config_cmd(helper, user, token, base_url, admin_path, output, timeout):
+def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
+               output, timeout):
     """ Modify synadm's configuration. Configuration details are generally
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
     """
 
     if helper.batch:
-        if not all([user, token, base_url, admin_path, output, timeout]):
+        if not all([user, token, base_url, admin_path, matrix_path,
+                    output, timeout]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -248,6 +261,7 @@ def config_cmd(helper, user, token, base_url, admin_path, output, timeout):
                 "token": token,
                 "base_url": base_url,
                 "admin_path": admin_path,
+                "matrix_path": matrix_path,
                 "format": output,
                 "timeout": timeout
             }):
@@ -271,6 +285,10 @@ def config_cmd(helper, user, token, base_url, admin_path, output, timeout):
             "Synapse admin API path",
             default=admin_path if admin_path else helper.config.get(
                 "admin_path", admin_path)),
+        "matrix_path": click.prompt(
+            "Matrix client API path",
+            default=matrix_path if matrix_path else helper.config.get(
+                "matrix_path", matrix_path)),
         "format": click.prompt(
             "Default output format",
             default=output if output else helper.config.get("format", output),
