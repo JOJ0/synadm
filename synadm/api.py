@@ -82,6 +82,26 @@ class ApiRequest:
         return datetime.datetime.fromtimestamp(timestamp / 1000)
 
 
+class MatrixClient(ApiRequest):
+    """ Matrix API client
+    """
+    def __init__(self, log, user, token, base_url, client_path,
+                 timeout, debug):
+        super().__init__(
+            log, user, token,
+            base_url, client_path,
+            timeout, debug
+        )
+        self.user = user
+
+    def user_login(self, user_id, password):
+        return self.query("get", f"r0/login/{user_id}", data={
+            "password": password,
+            "type": "m.login.password",
+            "user": f"{user_id}"
+        })
+
+
 class SynapseAdmin(ApiRequest):
     """ Synapse admin API client
     """
