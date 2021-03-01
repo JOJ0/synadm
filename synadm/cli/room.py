@@ -29,6 +29,17 @@ def room():
     """
 
 
+@room.command()
+@click.argument("room_id_or_alias", type=str)
+@click.argument("user_id", type=str)
+@click.pass_obj
+def join(helper, room_id_or_alias, user_id):
+    """ join a room
+    """
+    out = helper.api.room_join(room_id_or_alias, user_id)
+    helper.output(out)
+
+
 @room.command(name="list")
 @click.pass_obj
 @click.option(

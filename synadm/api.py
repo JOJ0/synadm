@@ -185,6 +185,13 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/whois/{user_id}")
 
+    def room_join(self, room_id_or_alias, user_id):
+        """ Allow an administrator to join an user account with a given user_id
+        to a room with a given room_id_or_alias
+        """
+        data = {"user_id": user_id}
+        return self.query("post", f"v1/join/{room_id_or_alias}", data=data)
+
     def room_list(self, _from, limit, name, order_by, reverse):
         """ List and search rooms
         """
