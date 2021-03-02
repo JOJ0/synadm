@@ -167,8 +167,8 @@ python3 setup.py install
   * [ ] `history purge-status <purge id>`
 * [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Register API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/register_api.rst)
-* [ ] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
-  * [ ] `room join`
+* [x] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
+  * [x] `room join`
 * [x] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
   * [x] `room list`
   * [x] `room search <search-term>` (shortcut to `room list -n <search-term>`)
