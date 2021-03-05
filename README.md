@@ -64,6 +64,8 @@ cd synadm
 sudo python3 setup.py install
 ```
 
+*Note: If you get an import error for setuptools, make sure the package is installed. Debian based systems: `sudo apt install python3-setuptools`, RedHat based: `sudo yum install python3-setuptools`* 
+
 <!-- omit in toc -->
 ### 4. Run
 
