@@ -265,6 +265,16 @@ class SynapseAdmin(ApiRequest):
             "post", f"v1/user/{user_id}/media/quarantine", data={}
         )
 
+    def user_media(self, user_id, _from, limit, order_by, reverse):
+        """ Get a user's uploaded media
+        """
+        return self.query("get", f"v1/users/{user_id}/media", params={
+            "from": _from,
+            "limit": limit,
+            "order_by": order_by,
+            "dir": "b" if reverse else None
+        })
+
     def media_delete(self, server_name, media_id):
         """ Delete a specific (local) media_id
         """
@@ -358,4 +368,3 @@ class SynapseAdmin(ApiRequest):
         """ Delete a local group (community)
         """
         return self.query("post", f"v1/delete_group/{group_id}")
-
