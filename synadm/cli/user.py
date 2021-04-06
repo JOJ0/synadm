@@ -24,6 +24,13 @@ import click_option_group
 from synadm import cli
 
 
+# helper function to retrieve functions from within this package from another
+# package (e.g used in ctx.invoke calls)
+def get_function(function_name):
+    if function_name == 'user_media_cmd':
+        return user_media_cmd
+
+
 @cli.root.group()
 def user():
     """ list, add, modify, deactivate/erase users, reset passwords
