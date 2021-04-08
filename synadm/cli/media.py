@@ -37,14 +37,36 @@ def media():
     help="")
 @click_option_group.optgroup.option(
     "--room-id", "-r", type=str,
-    help="""list all media in room with this room ID (!abcdefg).""")
+    help="""list all media in room with this room ID ('!abcdefg').""")
 @click_option_group.optgroup.option(
     "--user-id", "-u", type=str,
     help="""list all media uploaded by user with this matrix ID
     (@user:server).""")
+@click.option(
+    "--from", "-f", "from_", type=int, default=0, show_default=True,
+    help="""offset media listing by given number. This option is also used for
+    pagination but only supported together with --user-id.""")
+@click.option(
+    "--limit", "-l", type=int, default=100, show_default=True,
+    help="""limit media listing to given number. This option is only supported
+    together with --user-id.""")
+@click.option(
+    "--sort", "-s", type=click.Choice([
+        "media_id", "upload_name", "created_ts", "last_access_ts",
+        "media_length", "media_type", "quarantined_by",
+        "safe_from_quarantine"]),
+    help="""The method by which to sort the returned list of media. If the
+    ordered field has duplicates, the second order is always by ascending
+    media_id, which guarantees a stable ordering. This option is only
+    supported together with --user-id.""")
+@click.option(
+    "--reverse", "-R", is_flag=True, default=False,
+    help="""Direction of media order. If set it will reverse the sort order of
+    --order-by method. This option is only supported together with --user-id.
+    """)
 @click.pass_obj
 @click.pass_context
-def media_list_cmd(ctx, helper, room_id, user_id):
+def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
     """ list local media by room or user
     """
     if room_id:
@@ -54,49 +76,9 @@ def media_list_cmd(ctx, helper, room_id, user_id):
             raise SystemExit(1)
         helper.output(media_list)
     elif user_id:
-        #media_list = helper.api.user_media_list(user_id)
         from synadm.cli import user
-        ctx.invoke(user.get_function("user_media_cmd"), user_id=user_id)
-        raise SystemExit(0)
-
-
-#@user.command(name="media")
-#@click.argument("user_id", type=str)
-#@click.option(
-#    "--from", "-f", "from_", type=int, default=0, show_default=True,
-#    help="""offset media listing by given number. This option is also used for
-#    pagination.""")
-#@click.option(
-#    "--limit", "-l", type=int, default=100, show_default=True,
-#    help="limit media listing to given number")
-#@click.option(
-#    "--sort", "-s", type=click.Choice([
-#        "media_id", "upload_name", "created_ts", "last_access_ts",
-#        "media_length", "media_type", "quarantined_by",
-#        "safe_from_quarantine"]),
-#    help="""The method by which to sort the returned list of media. If the
-#    ordered field has duplicates, the second order is always by ascending
-#    media_id, which guarantees a stable ordering.""")
-#@click.option(
-#    "--reverse", "-r", is_flag=True, default=False,
-#    help="""Direction of media order. If set it will reverse the sort order of
-#    --order-by method.""")
-#@click.pass_obj
-#def user_list_media_cmd(helper, user_id, from_, limit, sort, reverse):
-#    """ list all local media uploaded by a user. Provide matrix user ID
-#    (@user:server) as argument.
-#
-#    Gets a list of all local media that a specific user_id has created. By
-#    default, the response is ordered by descending creation date and
-#    ascending media ID. The newest media is on top. You can change the order
-#    with options --order-by and --reverse.
-#
-#    Caution. The database only has indexes on the columns media_id, user_id
-#    and created_ts. This means that if a different sort order is used
-#    (upload_name, last_access_ts, media_length, media_type, quarantined_by or
-#    safe_from_quarantine), this can cause a large load on the database,
-#    especially for large environments
-#    """
+        ctx.invoke(user.get_function("user_media_cmd"), user_id=user_id,
+                   from_=from_, limit=limit, sort=sort, reverse=reverse)
 
 
 @media.command(name="quarantine")
