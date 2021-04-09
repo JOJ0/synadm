@@ -122,7 +122,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
                 click.echo("User successfully {}.".format(m_erase_or_deact_p))
             else:
                 click.echo("Synapse returned: {}".format(
-                      deactivated["id_server_unbind_result"]))
+                           deactivated["id_server_unbind_result"]))
         else:
             helper.output(deactivated)
     else:
@@ -244,7 +244,8 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @optgroup.option(
     "--avatar-url", "-v", type=str,
     help="""set avatar URL. Must be a MXC URI
-    (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).""")
+    (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris)
+    """)
 @optgroup.option(
     "--admin/--no-admin", "-a/-u", default=None,
     help="""grant user admin permission. Eg user is allowed to use the admin
@@ -328,6 +329,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             helper.output(modified)
     else:
         click.echo("Abort.")
+
 
 @user.command()
 @click.argument("user_id", type=str)
