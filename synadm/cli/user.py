@@ -19,7 +19,8 @@
 """
 
 import click
-import click_option_group
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import RequiredAnyOptionGroup
 
 from synadm import cli
 
@@ -44,16 +45,16 @@ def user():
 @click.option(
     "--deactivated", "-d", is_flag=True, default=False,
     help="also show deactivated/erased users", show_default=True)
-@click_option_group.optgroup.group(
+@optgroup.group(
     "Search options",
-    cls=click_option_group.MutuallyExclusiveOptionGroup,
+    cls=MutuallyExclusiveOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--name", "-n", type=str,
     help="""search users by name - filters to only return users with user ID
     localparts or displaynames that contain this value (localpart is the left
     part before the colon of the matrix ID (@user:server)""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--user-id", "-i", type=str,
     help="""search users by ID - filters to only return users with Matrix IDs
     (@user:server) that contain this value""")
@@ -212,7 +213,7 @@ def user_details_cmd(helper, user_id):
     helper.output(user_data)
 
 
-class UserModifyOptionGroup(click_option_group.RequiredAnyOptionGroup):
+class UserModifyOptionGroup(RequiredAnyOptionGroup):
     @property
     def name_extra(self):
         return []
@@ -220,17 +221,17 @@ class UserModifyOptionGroup(click_option_group.RequiredAnyOptionGroup):
 
 @user.command()
 @click.argument("user_id", type=str)
-@click_option_group.optgroup.group(cls=UserModifyOptionGroup)
-@click_option_group.optgroup.option(
+@optgroup.group(cls=UserModifyOptionGroup)
+@optgroup.option(
     "--password-prompt", "-p", is_flag=True,
     help="set password interactively.")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--password", "-P", type=str,
     help="set password on command line.")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--display-name", "-n", type=str,
     help="set display name. defaults to the value of user_id")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--threepid", "-t", type=str, multiple=True, nargs=2,
     help="""add a third-party identifier. This can be an email address or a
     phone number. Threepids are used for several things: For use when
@@ -240,18 +241,18 @@ class UserModifyOptionGroup(click_option_group.RequiredAnyOptionGroup):
     value (eg. --threepid email <user@example.org>). This option can also
     be stated multiple times, i.e. a user can have multiple threepids
     configured.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--avatar-url", "-v", type=str,
     help="""set avatar URL. Must be a MXC URI
     (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris).""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--admin/--no-admin", "-a/-u", default=None,
     help="""grant user admin permission. Eg user is allowed to use the admin
     API""", show_default=True,)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--activate", "deactivation", flag_value="activate",
     help="""re-activate user.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--deactivate", "deactivation", flag_value="deactivate",
     help="""deactivate user. Use with caution! Deactivating a user
     removes their active access tokens, resets their password, kicks them out
