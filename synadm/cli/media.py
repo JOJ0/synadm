@@ -19,9 +19,11 @@
 """
 
 import click
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import RequiredAnyOptionGroup, OptionGroup
+from click_option_group import RequiredMutuallyExclusiveOptionGroup
 
 from synadm import cli
-import click_option_group
 
 
 @cli.root.group()
@@ -31,32 +33,70 @@ def media():
 
 
 @media.command(name="list")
-@click.argument("room_id", type=str)
+@optgroup.group(
+    "List media by",
+    cls=RequiredAnyOptionGroup,
+    help="")
+@optgroup.option(
+    "--room-id", "-r", type=str,
+    help="""list all media in room with this room ID ('!abcdefg').""")
+@optgroup.option(
+    "--user-id", "-u", type=str,
+    help="""list all media uploaded by user with this matrix ID
+    (@user:server).""")
+@click.option(
+    "--from", "-f", "from_", type=int, default=0, show_default=True,
+    help="""offset media listing by given number. This option is also used for
+    pagination but only supported together with --user-id.""")
+@click.option(
+    "--limit", "-l", type=int, default=100, show_default=True,
+    help="""limit media listing to given number. This option is only supported
+    together with --user-id.""")
+@click.option(
+    "--sort", "-s", type=click.Choice([
+        "media_id", "upload_name", "created_ts", "last_access_ts",
+        "media_length", "media_type", "quarantined_by",
+        "safe_from_quarantine"]),
+    help="""The method by which to sort the returned list of media. If the
+    ordered field has duplicates, the second order is always by ascending
+    media_id, which guarantees a stable ordering. This option is only
+    supported together with --user-id.""")
+@click.option(
+    "--reverse", "-R", is_flag=True, default=False,
+    help="""Direction of media order. If set it will reverse the sort order of
+    --order-by method. This option is only supported together with --user-id.
+    """)
 @click.pass_obj
-def media_list_cmd(helper, room_id):
-    """ list all media in a room
+@click.pass_context
+def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
+    """ list local media by room or user
     """
-    media_list = helper.api.room_media_list(room_id)
-    if media_list is None:
-        click.echo("Media list could not be fetched.")
-        raise SystemExit(1)
-    helper.output(media_list)
+    if room_id:
+        media_list = helper.api.room_media_list(room_id)
+        if media_list is None:
+            click.echo("Media list could not be fetched.")
+            raise SystemExit(1)
+        helper.output(media_list)
+    elif user_id:
+        from synadm.cli import user
+        ctx.invoke(user.get_function("user_media_cmd"), user_id=user_id,
+                   from_=from_, limit=limit, sort=sort, reverse=reverse)
 
 
 @media.command(name="quarantine")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "Quarantine media by",
-    cls=click_option_group.RequiredAnyOptionGroup,
+    cls=RequiredAnyOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--media-id", "-i", type=str,
     help="""the media with this specific media ID will be quarantined.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--room-id", "-r", type=str,
     help="""all media in room with this room ID (!abcdefg) will be
     quarantined.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--user-id", "-u", type=str,
     help="""all media uploaded by user with this matrix ID (@user:server) will
     be quarantined.""")
@@ -101,19 +141,19 @@ def media_protect_cmd(helper, media_id):
 
 
 @media.command(name="purge")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "Purge by",
-    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
+    cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--days", "-d", type=int,
     help="""Purge all media that was last accessed before this number of days.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before", "-b", type=click.DateTime(),
     help="""Purge all media that was last accessed before this date/time. Eg.
     '2021-01-01', see above for available date/time formats.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before-ts", "-t", type=int,
     help="""Purge all media that was last accessed before this unix
     timestamp in ms.
@@ -130,34 +170,34 @@ def media_purge_cmd(helper, days, before, before_ts):
 
 
 @media.command(name="delete")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "delete criteria",
-    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
+    cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--media-id", "-i", type=str,
     help="""the media with this specific media ID will be deleted.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--days", "-d", type=int,
     help="""delete all media that was last accessed before this number of days.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before", "-b", type=click.DateTime(),
     help="""delete all media that was last accessed before this date/time. Eg.
     '2021-01-01', see above for available date/time formats.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before-ts", "-t", type=int,
     help="""delete all media that was last accessed before this unix
     timestamp in ms.""")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "additional switches",
-    cls=click_option_group.OptionGroup,
+    cls=OptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--size", "--kib", type=int,
     help="""delete all media that is larger than this size in KiB
     (1 KiB = 1024 bytes).""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--delete-profiles", "--all", is_flag=True,
     help="""also delete files that are still used in image data
     (e.g user profile, room avatar). If set, these files will be
