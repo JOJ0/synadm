@@ -19,9 +19,11 @@
 """
 
 import click
+from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import RequiredAnyOptionGroup, OptionGroup
+from click_option_group import RequiredMutuallyExclusiveOptionGroup
 
 from synadm import cli
-import click_option_group
 
 
 @cli.root.group()
@@ -31,14 +33,14 @@ def media():
 
 
 @media.command(name="list")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "List media by",
-    cls=click_option_group.RequiredAnyOptionGroup,
+    cls=RequiredAnyOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--room-id", "-r", type=str,
     help="""list all media in room with this room ID ('!abcdefg').""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--user-id", "-u", type=str,
     help="""list all media uploaded by user with this matrix ID
     (@user:server).""")
@@ -82,19 +84,19 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
 
 
 @media.command(name="quarantine")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "Quarantine media by",
-    cls=click_option_group.RequiredAnyOptionGroup,
+    cls=RequiredAnyOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--media-id", "-i", type=str,
     help="""the media with this specific media ID will be quarantined.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--room-id", "-r", type=str,
     help="""all media in room with this room ID (!abcdefg) will be
     quarantined.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--user-id", "-u", type=str,
     help="""all media uploaded by user with this matrix ID (@user:server) will
     be quarantined.""")
@@ -139,19 +141,19 @@ def media_protect_cmd(helper, media_id):
 
 
 @media.command(name="purge")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "Purge by",
-    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
+    cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--days", "-d", type=int,
     help="""Purge all media that was last accessed before this number of days.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before", "-b", type=click.DateTime(),
     help="""Purge all media that was last accessed before this date/time. Eg.
     '2021-01-01', see above for available date/time formats.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before-ts", "-t", type=int,
     help="""Purge all media that was last accessed before this unix
     timestamp in ms.
@@ -168,34 +170,34 @@ def media_purge_cmd(helper, days, before, before_ts):
 
 
 @media.command(name="delete")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "delete criteria",
-    cls=click_option_group.RequiredMutuallyExclusiveOptionGroup,
+    cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--media-id", "-i", type=str,
     help="""the media with this specific media ID will be deleted.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--days", "-d", type=int,
     help="""delete all media that was last accessed before this number of days.
     """)
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before", "-b", type=click.DateTime(),
     help="""delete all media that was last accessed before this date/time. Eg.
     '2021-01-01', see above for available date/time formats.""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--before-ts", "-t", type=int,
     help="""delete all media that was last accessed before this unix
     timestamp in ms.""")
-@click_option_group.optgroup.group(
+@optgroup.group(
     "additional switches",
-    cls=click_option_group.OptionGroup,
+    cls=OptionGroup,
     help="")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--size", "--kib", type=int,
     help="""delete all media that is larger than this size in KiB
     (1 KiB = 1024 bytes).""")
-@click_option_group.optgroup.option(
+@optgroup.option(
     "--delete-profiles", "--all", is_flag=True,
     help="""also delete files that are still used in image data
     (e.g user profile, room avatar). If set, these files will be
