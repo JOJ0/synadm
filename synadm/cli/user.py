@@ -397,6 +397,9 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
         if "next_token" in media:
             click.echo("There is more results available than shown, "
                        "use '--from {}' "
-                       "to go to next page".format(media["next_token"]))
+                       "to go to next page (Total results: {})".format(
+                           media["next_token"],
+                           media["total"]
+                       ))
     else:
         helper.output(media)
