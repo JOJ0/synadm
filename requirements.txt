@@ -2,4 +2,4 @@ click
 requests
 pyyaml
 tabulate
-click-option-group
+click-option-group>=0.5.2
