@@ -156,7 +156,8 @@ python3 setup.py install
 * [x] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md) (delete community)
 * [ ] [Event reports API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/event_reports.md)
 * [x] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
-  * [x] `media list <room id>`
+  * [x] `media list -r <room id>`
+  * [x] `media list -u <user id>` (alias of `user media <user id>`)
   * [x] `media quarantine -s <server name> -i <media id>`
   * [x] `media quarantine -r <room id>`
   * [x] `media quarantine -u <room id>`
@@ -195,6 +196,7 @@ python3 setup.py install
   * [x] `user membership <user id>`
   * [x] `user whois <user id>`
   * [ ] `user shadow_ban <user id>`
+  * [x] `user media -u <user id>` (also available as `media list -u <user id>`)
   * [ ] Additional commands and aliases derived from user API's
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user query <user id>` (alias of `user details`)
