@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='synadm',
-    version='0.27',
+    version='0.28',
     packages=find_packages(),
     install_requires=[
         'Click>=7.0,<8.0',
