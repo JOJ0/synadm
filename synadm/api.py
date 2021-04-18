@@ -408,3 +408,10 @@ class SynapseAdmin(ApiRequest):
             })
 
         return self.query("post", f"v1/purge_history/{room_id}", data=data)
+
+    def purge_history_status(self, purge_id):
+        """ Get status of a recent history purge
+
+        The status will be one of active, complete, or failed.
+        """
+        return self.query("get", f"v1/purge_history_status/{purge_id}")

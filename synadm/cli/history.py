@@ -106,3 +106,27 @@ def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
                     "status of purge job.".format(history_purged["purge_id"])
                 )
             helper.output(history_purged)
+
+
+@history.command(name="purge-status")
+@click.argument("purge_id", type=str)
+@click.pass_obj
+def history_purge_status_cmd(helper, purge_id):
+    """ view status of a recent history purge. Provide purge ID as argument.
+
+    The status will be one of active, complete, or failed.
+    """
+    purge_history_status = helper.api.purge_history_status(purge_id)
+    if helper.batch:
+        if purge_history_status is None:
+            raise SystemExit(1)
+        helper.output(purge_history_status)
+    else:
+        if purge_history_status is None:
+            click.echo("History purge status could not be fetched.")
+            raise SystemExit(1)
+        if "status" in purge_history_status:
+            click.echo("Status of history purge is {}.".format(
+                purge_history_status["status"]))
+        else:
+            helper.output(purge_history_status)
