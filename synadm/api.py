@@ -368,3 +368,43 @@ class SynapseAdmin(ApiRequest):
         """ Delete a local group (community)
         """
         return self.query("post", f"v1/delete_group/{group_id}")
+
+    def purge_history(self, room_id, before_days, before, _before_ts,
+                      before_event_id, delete_local):
+        """ Purge room history
+        """
+        before_ts = None
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
+        elif before:
+            self.log.debug("Received --before: %s", before)
+            before_ts = self._timestamp_from_datetime(before)
+        elif _before_ts:
+            self.log.debug("Received --before-ts: %s",
+                           _before_ts)
+            before_ts = _before_ts  # Click checks for int already
+        elif before_event_id:
+            self.log.debug("Received --event-id: %s",
+                           before_event_id)
+
+        data = {}
+        if before_ts is not None:
+            data.update({
+                "purge_up_to_ts": before_ts,
+            })
+            self.log.info("Purging history older than timestamp: %d,",
+                          before_ts)
+            self.log.info("which is the date: %s",
+                          self._datetime_from_timestamp(before_ts))
+        elif before_event_id:
+            data.update({
+                "purge_up_to_event_id": before_event_id,
+            })
+
+        if delete_local:
+            data.update({
+                "delete_local_events": True,
+            })
+
+        return self.query("post", f"v1/purge_history/{room_id}", data=data)
