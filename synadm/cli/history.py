@@ -37,8 +37,10 @@ def history():
     cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
 @optgroup.option(
-    "--event-id", "-i", type=str,
-    help="""purge all history before this event ID.""")
+    "--before-event-id", "-i", type=str,
+    help="""purge all history before this event ID. Event ID's contain $,
+    which is interpreted by the shell. Make sure it is surrounded by single
+    quotes ('id').""")
 @optgroup.option(
     "--before-days", "-d", type=int,
     help="""purge all history before this number of days ago.""")
@@ -55,7 +57,8 @@ def history():
     help="""this option overrides the default behavior and forces removal of
     events sent by local users.""")
 @click.pass_obj
-def history_purge_cmd(helper, event_id, days, before, before_ts):
+def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
+                      before_ts, delete_local):
     """ purge room events before a point in time or before an event ID.
 
     The purge history API allows server admins to purge historic events from
@@ -78,9 +81,28 @@ def history_purge_cmd(helper, event_id, days, before, before_ts):
     body with a purge id. Use 'synadm history purge-status <purge id>' to
     poll for updates on the running purge.
     """
-    history_purged = helper.api.purge_history(event_id, days, before,
-                                              before_ts)
-    if history_purged is None:
-        click.echo("History could not be purged.")
-        raise SystemExit(1)
-    helper.output(history_purged)
+    sure = (
+        helper.batch or
+        click.prompt("Are you sure you want to purge room history? (y/N)",
+                     type=bool, default=False, show_default=False)
+    )
+    if sure:
+        history_purged = helper.api.purge_history(
+            room_id, before_event_id, before_days, before, before_ts,
+            delete_local
+        )
+
+        if helper.batch:
+            helper.output(history_purged)
+            if history_purged is None:
+                raise SystemExit(1)
+        else:
+            if history_purged is None:
+                click.echo("History could not be purged.")
+                raise SystemExit(1)
+            if "purge_id" in history_purged:
+                click.echo(
+                    "Use 'synadm history purge-status {}' to get "
+                    "status of purge job.".format(history_purged["purge_id"])
+                )
+            helper.output(history_purged)
