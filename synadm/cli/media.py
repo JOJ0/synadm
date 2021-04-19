@@ -146,8 +146,9 @@ def media_protect_cmd(helper, media_id):
     cls=RequiredMutuallyExclusiveOptionGroup,
     help="")
 @optgroup.option(
-    "--days", "-d", type=int,
-    help="""Purge all media that was last accessed before this number of days.
+    "--before-days", "-d", type=int,
+    help="""Purge all media that was last accessed before this number of days
+    ago.
     """)
 @optgroup.option(
     "--before", "-b", type=click.DateTime(),
@@ -159,10 +160,10 @@ def media_protect_cmd(helper, media_id):
     timestamp in ms.
     """)
 @click.pass_obj
-def media_purge_cmd(helper, days, before, before_ts):
+def media_purge_cmd(helper, before_days, before, before_ts):
     """ Purge old cached remote media
     """
-    media_purged = helper.api.purge_media_cache(days, before, before_ts)
+    media_purged = helper.api.purge_media_cache(before_days, before, before_ts)
     if media_purged is None:
         click.echo("Media cache could not be purged.")
         raise SystemExit(1)
@@ -178,8 +179,9 @@ def media_purge_cmd(helper, days, before, before_ts):
     "--media-id", "-i", type=str,
     help="""the media with this specific media ID will be deleted.""")
 @optgroup.option(
-    "--days", "-d", type=int,
-    help="""delete all media that was last accessed before this number of days.
+    "--before-days", "-d", type=int,
+    help="""delete all media that was last accessed before this number of
+    days ago.
     """)
 @optgroup.option(
     "--before", "-b", type=click.DateTime(),
@@ -209,7 +211,7 @@ def media_purge_cmd(helper, days, before, before_ts):
     argument but will be automatically retrieved via the matrix API in
     the future.""")
 @click.pass_obj
-def media_delete_cmd(helper, media_id, server_name, days, before, before_ts,
+def media_delete_cmd(helper, media_id, server_name, before_days, before, before_ts,
                      size, delete_profiles):
     """ delete media by ID, size or age
     """
@@ -226,7 +228,7 @@ def media_delete_cmd(helper, media_id, server_name, days, before, before_ts,
         media_deleted = helper.api.media_delete(server_name, media_id)
     else:
         media_deleted = helper.api.media_delete_by_date_or_size(
-            server_name, days, before, before_ts, size, delete_profiles
+            server_name, before_days, before, before_ts, size, delete_profiles
         )
 
     if media_deleted is None:

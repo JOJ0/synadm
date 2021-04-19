@@ -282,13 +282,13 @@ class SynapseAdmin(ApiRequest):
             "delete", f"v1/media/{server_name}/{media_id}/", data={}
         )
 
-    def media_delete_by_date_or_size(self, server_name, days, before,
+    def media_delete_by_date_or_size(self, server_name, before_days, before,
                                      _before_ts, _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
-        if days:
-            self.log.debug("Received --days: %s", days)
-            before_ts = self._timestamp_from_days(days)
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -334,12 +334,12 @@ class SynapseAdmin(ApiRequest):
             "post", f"v1/media/protect/{media_id}/", data={}
         )
 
-    def purge_media_cache(self, days, before, _before_ts):
+    def purge_media_cache(self, before_days, before, _before_ts):
         """ Purge old cached remote media
         """
-        if days:
-            self.log.debug("Received --days: %s", days)
-            before_ts = self._timestamp_from_days(days)
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
         if before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
