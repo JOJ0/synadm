@@ -282,13 +282,13 @@ class SynapseAdmin(ApiRequest):
             "delete", f"v1/media/{server_name}/{media_id}/", data={}
         )
 
-    def media_delete_by_date_or_size(self, server_name, days, before,
+    def media_delete_by_date_or_size(self, server_name, before_days, before,
                                      _before_ts, _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
-        if days:
-            self.log.debug("Received --days: %s", days)
-            before_ts = self._timestamp_from_days(days)
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -334,12 +334,12 @@ class SynapseAdmin(ApiRequest):
             "post", f"v1/media/protect/{media_id}/", data={}
         )
 
-    def purge_media_cache(self, days, before, _before_ts):
+    def purge_media_cache(self, before_days, before, _before_ts):
         """ Purge old cached remote media
         """
-        if days:
-            self.log.debug("Received --days: %s", days)
-            before_ts = self._timestamp_from_days(days)
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
         if before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -368,3 +368,50 @@ class SynapseAdmin(ApiRequest):
         """ Delete a local group (community)
         """
         return self.query("post", f"v1/delete_group/{group_id}")
+
+    def purge_history(self, room_id, before_event_id, before_days, before,
+                      _before_ts, delete_local):
+        """ Purge room history
+        """
+        before_ts = None
+        if before_days:
+            self.log.debug("Received --before-days: %s", before_days)
+            before_ts = self._timestamp_from_days(before_days)
+        elif before:
+            self.log.debug("Received --before: %s", before)
+            before_ts = self._timestamp_from_datetime(before)
+        elif _before_ts:
+            self.log.debug("Received --before-ts: %s",
+                           _before_ts)
+            before_ts = _before_ts  # Click checks for int already
+        elif before_event_id:
+            self.log.debug("Received --event-id: %s",
+                           before_event_id)
+
+        data = {}
+        if before_ts is not None:
+            data.update({
+                "purge_up_to_ts": before_ts,
+            })
+            self.log.info("Purging history older than timestamp: %d,",
+                          before_ts)
+            self.log.info("which is the date/time: %s",
+                          self._datetime_from_timestamp(before_ts))
+        elif before_event_id:
+            data.update({
+                "purge_up_to_event_id": before_event_id,
+            })
+
+        if delete_local:
+            data.update({
+                "delete_local_events": True,
+            })
+
+        return self.query("post", f"v1/purge_history/{room_id}", data=data)
+
+    def purge_history_status(self, purge_id):
+        """ Get status of a recent history purge
+
+        The status will be one of active, complete, or failed.
+        """
+        return self.query("get", f"v1/purge_history_status/{purge_id}")
