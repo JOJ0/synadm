@@ -165,9 +165,9 @@ python3 setup.py install
   * [x] `media delete -s <server name> -i <media id>`
   * [x] `media delete -s <server name> --before <date> --size 1024`
   * [x] `media purge --before <date>` (purge remote media API)
-* [ ] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
-  * [ ] `history purge <room id>`
-  * [ ] `history purge-status <purge id>`
+* [x] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
+  * [x] `history purge <room id>`
+  * [x] `history purge-status <purge id>`
 * [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Register API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/register_api.rst)
 * [x] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
