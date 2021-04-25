@@ -237,7 +237,8 @@ class SynapseAdmin(ApiRequest):
         data = {}
         if user_id:
             data.update({"user_id": user_id})
-        return self.query("post", f"v1/rooms/{room_id}/make_room_admin", data=data)
+        return self.query("post", f"v1/rooms/{room_id}/make_room_admin",
+                          data=data)
 
     def room_media_list(self, room_id):
         """ Get a list of known media in an (unencrypted) room.
