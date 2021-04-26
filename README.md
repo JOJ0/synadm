@@ -1,5 +1,5 @@
 <!-- omit in toc -->
-# synadm - Matrix Synapse admin CLI
+# synadm - the Matrix-Synapse admin CLI
 
 - [About](#about)
 - [Prerequisites](#prerequisites)
@@ -14,6 +14,7 @@
   - [Install to virtual environment](#install-to-virtual-environment)
   - [Install in development mode](#install-in-development-mode)
   - [Implementation examples](#implementation-examples)
+  - [Developer's documentation](#developers-documentation)
 
 
 
@@ -101,6 +102,7 @@ Configuration will be saved in `~/.config/synadm.yaml`
 
 ## Usage
 
+A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
 
 Use the online help of the main command:
 
@@ -116,7 +118,7 @@ synadm user -h
 synadm room -h
 ```
 
-You even can spare the `-h` option, `synadm` will show help for the executed subcommand anyway. For example:
+You even can spare the `-h` option, `synadm` will show some abbreviated help for the executed subcommand anyway. For example:
 
 ```
 synadm user
@@ -126,7 +128,7 @@ or
 synadm user details
 ```
 
-will show help for the particular subcommand right away.
+will show essential help for the particular subcommand right away.
 
 *Note: A complete list of currently available commands is found in in chapter [implementation status / commands list](#implementation-status--commands-list)*
 
@@ -150,7 +152,9 @@ python3 setup.py install
 
 [Synapse Admin API docs main page](https://github.com/matrix-org/synapse/tree/master/docs/admin_api) - direct links to the specific API documentation pages are provided in the list below.
 
-*Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them.*
+*Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them or have a look at the [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
+
+
 
 * [ ] [Account validity API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/account_validity.rst)
 * [x] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md) (delete community)
@@ -301,3 +305,7 @@ And another example, this time using a POST based API endpoint. It implements co
 
 and again it needs a backend method in api.py:
 https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
+
+### Developer's documentation
+
+Have a look at [synadm's module documentation pages on readthedocs](https://synadm.readthedocs.io/en/latest/index_modules.html)

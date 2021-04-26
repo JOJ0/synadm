@@ -193,7 +193,7 @@ class APIHelper:
     help="configuration file path", show_default=True)
 @click.pass_context
 def root(ctx, verbose, batch, output, config_file):
-    """ Synapse Administration toolkit
+    """ the Matrix-Synapse admin CLI
     """
     ctx.obj = APIHelper(config_file, verbose, batch, output)
     helper_loaded = ctx.obj.load()
