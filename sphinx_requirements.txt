@@ -1,0 +1,9 @@
+click
+requests
+pyyaml
+tabulate
+click-option-group>=0.5.2
+
+Sphinx
+sphinx-click
+sphinx-rtd-theme
