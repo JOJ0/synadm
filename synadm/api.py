@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" Synapse admin API functions
+"""Synapse admin API and regular Matrix API clients
 
 See https://github.com/matrix-org/synapse/tree/master/docs/admin_api for
-documentaiton.
+documentation of the Synapse admin APIs and the Matrix spec at https://matrix.org/docs/spec/#matrix-apis for the available Matrix APIs.
 """
 
 import requests
@@ -27,9 +27,23 @@ import datetime
 
 
 class ApiRequest:
-    """ Basic API request handling and helper utilities
+    """Basic API request handling and helper utilities
+
+    This is subclassed by SynapseAdmin and Matrix
     """
     def __init__(self, log, user, token, base_url, path, timeout, debug):
+        """Initialize an APIRequest object
+
+        Args:
+            log (logger object): an already initialized logger object
+            user (string): Synapse admin-enabled user (currently unused)
+            token (string): Synapse admin-enabled user's token
+            base_url (string): URI e.g https://fqdn:port
+            path (string): the path to the API endpoint; it's put after
+                base_url to form the basis for all API endpoint paths
+            timeout (int): requests module timeout used in query method
+            debug (bool): enable/disable debugging in requests module
+        """
         self.log = log
         self.user = user
         self.token = token
@@ -44,8 +58,25 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
 
     def query(self, method, urlpart, params=None, data=None):
-        """ Generic wrapper around requests methods, handles logging
-        and exceptions
+        """ Generic wrapper around requests methods
+
+        handles requests methods, logging and exceptions
+
+        Args:
+            urlpart (string): the path to the API endpoint, excluding
+                self.base_url and self.path (the part after
+                proto://fqdn:port/path).
+            params (dict, optional): URL parameters (?parm1&parm2).  Defaults
+                to None.
+            data (dict, optional): request body used in POST, PUT, DELETE
+                requests.  Defaults to None.
+
+        Returns:
+            string or None: usually a JSON string containing
+            the response of the API; responses that are not 200(OK) (usally
+            error messages returned by the API) will also be returned as JSON
+            strings; on exceptions the error type and description are logged
+            and None is returned.
         """
         url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
@@ -66,24 +97,46 @@ class ApiRequest:
 
     def _timestamp_from_days(self, days):
         """ Get a unix timestamp in ms from days ago
+
+        Args:
+            days (int): number of days
+
+        Returns:
+            int: a unix timestamp in milliseconds (ms)
         """
         return int((
             datetime.datetime.now() - datetime.timedelta(days=days)
         ).timestamp() * 1000)
 
     def _timestamp_from_datetime(self, _datetime):
-        """ Get a unix timestamp in ms from a datetime object
+        """Get a unix timestamp in ms from a datetime object
+
+        Args:
+            _datetime (datetime object): an object built by datetime.datetime
+
+        Returns:
+            int: a unix timestamp in milliseconds (ms)
         """
         return int(_datetime.timestamp()) * 1000
 
     def _datetime_from_timestamp(self, timestamp):
-        """ Get a datetime object from a unix timestamp in ms int
+        """ Get a datetime object from a unix timestamp in ms
+
+        Args:
+            timestamp (int): a unix timestamp in milliseconds (ms)
+
+        Returns:
+            datetime object: an object built by datetime.datetime
         """
         return datetime.datetime.fromtimestamp(timestamp / 1000)
 
 
 class Matrix(ApiRequest):
     """ Matrix API client
+
+    Inheritance:
+        ApiRequest (object): parent class containing general properties and
+            methods for requesting REST API's
     """
     def __init__(self, log, user, token, base_url, matrix_path,
                  timeout, debug):
@@ -94,7 +147,17 @@ class Matrix(ApiRequest):
         )
         self.user = user
 
-    def user_login(self, user_id, password):
+    def user_login(self, user_id, password): 
+        """Login as a Matrix user and retrieve an access token
+
+        Args:
+            user_id (string): matrix user ID (@user:server)
+            password (string): the user's password
+
+        Returns:
+            string: an access token suitable to access the Matrix API on the
+                user's behalf.
+        """
         return self.query("get", f"client/r0/login/{user_id}", data={
             "password": password,
             "type": "m.login.password",
@@ -103,9 +166,12 @@ class Matrix(ApiRequest):
 
 
 class SynapseAdmin(ApiRequest):
-    """ Synapse admin API client
-    """
+    """Synapse admin API client
 
+    Inheritance:
+        ApiRequest (object): parent class containing general properties and
+            methods for requesting REST API's
+    """
     def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
         super().__init__(
             log, user, token,
