@@ -17,8 +17,15 @@
 
 """Synapse admin API and regular Matrix API clients
 
+Most API calls defined in this module respect the API's defaults and only pass
+what's necessary in the request body.
+
+A fully qualified Matrix user ID looks like this: @user:server, where server
+often is a domain name only, e.g @user@example.org
+
 See https://github.com/matrix-org/synapse/tree/master/docs/admin_api for
-documentation of the Synapse admin APIs and the Matrix spec at https://matrix.org/docs/spec/#matrix-apis for the available Matrix APIs.
+documentation of the Synapse admin APIs and the Matrix spec at
+https://matrix.org/docs/spec/#matrix-apis.
 """
 
 import requests
@@ -36,8 +43,10 @@ class ApiRequest:
 
         Args:
             log (logger object): an already initialized logger object
-            user (string): Synapse admin-enabled user (currently unused)
-            token (string): Synapse admin-enabled user's token
+            user (string): the user with access to the API (currently unused).
+                This can either be the fully qualified Matrix user ID, or just
+                the localpart of the user ID.
+            token (string): the API user's token
             base_url (string): URI e.g https://fqdn:port
             path (string): the path to the API endpoint; it's put after
                 base_url to form the basis for all API endpoint paths
@@ -58,25 +67,25 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
 
     def query(self, method, urlpart, params=None, data=None):
-        """ Generic wrapper around requests methods
+        """Generic wrapper around requests methods
 
-        handles requests methods, logging and exceptions
+        Handles requests methods, logging and exceptions
 
         Args:
             urlpart (string): the path to the API endpoint, excluding
                 self.base_url and self.path (the part after
                 proto://fqdn:port/path).
-            params (dict, optional): URL parameters (?parm1&parm2).  Defaults
+            params (dict, optional): URL parameters (?param1&paarm2).  Defaults
                 to None.
             data (dict, optional): request body used in POST, PUT, DELETE
                 requests.  Defaults to None.
 
         Returns:
             string or None: usually a JSON string containing
-            the response of the API; responses that are not 200(OK) (usally
-            error messages returned by the API) will also be returned as JSON
-            strings; on exceptions the error type and description are logged
-            and None is returned.
+                the response of the API; responses that are not 200(OK) (usally
+                error messages returned by the API) will also be returned as
+                JSON strings; on exceptions the error type and description are
+                logged and None is returned.
         """
         url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
@@ -96,7 +105,7 @@ class ApiRequest:
         return None
 
     def _timestamp_from_days(self, days):
-        """ Get a unix timestamp in ms from days ago
+        """Get a unix timestamp in ms from days ago
 
         Args:
             days (int): number of days
@@ -140,6 +149,21 @@ class Matrix(ApiRequest):
     """
     def __init__(self, log, user, token, base_url, matrix_path,
                  timeout, debug):
+        """Initialize the Matrix API object
+
+        Args:
+            log (logger object): an already initialized logger object
+            user (string): the user with access to the Matrix API (currently
+                unused); This can either be the fully qualified Matrix user ID,
+                or just the localpart of the user ID.
+            token (string): the Matrix API user's token
+            base_url (string): URI e.g https://fqdn:port
+            path (string): the path to the API endpoint; it's put after
+                base_url and forms the basis for all API endpoint paths
+            timeout (int): requests module timeout used in ApiRequest.query
+                method
+            debug (bool): enable/disable debugging in requests module
+        """
         super().__init__(
             log, user, token,
             base_url, matrix_path,
@@ -151,12 +175,12 @@ class Matrix(ApiRequest):
         """Login as a Matrix user and retrieve an access token
 
         Args:
-            user_id (string): matrix user ID (@user:server)
-            password (string): the user's password
+            user_id (string): a fully qualified Matrix user ID
+            password (string): the Matrix user's password
 
         Returns:
-            string: an access token suitable to access the Matrix API on the
-                user's behalf.
+            string: JSON string containing a token suitable to access the
+                Matrix API on the user's behalf.
         """
         return self.query("get", f"client/r0/login/{user_id}", data={
             "password": password,
@@ -173,6 +197,21 @@ class SynapseAdmin(ApiRequest):
             methods for requesting REST API's
     """
     def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
+        """Initialize the SynapseAdmin object
+
+        Args:
+            log (logger object): an already initialized logger object
+            user (string): an admin-enabled Synapse user (currently unused).
+                This can either be the fully qualified Matrix user ID,
+                or just the localpart of the user ID. FIXME is that true?
+            token (string): the admin user's token
+            base_url (string): URI e.g https://fqdn:port
+            path (string): the path to the API endpoint; it's put after
+                base_url and the basis for all API endpoint paths
+            timeout (int): requests module timeout used in ApiRequest.query
+                method
+            debug (bool): enable/disable debugging in requests module
+        """
         super().__init__(
             log, user, token,
             base_url, admin_path,
@@ -182,7 +221,19 @@ class SynapseAdmin(ApiRequest):
 
     def user_list(self, _from, _limit, _guests, _deactivated,
                   _name, _user_id):
-        """ List and search users
+        """List and search users
+
+        Args:
+            _from (int): offsets user list by this number, used for pagination
+            _limit (int): maximum number of users returned, used for pagination
+            _guests (bool): enable/disable fetching of guest users
+            _deactivated (bool): enable/disable fetching of deactivated users
+            _name (string): user name localpart to search for, see Synapse
+                admin API docs for details
+            _user_id (string): fully qualified Matrix user ID to search for
+
+        Returns:
+            string: JSON string containing the found users
         """
         return self.query("get", "v2/users", params={
             "from": _from,
@@ -195,19 +246,46 @@ class SynapseAdmin(ApiRequest):
         })
 
     def user_membership(self, user_id):
-        """ Get a given user room list
+        """Get a list of rooms the given user is member of
+
+        Args:
+            user_id (string): fully qualified Matrix user ID
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
         """
         return self.query("get", f"v1/users/{user_id}/joined_rooms")
 
     def user_deactivate(self, user_id, gdpr_erase):
-        """ Delete a given user
+        """Delete a given user
+
+        Args:
+            user_id (string): fully qualified Matrix user ID
+            gdpr_erase (bool): enable/disable gdpr-erasing the user, see
+                Synapse admin API docs for details.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
         """
         return self.query("post", f"v1/deactivate/{user_id}", data={
             "erase": gdpr_erase
         })
 
     def user_password(self, user_id, password, no_logout):
-        """ Set the user password, and log the user out if requested
+        """Set the user password, and log the user out if requested
+
+        Args:
+            user_id (string): fully qualified Matrix user ID
+            password (string): new password that should be set
+            no_logout (bool): the API defaults to logging out the user after
+                password reset via the admin API, this option can be used to
+                disable this behaviour.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+            an exception occured. See Synapse admin API docs for details.
         """
         data = {"new_password": password}
         if no_logout:
@@ -215,9 +293,18 @@ class SynapseAdmin(ApiRequest):
         return self.query("post", f"v1/reset_password/{user_id}", data=data)
 
     def user_details(self, user_id):
-        """ Get information about a given user
+        """Get information about a given user
 
-        Called "Query User Account" in API docs.
+        Note that the admin API docs describe this function as "Query User
+        Account".
+
+        Args:
+            user_id (string): fully qualified Matrix user ID
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
+
         """
         return self.query("get", f"v2/users/{user_id}")
 
