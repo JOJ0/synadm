@@ -1,5 +1,5 @@
-Subcommand History
-==================
+History Command
+===============
 
 .. click:: synadm.cli.history:history
    :prog: synadm history

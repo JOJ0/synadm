@@ -1,5 +1,5 @@
-Subcommand Group
-================
+Group Command
+=============
 
 .. click:: synadm.cli.group:group
    :prog: synadm group

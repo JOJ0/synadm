@@ -1,5 +1,5 @@
-Subcommand User
-===============
+User Command
+============
 
 .. click:: synadm.cli.user:user
    :prog: synadm user
