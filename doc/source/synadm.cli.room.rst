@@ -1,5 +1,5 @@
-Room Command
-============
+Room
+====
 
 .. click:: synadm.cli.room:room
    :prog: synadm room
