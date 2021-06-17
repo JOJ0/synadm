@@ -313,9 +313,12 @@ class SynapseAdmin(ApiRequest):
 
         If one of the args expire_days, expire or _expire_ts is set, the
         valid_until_ms field will be sent to the API endpoint. If this is not
-        the case, the token will be valid for exactly 1 day (24h). (at the time
-        of writing, the default of the API would be that tokens would never
-        expire).
+        the case the default of the API would be used. At the time of writing,
+        be that tokens never expire.
+
+        Note: If this method is called by the CLI frontend code
+        (synadm.cli.user.user_login_cmd), a default expiry date of 1 day (24h)
+        is used.
 
         Args:
             user_id (string): fully qualified Matrix user ID
