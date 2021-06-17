@@ -314,11 +314,11 @@ class SynapseAdmin(ApiRequest):
         If one of the args expire_days, expire or _expire_ts is set, the
         valid_until_ms field will be sent to the API endpoint. If this is not
         the case the default of the API would be used. At the time of writing,
-        be that tokens never expire.
+        this would be that tokens never expire.
 
         Note: If this method is called by the CLI frontend code
         (synadm.cli.user.user_login_cmd), a default expiry date of 1 day (24h)
-        is used.
+        is passed.
 
         Args:
             user_id (string): fully qualified Matrix user ID
@@ -333,13 +333,13 @@ class SynapseAdmin(ApiRequest):
         """
         expire_ts = None
         if expire_days:
-            self.log.debug("Received --expire-days: %s", expire_days)
+            self.log.debug("Received expire_days: %s", expire_days)
             expire_ts = self._timestamp_from_days(expire_days)
         elif expire:
-            self.log.debug("Received --expire: %s", expire)
+            self.log.debug("Received expire: %s", expire)
             expire_ts = self._timestamp_from_datetime(expire)
         elif _expire_ts:
-            self.log.debug("Received --expire-ts: %s",
+            self.log.debug("Received expire_ts: %s",
                            _expire_ts)
             expire_ts = _expire_ts  # Click checks for int already
 
@@ -352,6 +352,8 @@ class SynapseAdmin(ApiRequest):
                           expire_ts)
             self.log.info("which is the date/time: %s",
                           self._datetime_from_timestamp(expire_ts))
+        else:
+            self.log.info("Token will never expire.")
 
         return self.query("post", f"v1/users/{user_id}/login", data=data)
 
