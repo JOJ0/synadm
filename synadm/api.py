@@ -31,6 +31,7 @@ https://matrix.org/docs/spec/#matrix-apis.
 import requests
 from http.client import HTTPConnection
 import datetime
+import json
 
 
 class ApiRequest:
@@ -200,6 +201,18 @@ class Matrix(ApiRequest):
             "type": "m.login.password",
             "user": f"{user_id}"
         })
+
+    def raw_request(self, method, endpoint, data):
+        self.log.debug("This is the raw request body we are submitting:")
+        self.log.debug(data)
+        try:  # user provided json might be crap
+            data_dict = json.loads(data)
+        except Exception as error:
+            self.log.error("loading data from CLI: %s: %s",
+                           type(error).__name__, error)
+            return None
+
+        return self.query(method, endpoint, data=data_dict)
 
 
 class SynapseAdmin(ApiRequest):
