@@ -185,7 +185,7 @@ class Matrix(ApiRequest):
         )
         self.user = user
 
-    def user_login(self, user_id, password): 
+    def user_login(self, user_id, password):
         """Login as a Matrix user and retrieve an access token
 
         Args:
