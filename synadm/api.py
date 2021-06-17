@@ -117,6 +117,19 @@ class ApiRequest:
             datetime.datetime.now() - datetime.timedelta(days=days)
         ).timestamp() * 1000)
 
+    def _timestamp_from_days_ahead(self, days):
+        """Get a unix timestamp in ms for the given number of days ahead
+
+        Args:
+            days (int): number of days
+
+        Returns:
+            int: a unix timestamp in milliseconds (ms)
+        """
+        return int((
+            datetime.datetime.now() + datetime.timedelta(days=days)
+        ).timestamp() * 1000)
+
     def _timestamp_from_datetime(self, _datetime):
         """Get a unix timestamp in ms from a datetime object
 
