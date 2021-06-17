@@ -445,18 +445,11 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
     admin user calls /logout/all from any of their devices, but the token will
     not expire if the target user does the same.
     """
-    print(expire_days)
-    print(expire)
-    print(expire_ts)
-    print(expire_never)
     if expire_never:
-        print("never exp branch")
         user_login = helper.api.user_login(user_id, None, None, None)
     elif not expire_days and not expire and not expire_ts:
-        print("first elif branch")
         user_login = helper.api.user_login(user_id, 1, expire, expire_ts)
     else:
-        print("else branch")
         user_login = helper.api.user_login(user_id, expire_days, expire,
                                            expire_ts)
 
