@@ -104,7 +104,7 @@ class ApiRequest:
                            type(error).__name__, error)
         return None
 
-    def _timestamp_from_days(self, days):
+    def _timestamp_from_days_ago(self, days):
         """Get a unix timestamp in ms from days ago
 
         Args:
@@ -491,7 +491,7 @@ class SynapseAdmin(ApiRequest):
         """
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -542,7 +542,7 @@ class SynapseAdmin(ApiRequest):
         """
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         if before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -579,7 +579,7 @@ class SynapseAdmin(ApiRequest):
         before_ts = None
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
