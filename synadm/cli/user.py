@@ -403,3 +403,54 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
                        ))
     else:
         helper.output(media)
+
+
+@user.command(name="login")
+@click.argument("user_id", type=str)
+@optgroup.group(
+    "Token expires",
+    cls=MutuallyExclusiveOptionGroup,
+    help="")
+@optgroup.option(
+    "--expire-days", "-d", type=int,
+    help="""expire token after this number of days.""")
+@optgroup.option(
+    "--expire", type=click.DateTime(),
+    help="""expire token after this point in time. Eg. '2021-01-01', see
+    above for available date/time formats.""")
+@optgroup.option(
+    "--expire-ts", type=int,
+    help="""expire token after this point in time giving a unix
+    timestamp in ms. """)
+@click.pass_obj
+def user_login_cmd(helper, user_id, expire_days, expire, expire_ts):
+    """Get an access token for a given user.
+
+    Useful for when admins wish to do actions on behalf of a user. If no
+    --expire* options is given, a default token expiry time of exactly 1 day
+    (24h) is used.
+
+    This API does not generate a new device for the user, and so will not appear
+    their /devices list, and in general the target user should not be able to
+    tell they have been logged in as.
+
+    To expire the token before the expiry date/time is reached, call the
+    standard /logout API with the token. Note: The token will expire if the
+    admin user calls /logout/all from any of their devices, but the token will
+    not expire if the target user does the same.
+    """
+    if not expire_days or not expire or not expire_ts:
+        user_login = helper.api.user_login(user_id, 1, expire, expire_ts)
+    else:
+        user_login = helper.api.user_login(user_id, expire_days, expire,
+                                           expire_ts)
+    if helper.batch:
+        if user_login is None:
+            raise SystemExit(1)
+        helper.output(user_login)
+    else:
+        if user_login is None:
+            click.echo(f"Login as user {user_id} not successful.")
+            raise SystemExit(1)
+        else:
+            helper.output(user_login)
