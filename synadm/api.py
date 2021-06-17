@@ -347,7 +347,7 @@ class SynapseAdmin(ApiRequest):
         expire_ts = None
         if expire_days:
             self.log.debug("Received expire_days: %s", expire_days)
-            expire_ts = self._timestamp_from_days(expire_days)
+            expire_ts = self._timestamp_from_days_ahead(expire_days)
         elif expire:
             self.log.debug("Received expire: %s", expire)
             expire_ts = self._timestamp_from_datetime(expire)
