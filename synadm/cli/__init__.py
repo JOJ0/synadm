@@ -63,7 +63,7 @@ class APIHelper:
         "token": "",
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
-        "matrix_path": "/_matrix/",
+        "matrix_path": "/_matrix",
         "timeout": 7
     }
 
@@ -286,7 +286,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             default=admin_path if admin_path else helper.config.get(
                 "admin_path", admin_path)),
         "matrix_path": click.prompt(
-            "Matrix client API path",
+            "Matrix API path",
             default=matrix_path if matrix_path else helper.config.get(
                 "matrix_path", matrix_path)),
         "format": click.prompt(
