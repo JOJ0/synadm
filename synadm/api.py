@@ -67,7 +67,7 @@ class ApiRequest:
         if debug:
             HTTPConnection.debuglevel = 1
 
-    def query(self, method, urlpart, params=None, data=None):
+    def query(self, method, urlpart, params=None, data=None, token=None):
         """Generic wrapper around requests methods
 
         Handles requests methods, logging and exceptions
@@ -90,6 +90,9 @@ class ApiRequest:
         """
         url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
+        if token:
+            self.log.debug("Token override! Adjusting headers.")
+            self.headers["Authorization"] = "Bearer " + token
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
@@ -202,7 +205,7 @@ class Matrix(ApiRequest):
             "user": f"{user_id}"
         })
 
-    def raw_request(self, endpoint, method, data):
+    def raw_request(self, endpoint, method, data, token=None):
         self.log.debug("This is the raw request body we are submitting:")
         self.log.debug(data)
         if method != "get":
@@ -213,7 +216,7 @@ class Matrix(ApiRequest):
                                type(error).__name__, error)
                 return None
 
-        return self.query(method, endpoint, data=data_dict)
+        return self.query(method, endpoint, data=data_dict, token=token)
 
 
 class SynapseAdmin(ApiRequest):

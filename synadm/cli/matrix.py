@@ -41,15 +41,21 @@ def matrix():
     "--data", "-d", type=str, default='{}', show_default=True,
     help="""The JSON string sent in the body of post, put and delete requests.
     """)
+@click.option(
+    "--token", "-t", type=str,
+    help="""Token used for Matrix authentication instead of the configured admin
+    user's token. Use this option to execute Matrix commands on a user's behalf.
+    Respect privacy of others! Be responsible!""")
 @click.pass_obj
-def raw_request_cmd(helper, endpoint, method, data):
+def raw_request_cmd(helper, endpoint, method, data, token):
     """ Execute a raw request to the Matrix API.
 
     The endpoint argument is the part of the URL _after_ the configured base URL
     and Matrix path (see `synadm config`). A simple get request would e.g like
     this: `synadm matrix raw client/versions`
     """
-    raw_request = helper.matrix_api.raw_request(endpoint, method, data)
+    raw_request = helper.matrix_api.raw_request(endpoint, method, data,
+                                                token=token)
     if helper.batch:
         if raw_request is None:
             raise SystemExit(1)
