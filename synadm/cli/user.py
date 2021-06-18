@@ -458,6 +458,10 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
             raise SystemExit(1)
         helper.output(user_login)
     else:
+        click.echo("You are fetching an authentication token of a user, which"
+                   "enables you to execute any Matrix command on their behalf."
+                   "Please respect their privacy and know what you are doing!"
+                   "Be responsible!")
         if user_login is None:
             click.echo(f"Login as user {user_id} not successful.")
             raise SystemExit(1)
