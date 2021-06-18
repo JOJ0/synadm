@@ -205,12 +205,13 @@ class Matrix(ApiRequest):
     def raw_request(self, endpoint, method, data):
         self.log.debug("This is the raw request body we are submitting:")
         self.log.debug(data)
-        try:  # user provided json might be crap
-            data_dict = json.loads(data)
-        except Exception as error:
-            self.log.error("loading data from CLI: %s: %s",
-                           type(error).__name__, error)
-            return None
+        if method != "get":
+            try:  # user provided json might be crap
+                data_dict = json.loads(data)
+            except Exception as error:
+                self.log.error("loading data from CLI: %s: %s",
+                               type(error).__name__, error)
+                return None
 
         return self.query(method, endpoint, data=data_dict)
 
