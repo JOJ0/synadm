@@ -38,7 +38,7 @@ def matrix():
     help="""The HTTP method used for the request.""",
     default="get", show_default=True)
 @click.option(
-    "--data", "-d", type=str, default="{}", show_default=True,
+    "--data", "-d", type=str, default='{}', show_default=True,
     help="""The JSON string sent in the body of post, put and delete requests.
     """)
 @click.pass_obj
