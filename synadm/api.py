@@ -202,7 +202,7 @@ class Matrix(ApiRequest):
             "user": f"{user_id}"
         })
 
-    def raw_request(self, method, endpoint, data):
+    def raw_request(self, endpoint, method, data):
         self.log.debug("This is the raw request body we are submitting:")
         self.log.debug(data)
         try:  # user provided json might be crap
