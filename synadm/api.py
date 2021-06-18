@@ -208,6 +208,7 @@ class Matrix(ApiRequest):
     def raw_request(self, endpoint, method, data, token=None):
         self.log.debug("This is the raw request body we are submitting:")
         self.log.debug(data)
+        data_dict = {}
         if method != "get":
             try:  # user provided json might be crap
                 data_dict = json.loads(data)
