@@ -49,7 +49,7 @@ def raw_request_cmd(helper, endpoint, method, data):
     and Matrix path (see `synadm config`). A simple get request would e.g like
     this: `synadm matrix raw client/versions`
     """
-    raw_request = helper.api.raw_request(endpoint, method, data)
+    raw_request = helper.matrix_api.raw_request(endpoint, method, data)
     if helper.batch:
         if raw_request is None:
             raise SystemExit(1)
