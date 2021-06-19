@@ -42,10 +42,10 @@ def matrix():
     help="""The JSON string sent in the body of post, put and delete requests.
     """)
 @click.option(
-    "--token", "-t", type=str,
+    "--token", "-t", type=str, envvar='MTOKEN', show_default=True,
     help="""Token used for Matrix authentication instead of the configured admin
     user's token. Use this option to execute Matrix commands on a user's behalf.
-    Respect privacy of others! Be responsible!""")
+    Respect the privacy of others! Be responsible!""")
 @click.pass_obj
 def raw_request_cmd(helper, endpoint, method, data, token):
     """ Execute a raw request to the Matrix API.
