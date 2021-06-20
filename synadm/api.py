@@ -213,7 +213,7 @@ class Matrix(ApiRequest):
             try:  # user provided json might be crap
                 data_dict = json.loads(data)
             except Exception as error:
-                self.log.error("loading data from CLI: %s: %s",
+                self.log.error("loading data: %s: %s",
                                type(error).__name__, error)
                 return None
 
