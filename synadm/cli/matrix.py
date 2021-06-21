@@ -55,19 +55,40 @@ def matrix():
     help="""Read JSON data from file. To read from stdin use "-" as the
     filename argument.
     """)
-@click.option(
+@optgroup.group(
+    "Matrix token",
+    cls=MutuallyExclusiveOptionGroup,
+    help="")
+@optgroup.option(
     "--token", "-t", type=str, envvar='MTOKEN', show_default=True,
     help="""Token used for Matrix authentication instead of the configured admin
-    user's token. Use this option to execute Matrix commands on a user's behalf.
-    Respect the privacy of others! Be responsible!""")
+    user's token. If --token (and --prompt) option is missing, the token is read
+    from environment variable $MTOKEN instead. To make sure a user's token
+    does not show up in system logs, don't provided it on the shell directly but
+    set $MTOKEN by using shell command `read MTOKEN`.""")
+@optgroup.option(
+    "--prompt", "-p", is_flag=True, show_default=True,
+    help="""Prompt for the token used for Matrix authentication. This option
+    always overrides $MTOKEN.""")
 @click.pass_obj
-def raw_request_cmd(helper, endpoint, method, data, data_file, token):
+def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
     """ Execute a raw request to the Matrix API.
 
     The endpoint argument is the part of the URL _after_ the configured base URL
     and Matrix path (see `synadm config`). A simple get request would e.g like
     this: `synadm matrix raw client/versions`
+
+    Use either --token or --prompt to provide a user's token and execute Matrix
+    commands on their behalf. Respect the privacy of others! Be responsible!
+
+    The precedence rules for token reading are:
+    1. Interactive input using --prompt; 2. Set on CLI via --token string;
+    3. Read from environment variable $MTOKEN; 4. Preconfigured admin token
+    set in synadm's config file.
     """
+    if prompt:
+        token = click.prompt("Matrix token", type=str)
+
     if data_file:
         raw_request = helper.matrix_api.raw_request(
             endpoint,
