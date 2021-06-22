@@ -199,7 +199,7 @@ class Matrix(ApiRequest):
             string: JSON string containing a token suitable to access the
                 Matrix API on the user's behalf.
         """
-        return self.query("get", f"client/r0/login/{user_id}", data={
+        return self.query("post", f"client/r0/login/{user_id}", data={
             "password": password,
             "type": "m.login.password",
             "user": f"{user_id}"
