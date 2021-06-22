@@ -197,7 +197,8 @@ class Matrix(ApiRequest):
 
         Returns:
             string: JSON string containing a token suitable to access the
-                Matrix API on the user's behalf.
+                Matrix API on the user's behalf, a device_id and some more
+                details on Matrix server and user.
         """
         return self.query("post", "client/r0/login", data={
             "password": password,
