@@ -28,8 +28,40 @@ from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 @cli.root.group()
 def matrix():
     """ Execute Matrix API calls.
-
     """
+
+
+@matrix.command(name="login")
+@click.argument(
+    "user_id", type=str)
+@click.option(
+    "--password", "-p", type=str,
+    help="""The Matrix user's password. If missing, an interactive password
+    prompt is shown.""")
+@click.pass_obj
+def login_cmd(helper, user_id, password):
+    """ Login to Matrix via username/password and receive an access token.
+    """
+    if not password:
+        if helper.batch:
+            helper.log.error("Password prompt not available in batch mode. "
+                             "Use -p.")
+            raise SystemExit(1)
+        else:
+            password = click.prompt("Password", hide_input=True)
+
+    login = helper.matrix_api.user_login(user_id, password)
+
+    if helper.batch:
+        if login is None:
+            raise SystemExit(1)
+        helper.output(login)
+    else:
+        if login is None:
+            click.echo("Matrix login failed.")
+            raise SystemExit(1)
+        else:
+            helper.output(login)
 
 
 @matrix.command(name="raw")
