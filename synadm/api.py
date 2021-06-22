@@ -199,10 +199,11 @@ class Matrix(ApiRequest):
             string: JSON string containing a token suitable to access the
                 Matrix API on the user's behalf.
         """
-        return self.query("post", f"client/r0/login/{user_id}", data={
+        return self.query("post", "client/r0/login", data={
             "password": password,
             "type": "m.login.password",
-            "user": f"{user_id}"
+            "user": f"{user_id}",
+            "initial_device_display_name": "synadm matrix login command"
         })
 
     def raw_request(self, endpoint, method, data, token=None):
