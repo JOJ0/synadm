@@ -41,6 +41,12 @@ def matrix():
 @click.pass_obj
 def login_cmd(helper, user_id, password):
     """ Login to Matrix via username/password and receive an access token.
+
+    The response also contains a newly generated device ID and further
+    information about user and homeserver.
+
+    Each successful login will show up in the user's devices list marked
+    with a display name of 'synadm matrix login command'.
     """
     if not password:
         if helper.batch:
