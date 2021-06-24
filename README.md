@@ -21,8 +21,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its admin API's (https://github.com/matrix-org/synapse/tree/master/docs/admin_api)
-
+A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [admin API](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
 
 
 
