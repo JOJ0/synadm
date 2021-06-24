@@ -11,6 +11,8 @@
   - [The configurator](#the-configurator)
 - [Usage](#usage)
 - [Update](#update)
+  - [Update PyPI package](#update-pypi-package)
+  - [Update git installation](#update-git-installation)
 - [Implementation status / commands list](#implementation-status--commands-list)
 - [Get in touch / feedback / support](#get-in-touch--feedback--support)
 - [Contribution](#contribution)
@@ -157,6 +159,14 @@ will show essential help for the particular subcommand right away.
 *Note: A complete list of currently available commands is found in in chapter [implementation status / commands list](#implementation-status--commands-list)*
 
 ## Update
+
+### Update PyPI package
+
+```
+pip3 install synadm --upgrade
+```
+
+### Update git installation
 
 To update `synadm` to the latest development state, just update your git repo and reinstall:
 
