@@ -12,3 +12,4 @@ Command Line Reference
    synadm.cli.media
    synadm.cli.history
    synadm.cli.group
+   synadm.cli.matrix
