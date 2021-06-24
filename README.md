@@ -169,16 +169,15 @@ python3 setup.py install
 
 ## Implementation status / commands list
 
-[Synapse Admin API docs main page](https://github.com/matrix-org/synapse/tree/master/docs/admin_api) - direct links to the specific API documentation pages are provided in the list below.
+[Follow this link to the official Synapse Admin API docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
 
 *Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them or have a look at the [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
 
 
-
-* [ ] [Account validity API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/account_validity.rst)
-* [x] [Delete group API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/delete_group.md) (delete community)
-* [ ] [Event reports API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/event_reports.md)
-* [x] [Media admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/media_admin_api.md)
+* [ ] [Account Validity](https://matrix-org.github.io/synapse/develop/admin_api/account_validity.html)
+* [x] [Delete Group](https://matrix-org.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
+* [ ] [Event Reports](https://matrix-org.github.io/synapse/develop/admin_api/event_reports.html)
+* [x] [Media Admin](https://matrix-org.github.io/synapse/develop/admin_api/media_admin_api.html)
   * [x] `media list -r <room id>`
   * [x] `media list -u <user id>` (alias of `user media <user id>`)
   * [x] `media quarantine -s <server name> -i <media id>`
@@ -188,14 +187,14 @@ python3 setup.py install
   * [x] `media delete -s <server name> -i <media id>`
   * [x] `media delete -s <server name> --before <date> --size 1024`
   * [x] `media purge --before <date>` (purge remote media API)
-* [x] [Purge history API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_history_api.rst)
+* [x] [Purge History](https://matrix-org.github.io/synapse/develop/admin_api/purge_history_api.html)
   * [x] `history purge <room id>`
   * [x] `history purge-status <purge id>`
-* [x] ~~[Purge room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/purge_room.md)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Register API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/register_api.rst)
-* [x] [Room membership API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/room_membership.md)
+* [x] ~~[Purge Rooms](https://matrix-org.github.io/synapse/develop/admin_api/purge_room.html)~~ (DEPRECATED, covered by `room delete`)
+* [ ] [Register Users](https://matrix-org.github.io/synapse/develop/admin_api/register_api.html)
+* [x] [Manipulate Room Membership](https://matrix-org.github.io/synapse/develop/admin_api/room_membership.html)
   * [x] `room join`
-* [x] [Rooms API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/rooms.md)
+* [x] [Rooms](https://matrix-org.github.io/synapse/develop/admin_api/rooms.html)
   * [x] `room list`
   * [x] `room search <search-term>` (shortcut to `room list -n <search-term>`)
   * [x] `room details <room id>`
@@ -207,10 +206,10 @@ python3 setup.py install
     * [ ] `room count`
     * [ ] `room top-complexity`
     * [ ] `room top-members`
-* [ ] [Server notices API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/server_notices.md)
-* [x] ~~[Shutdown room API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/shutdown_room.md)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Statistics API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/statistics.md)
-* [x] [User admin API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/user_admin_api.rst)
+* [ ] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
+* [x] ~~[Shutdown Room](https://matrix-org.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
+* [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
+* [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
   * [x] `user details <user id>`
   * [x] `user modify <user id>` (also used for user creation)
   * [x] `user list`
@@ -220,11 +219,12 @@ python3 setup.py install
   * [x] `user whois <user id>`
   * [ ] `user shadow_ban <user id>`
   * [x] `user media -u <user id>` (also available as `media list -u <user id>`)
+  * [x] `user login <user id>`
   * [ ] Additional commands and aliases derived from user API's
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user query <user id>` (alias of `user details`)
       * [ ] `user create <user id>` (alias of `user modify ...`)
-* [x] [Version API](https://github.com/matrix-org/synapse/blob/master/docs/admin_api/version_api.rst)
+* [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
   * [x] `version`
 
 
