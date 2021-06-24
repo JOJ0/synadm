@@ -421,17 +421,23 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
 @optgroup.option(
     "--expire-ts", type=int,
     help="""expire token after this point in time giving a unix
-    timestamp in ms. """)
+    timestamp in ms.""")
+@optgroup.option(
+    "--expire-never", is_flag=True, default=False, show_default=True,
+    help="""never expire token.""")
 @click.pass_obj
-def user_login_cmd(helper, user_id, expire_days, expire, expire_ts):
+def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
+                   expire_never):
     """Get an access token for a given user.
 
-    Useful for when admins wish to do actions on behalf of a user. If no
-    --expire* options is given, a default token expiry time of exactly 1 day
-    (24h) is used.
+    Useful for when admins wish to do actions on behalf of a user.
+
+    If no --expire* option is given, a default token expiry time of exactly 1
+    day (24h) is used. If it's desired that the token never expires, use
+    --expire-never
 
     This API does not generate a new device for the user, and so will not appear
-    their /devices list, and in general the target user should not be able to
+    in their /devices list, and in general the target user should not be able to
     tell they have been logged in as.
 
     To expire the token before the expiry date/time is reached, call the
@@ -439,16 +445,23 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts):
     admin user calls /logout/all from any of their devices, but the token will
     not expire if the target user does the same.
     """
-    if not expire_days or not expire or not expire_ts:
+    if expire_never:
+        user_login = helper.api.user_login(user_id, None, None, None)
+    elif not expire_days and not expire and not expire_ts:
         user_login = helper.api.user_login(user_id, 1, expire, expire_ts)
     else:
         user_login = helper.api.user_login(user_id, expire_days, expire,
                                            expire_ts)
+
     if helper.batch:
         if user_login is None:
             raise SystemExit(1)
         helper.output(user_login)
     else:
+        click.echo("You are fetching an authentication token of a user, which "
+                   "enables you to execute any Matrix command on their behalf. "
+                   "Please respect their privacy and know what you are doing! "
+                   "Be responsible!\n")
         if user_login is None:
             click.echo(f"Login as user {user_id} not successful.")
             raise SystemExit(1)

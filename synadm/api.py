@@ -31,6 +31,7 @@ https://matrix.org/docs/spec/#matrix-apis.
 import requests
 from http.client import HTTPConnection
 import datetime
+import json
 
 
 class ApiRequest:
@@ -66,7 +67,7 @@ class ApiRequest:
         if debug:
             HTTPConnection.debuglevel = 1
 
-    def query(self, method, urlpart, params=None, data=None):
+    def query(self, method, urlpart, params=None, data=None, token=None):
         """Generic wrapper around requests methods
 
         Handles requests methods, logging and exceptions
@@ -89,6 +90,9 @@ class ApiRequest:
         """
         url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
+        if token:
+            self.log.debug("Token override! Adjusting headers.")
+            self.headers["Authorization"] = "Bearer " + token
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
@@ -104,7 +108,7 @@ class ApiRequest:
                            type(error).__name__, error)
         return None
 
-    def _timestamp_from_days(self, days):
+    def _timestamp_from_days_ago(self, days):
         """Get a unix timestamp in ms from days ago
 
         Args:
@@ -115,6 +119,19 @@ class ApiRequest:
         """
         return int((
             datetime.datetime.now() - datetime.timedelta(days=days)
+        ).timestamp() * 1000)
+
+    def _timestamp_from_days_ahead(self, days):
+        """Get a unix timestamp in ms for the given number of days ahead
+
+        Args:
+            days (int): number of days
+
+        Returns:
+            int: a unix timestamp in milliseconds (ms)
+        """
+        return int((
+            datetime.datetime.now() + datetime.timedelta(days=days)
         ).timestamp() * 1000)
 
     def _timestamp_from_datetime(self, _datetime):
@@ -171,7 +188,7 @@ class Matrix(ApiRequest):
         )
         self.user = user
 
-    def user_login(self, user_id, password): 
+    def user_login(self, user_id, password):
         """Login as a Matrix user and retrieve an access token
 
         Args:
@@ -180,13 +197,29 @@ class Matrix(ApiRequest):
 
         Returns:
             string: JSON string containing a token suitable to access the
-                Matrix API on the user's behalf.
+                Matrix API on the user's behalf, a device_id and some more
+                details on Matrix server and user.
         """
-        return self.query("get", f"client/r0/login/{user_id}", data={
+        return self.query("post", "client/r0/login", data={
             "password": password,
             "type": "m.login.password",
-            "user": f"{user_id}"
+            "user": f"{user_id}",
+            "initial_device_display_name": "synadm matrix login command"
         })
+
+    def raw_request(self, endpoint, method, data, token=None):
+        data_dict = {}
+        if method != "get":
+            self.log.debug("The data we are trying to parse and submit:")
+            self.log.debug(data)
+            try:  # user provided json might be crap
+                data_dict = json.loads(data)
+            except Exception as error:
+                self.log.error("loading data: %s: %s",
+                               type(error).__name__, error)
+                return None
+
+        return self.query(method, endpoint, data=data_dict, token=token)
 
 
 class SynapseAdmin(ApiRequest):
@@ -314,11 +347,11 @@ class SynapseAdmin(ApiRequest):
         If one of the args expire_days, expire or _expire_ts is set, the
         valid_until_ms field will be sent to the API endpoint. If this is not
         the case the default of the API would be used. At the time of writing,
-        be that tokens never expire.
+        this would be that tokens never expire.
 
         Note: If this method is called by the CLI frontend code
         (synadm.cli.user.user_login_cmd), a default expiry date of 1 day (24h)
-        is used.
+        is passed.
 
         Args:
             user_id (string): fully qualified Matrix user ID
@@ -333,13 +366,13 @@ class SynapseAdmin(ApiRequest):
         """
         expire_ts = None
         if expire_days:
-            self.log.debug("Received --expire-days: %s", expire_days)
-            expire_ts = self._timestamp_from_days(expire_days)
+            self.log.debug("Received expire_days: %s", expire_days)
+            expire_ts = self._timestamp_from_days_ahead(expire_days)
         elif expire:
-            self.log.debug("Received --expire: %s", expire)
+            self.log.debug("Received expire: %s", expire)
             expire_ts = self._timestamp_from_datetime(expire)
         elif _expire_ts:
-            self.log.debug("Received --expire-ts: %s",
+            self.log.debug("Received expire_ts: %s",
                            _expire_ts)
             expire_ts = _expire_ts  # Click checks for int already
 
@@ -352,6 +385,8 @@ class SynapseAdmin(ApiRequest):
                           expire_ts)
             self.log.info("which is the date/time: %s",
                           self._datetime_from_timestamp(expire_ts))
+        else:
+            self.log.info("Token will never expire.")
 
         return self.query("post", f"v1/users/{user_id}/login", data=data)
 
@@ -489,7 +524,7 @@ class SynapseAdmin(ApiRequest):
         """
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -540,7 +575,7 @@ class SynapseAdmin(ApiRequest):
         """
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         if before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
@@ -577,7 +612,7 @@ class SynapseAdmin(ApiRequest):
         before_ts = None
         if before_days:
             self.log.debug("Received --before-days: %s", before_days)
-            before_ts = self._timestamp_from_days(before_days)
+            before_ts = self._timestamp_from_days_ago(before_days)
         elif before:
             self.log.debug("Received --before: %s", before)
             before_ts = self._timestamp_from_datetime(before)
