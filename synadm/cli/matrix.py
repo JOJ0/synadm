@@ -102,8 +102,8 @@ def login_cmd(helper, user_id, password):
     help="""Token used for Matrix authentication instead of the configured admin
     user's token. If --token (and --prompt) option is missing, the token is read
     from environment variable $MTOKEN instead. To make sure a user's token
-    does not show up in system logs, don't provided it on the shell directly but
-    set $MTOKEN by using shell command `read MTOKEN`.""")
+    does not show up in system logs, don't provide it on the shell directly but
+    set $MTOKEN with shell command `read MTOKEN`.""")
 @optgroup.option(
     "--prompt", "-p", is_flag=True, show_default=True,
     help="""Prompt for the token used for Matrix authentication. This option
