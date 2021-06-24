@@ -5,6 +5,8 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
+  - [Getting an admin token](#getting-an-admin-token)
+  - [The configurator](#the-configurator)
 - [Usage](#usage)
 - [Update](#update)
 - [Implementation status / commands list](#implementation-status--commands-list)
@@ -85,7 +87,26 @@ synadm -h
 
 ## Configuration
 
-`synadm` asks for necessary configuration items on first launch automatically. Also whenever new configuration items where added (eg after an update), the user will be prompted for missing items automatically.
+### Getting an admin token
+
+To find out your admin user's token in Element-Web: _Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"_
+
+Or use synadm to fetch a token already. Use the fully qualified Matrix ID of the admin user:
+
+```
+synadm matrix login @admin_username:yourdomain.org
+Password:
+```
+
+If you issue this command in a fresh `synadm` installation, [the configurator](#the-configurator) will launch anyway.
+
+- Answer the questions.
+- Set token to "invalid" at first, to convience `synadm` to launch the `matrix login` command (otherwise you'd get a "Configuration incomplete" error).
+- After successfully entering your admin password you will be presented a token which you can finally set by re-launching the configurator as described below.
+
+### The configurator
+
+`synadm` asks for necessary configuration items on first launch automatically. Also whenever new mandatory configuration items where added (eg after an update), the user will be prompted for missing items automatically.
 
 Configuration can be changed any time by launching the configurator directly:
 
@@ -95,7 +116,6 @@ synadm config
 
 Configuration will be saved in `~/.config/synadm.yaml`
 
-*Note: To find out your admin user's token in Element-Web: Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"*
 
 *Note: Be aware that once you configured `synadm`, your admin user's token is saved in the configuration file. On Posix compatible systems permissions are set to mode 0600, on other OS's it is your responsibilty to change permissions accordingly.*
 
