@@ -277,10 +277,6 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     if password_prompt and password:
         click.echo("Use either '-p' or '-P secret', not both.")
         raise SystemExit(1)
-    if deactivation == "activate" and not (password_prompt or password):
-        click.echo("Need to set password when activating a user.")
-        click.echo("Add either '-p' or '-P secret' to your command.")
-        raise SystemExit(1)
     if deactivation == "deactivate" and (password_prompt or password):
         click.echo(
             "Deactivating a user and setting a password doesn't make sense.")
