@@ -120,13 +120,17 @@ class APIHelper:
         try:
             with open(self.config_path) as handle:
                 self.config.update(yaml.load(handle, Loader=yaml.SafeLoader))
-            self.log.debug("configuration read: %s", self.config)
         except Exception as error:
             self.log.error("%s while reading configuration file", error)
         for key, value in self.config.items():
             if not value:
-                self.log.error("config entry %s missing", key)
+                self.log.error("Config entry missing: %s", key)
                 return False
+            else:
+                if key == "token":
+                    self.log.debug("Config entry read. %s: SECRET", key)
+                else:
+                    self.log.debug("Config entry read. %s: %s", key, value)
         if self.output_format_cli:  # we have a cli output format override
             self._set_formatter(self.output_format_cli)
         else:  # we use the configured default output format
