@@ -80,7 +80,7 @@ def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
         if int(users["total"]) != 0:
             helper.output(users["users"])
         if "next_token" in users:
-            click.echo("There is more users than shown, use '--from {}' "
+            click.echo("There are more users than shown, use '--from {}' "
                        .format(users["next_token"]) +
                        "to go to next page")
     else:
@@ -395,7 +395,7 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
         if int(media["total"]) != 0:
             helper.output(media["media"])
         if "next_token" in media:
-            click.echo("There is more results available than shown, "
+            click.echo("There are more results available than shown, "
                        "use '--from {}' "
                        "to go to next page (Total results: {})".format(
                            media["next_token"],

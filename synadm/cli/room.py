@@ -74,7 +74,7 @@ def list_room_cmd(helper, from_, limit, name, sort, reverse):
         if int(rooms["total_rooms"]) != 0:
             helper.output(rooms["rooms"])
         if "next_batch" in rooms:
-            click.echo("There is more rooms than shown, use '--from {}'"
+            click.echo("There are more rooms than shown, use '--from {}'"
                        .format(rooms["next_batch"]))
     else:
         helper.output(rooms)
