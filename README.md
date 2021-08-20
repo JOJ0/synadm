@@ -241,6 +241,12 @@ python3 setup.py install
       * [ ] `user create <user id>` (alias of `user modify ...`)
 * [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
   * [x] `version`
+* [x] [Registration Tokens](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
+  * [x] `regtok list`
+  * [x] `regtok details <registration token>`
+  * [x] `regtok new`
+  * [x] `regtok update <registration token>`
+  * [x] `regtok delete <registration token>`
 
 
 
