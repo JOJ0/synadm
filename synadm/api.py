@@ -665,8 +665,7 @@ class SynapseAdmin(ApiRequest):
 
         """
         return self.query("get", "v1/registration_tokens", params={
-            "valid": (str(valid).lower() if isinstance(valid, bool)
-                       else None)
+            "valid": (str(valid).lower() if isinstance(valid, bool) else None)
         })
 
     def regtok_details(self, token):
@@ -682,7 +681,7 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/registration_tokens/{token}")
 
-    def regtok_new(self, token, length, uses_allowed, expiry_time):
+    def regtok_new(self, token, length, uses_allowed, expiry_ts, expire_at):
         """ Create a new registration token
 
         Args:
@@ -692,45 +691,59 @@ class SynapseAdmin(ApiRequest):
                 not provided.
             uses_allowed (int): The number of times the token can be used to
                 complete a registration before it becomes invalid.
-            expiry_time (int): The latest time the registration token is valid.
+            expiry_ts (int): The latest time the registration token is valid.
                 Given as the number of milliseconds since
                 1970-01-01 00:00:00 UTC.
+            expire_at (click.DateTime): The latest time the registration token
+                is valid.
 
         Returns:
             string: JSON string containing the admin API's response or None if
                 an exception occured. See Synapse admin API docs for details.
 
         """
-        data={
+        data = {
             "length": length,
             "uses_allowed": uses_allowed,
-            "expiry_time": expiry_time,
         }
+
+        if expiry_ts:
+            self.log.debug(f"Received --expiry-ts: {expiry_ts}")
+            data["expiry_time"] = expiry_ts
+        elif expire_at:
+            self.log.debug(f"Received --expire-at: {expire_at}")
+            data["expiry_time"] = self._timestamp_from_datetime(expire_at)
+        else:
+            data["expiry_time"] = None
+
         # The token cannot be null, it must be a string
         if isinstance(token, str):
             data["token"] = token
+
         return self.query("post", "v1/registration_tokens/new", data=data)
 
-    def regtok_update(self, token, uses_allowed, expiry_time):
+    def regtok_update(self, token, uses_allowed, expiry_ts, expire_at):
         """ Update a registration token
 
         Args:
             token (string): registration token to update.
             uses_allowed (int): The number of times the token can be used to
                 complete a registration before it becomes invalid.
-            expiry_time (int): The latest time the registration token is valid.
+            expiry_ts (int): The latest time the registration token is valid.
                 Given as the number of milliseconds since
-                1970-01-01 00:00:00 UTC.
+                1970-01-01 00:00:00 UTC. -1 indicates no expiry.
+            expire_at (click.DateTime): The latest time the registration token
+                is valid.
 
         Returns:
             string: JSON string containing the admin API's response or None if
                 an exception occured. See Synapse admin API docs for details.
 
         """
-        # If uses_allowed or expiry_time were not provided by the user,
+        # If uses_allowed or expiry time were not provided by the user,
         # do not add the corresponding parameter to the request so that
         # the server will not modify its value.
-        data={}
+        data = {}
 
         if uses_allowed == -1:
             # A null value indicates unlimited uses
@@ -738,11 +751,16 @@ class SynapseAdmin(ApiRequest):
         elif uses_allowed is not None:
             data["uses_allowed"] = uses_allowed
 
-        if expiry_time == -1:
-            # A null value indicates no expiry
-            data["expiry_time"] = None
-        elif expiry_time is not None:
-            data["expiry_time"] = expiry_time
+        if expiry_ts:
+            self.log.debug(f"Received --expiry-ts: {expiry_ts}")
+            if expiry_ts == -1:
+                # A null value indicates no expiry
+                data["expiry_time"] = None
+            else:
+                data["expiry_time"] = expiry_ts
+        elif expire_at:
+            self.log.debug(f"Received --expire-at: {expire_at}")
+            data["expiry_time"] = self._timestamp_from_datetime(expire_at)
 
         return self.query("put", f"v1/registration_tokens/{token}", data=data)
 

@@ -83,16 +83,23 @@ def regtok_details_cmd(helper, token):
     registration before it becomes invalid.  [default: unlimited uses]""",
     show_default=True)
 @click.option(
-    "--expiry-time", "-e", type=int, default=None,
+    "--expiry-ts", "-t", type=int, default=None,
     help="""The latest time the registration token is valid.
     Given as the number of milliseconds since 1970-01-01 00:00:00 UTC.
      [default: no expiry]""",
     show_default=True)
+@click.option(
+    "--expire-at", "-e", type=click.DateTime(), default=None,
+    help="""The latest time the registration token is valid.
+    See above for available date/time formats.  [default: no expiry]""",
+    show_default=True)
 @click.pass_obj
-def regtok_new(helper, token, length, uses_allowed, expiry_time):
+def regtok_new(helper, token, length, uses_allowed, expiry_ts, expire_at):
     """ Create a new registration token
     """
-    regtok = helper.api.regtok_new(token, length, uses_allowed, expiry_time)
+    regtok = helper.api.regtok_new(
+        token, length, uses_allowed, expiry_ts, expire_at
+    )
     if regtok is None:
         click.echo("Registration token could not be created.")
         raise SystemExit(1)
@@ -108,16 +115,21 @@ def regtok_new(helper, token, length, uses_allowed, expiry_time):
     number of uses.  [default: unchanged]""",
     show_default=True)
 @click.option(
-    "--expiry-time", "-e", type=int, default=None,
+    "--expiry-ts", "-t", type=int, default=None,
     help="""The latest time the registration token is valid.
     Given as the number of milliseconds since 1970-01-01 00:00:00 UTC.
     Use -1 for no expiration.  [default: unchanged]""",
     show_default=True)
+@click.option(
+    "--expire-at", "-e", type=click.DateTime(), default=None,
+    help="""The latest time the registration token is valid.
+    See above for available date/time formats.  [default: unchanged]""",
+    show_default=True)
 @click.pass_obj
-def regtok_update(helper, token, uses_allowed, expiry_time):
+def regtok_update(helper, token, uses_allowed, expiry_ts, expire_at):
     """ Update a registration token
     """
-    regtok = helper.api.regtok_update(token, uses_allowed, expiry_time)
+    regtok = helper.api.regtok_update(token, uses_allowed, expiry_ts, expire_at)
     if regtok is None:
         click.echo("Registration token could not be created.")
         raise SystemExit(1)
