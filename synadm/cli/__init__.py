@@ -36,9 +36,10 @@ def humanize(data):
     - dicts are displayed as pivoted tables
     - lists are displayed as a simple list
     """
-    if isinstance(data, list) and isinstance(data[0], dict):
-        headers = {header: header for header in data[0]}
-        return tabulate.tabulate(data, tablefmt="simple", headers=headers)
+    if isinstance(data, list) and len(data):
+        if isinstance(data[0], dict):
+            headers = {header: header for header in data[0]}
+            return tabulate.tabulate(data, tablefmt="simple", headers=headers)
     if isinstance(data, list):
         return "\n".join(data)
     if isinstance(data, dict):
