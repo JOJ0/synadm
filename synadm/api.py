@@ -652,14 +652,14 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/purge_history_status/{purge_id}")
 
-    def regtok_list(self, valid, datetime):
+    def regtok_list(self, valid, readable_expiry):
         """ List registration tokens
 
         Args:
             valid (bool): List only valid (if True) or invalid (if False)
                 tokens. Default is to list all tokens regardless of validity.
-            datetime (bool): If True, replace the expiry_time field with a
-                human readable datetime. If False, expiry_time will be a unix
+            readable_expiry (bool): If True, replace the expiry_time field with
+                a human readable datetime. If False, expiry_time will be a unix
                 timestamp.
 
         Returns:
@@ -672,22 +672,25 @@ class SynapseAdmin(ApiRequest):
         })
 
         # Change expiry_time to a human readable format if requested
-        if datetime and result is not None and "registration_tokens" in result:
+        if readable_expiry and result is not None and "registration_tokens" in result:
             for i, regtok in enumerate(result["registration_tokens"]):
                 expiry_time = regtok["expiry_time"]
                 if expiry_time is not None:
-                    datetime = self._datetime_from_timestamp(expiry_time)
-                    result["registration_tokens"][i]["expiry_time"] = datetime
+                    result["registration_tokens"][i][
+                        "expiry_time"
+                    ] = self._datetime_from_timestamp(expiry_time).strftime(
+                        "%Y-%m-%d %H:%M:%S"
+                    )
 
         return result
 
-    def regtok_details(self, token, datetime):
+    def regtok_details(self, token, readable_expiry):
         """ Get details about the given registration token
 
         Args:
             token (string): The registration token in question
-            datetime (bool): If True, replace the expiry_time field with a
-                human readable datetime. If False, expiry_time will be a unix
+            readable_expiry (bool): If True, replace the expiry_time field with
+                a human readable datetime. If False, expiry_time will be a unix
                 timestamp.
 
         Returns:
@@ -698,10 +701,11 @@ class SynapseAdmin(ApiRequest):
         result = self.query("get", f"v1/registration_tokens/{token}")
 
         # Change expiry_time to a human readable format if requested
-        if datetime and result is not None:
+        if readable_expiry and result is not None:
             if result["expiry_time"] is not None:
-                datetime = self._datetime_from_timestamp(result["expiry_time"])
-                result["expiry_time"] = datetime
+                result["expiry_time"] = self._datetime_from_timestamp(
+                    result["expiry_time"]
+                ).strftime("%Y-%m-%d %H:%M:%S")
 
         return result
 
