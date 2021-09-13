@@ -34,12 +34,16 @@ def regtok():
 @regtok.command(name="list")
 @click.option(
     "--valid/--invalid", "-v/-V", default=None, show_default=True,
-    help="list only valid/invalid tokens.")
+    help="List only valid/invalid tokens.")
+@click.option(
+    "--datetime/--timestamp", "-d/-t", default=True, show_default=False,
+    help="""Display expiry time in a human readable format, or as a unix
+    timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
-def regtok_list_cmd(helper, valid):
+def regtok_list_cmd(helper, valid, datetime):
     """ List registration tokens
     """
-    regtoks = helper.api.regtok_list(valid)
+    regtoks = helper.api.regtok_list(valid, datetime)
     if regtoks is None:
         click.echo("Registration tokens could not be fetched.")
         raise SystemExit(1)
@@ -57,11 +61,15 @@ def regtok_list_cmd(helper, valid):
 
 @regtok.command(name="details")
 @click.argument("token", type=str)
+@click.option(
+    "--datetime/--timestamp", "-d/-t", default=True, show_default=False,
+    help="""Display expiry time in a human readable format, or as a unix
+    timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
-def regtok_details_cmd(helper, token):
+def regtok_details_cmd(helper, token, datetime):
     """ View details of the given token
     """
-    regtok = helper.api.regtok_details(token)
+    regtok = helper.api.regtok_details(token, datetime)
     if regtok is None:
         click.echo("Registration token could not be fetched.")
         raise SystemExit(1)
