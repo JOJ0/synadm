@@ -205,18 +205,13 @@ def media_purge_cmd(helper, before_days, before, before_ts):
     (e.g user profile, room avatar). If set, these files will be
     deleted too. Not valid when a specific media is being deleted
     (--media-id)""")
-@click.option(
-    "--server-name", "-s", type=str,
-    help="""your local matrix server name. Note: Currently this is a mandatory
-    argument but will be automatically retrieved via the matrix API in
-    the future.""")
 @click.pass_obj
-def media_delete_cmd(helper, media_id, server_name, before_days, before, before_ts,
+def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ delete media by ID, size or age
     """
-    if not server_name:  # FIXME pull local server name programatically
-        click.echo("--server-name missing.")
+    server_name = helper.matrix_api.server_name()
+    if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:
         click.echo("Combination of --media-id and --delete-profiles not valid.")

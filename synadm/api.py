@@ -221,6 +221,22 @@ class Matrix(ApiRequest):
 
         return self.query(method, endpoint, data=data_dict, token=token)
 
+    def server_name(self):
+        """Fetch the local server name
+
+        using the API for retrieving public server keys:
+        https://matrix.org/docs/spec/server_server/r0.1.4#retrieving-server-keys
+
+        Returns:
+            string: the local Matrix server name or None if the query method
+                could not fetch it for any reason.
+        """
+        resp = self.query("get", "key/v2/server")
+        if "server_name" not in resp:
+            self.log.error("Local server name could not be fetched.")
+            return None
+        return resp['server_name']
+
 
 class SynapseAdmin(ApiRequest):
     """Synapse admin API client
