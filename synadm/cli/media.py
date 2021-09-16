@@ -102,15 +102,18 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
     be quarantined.""")
 @click.option(
     "--server-name", "-s", type=str,
-    help="""the server name of the media, mandatory when --media-id is used.
+    help="""the server name of the media, mandatory when --media-id is used and
+    _remote_ media should be processed. For locally stored media this option can
+    be omitted.
     """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     """ quarantine media in rooms, by users or by media ID
     """
     if media_id and not server_name:
-        click.echo("Server name missing.")
-        media_quarantined = None
+        # We assume it is local media and fetch our own server name.
+        fetched_name = helper.matrix_api.server_name()
+        media_quarantined = helper.api.media_quarantine(fetched_name, media_id)
     elif server_name and not media_id:
         click.echo("Media ID missing.")
         media_quarantined = None
@@ -205,18 +208,13 @@ def media_purge_cmd(helper, before_days, before, before_ts):
     (e.g user profile, room avatar). If set, these files will be
     deleted too. Not valid when a specific media is being deleted
     (--media-id)""")
-@click.option(
-    "--server-name", "-s", type=str,
-    help="""your local matrix server name. Note: Currently this is a mandatory
-    argument but will be automatically retrieved via the matrix API in
-    the future.""")
 @click.pass_obj
-def media_delete_cmd(helper, media_id, server_name, before_days, before, before_ts,
+def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ delete media by ID, size or age
     """
-    if not server_name:  # FIXME pull local server name programatically
-        click.echo("--server-name missing.")
+    server_name = helper.matrix_api.server_name()
+    if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:
         click.echo("Combination of --media-id and --delete-profiles not valid.")
