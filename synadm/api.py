@@ -718,7 +718,7 @@ class SynapseAdmin(ApiRequest):
 
         # Change expiry_time to a human readable format if requested
         if readable_expiry and result is not None:
-            if result["expiry_time"] is not None:
+            if result.get("expiry_time") is not None:
                 result["expiry_time"] = self._datetime_from_timestamp(
                     result["expiry_time"]
                 ).strftime("%Y-%m-%d %H:%M:%S")
@@ -807,7 +807,6 @@ class SynapseAdmin(ApiRequest):
             data["expiry_time"] = self._timestamp_from_datetime(expire_at)
 
         return self.query("put", f"v1/registration_tokens/{token}", data=data)
-
 
     def regtok_delete(self, token):
         """ Delete a registration token
