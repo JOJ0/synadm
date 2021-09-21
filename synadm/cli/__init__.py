@@ -43,7 +43,7 @@ def humanize(data):
     if isinstance(data, list):
         return "\n".join(data)
     if isinstance(data, dict):
-        return tabulate.tabulate(data.items(), tablefmt="simple")
+        return tabulate.tabulate(data.items(), tablefmt="plain")
     return None
 
 
