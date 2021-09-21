@@ -13,3 +13,4 @@ Command Line Reference
    synadm.cli.history
    synadm.cli.group
    synadm.cli.matrix
+   synadm.cli.regtok
