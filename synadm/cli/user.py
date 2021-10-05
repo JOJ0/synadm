@@ -24,6 +24,7 @@ from click_option_group import RequiredAnyOptionGroup
 
 from synadm import cli
 
+import time
 
 # helper function to retrieve functions from within this package from another
 # package (e.g used in ctx.invoke calls)
@@ -134,6 +135,89 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
             helper.output(deactivated)
     else:
         click.echo("Abort.")
+
+
+@user.command(name="prune-devices")
+@click.argument("user_id", type=str)
+@click.option(
+    "--list-only", "-l", is_flag=True, default=False,
+    help="""dry-run: does not perform the deletion but shows what would be
+    done. If you want to list all sessions, you can also use the whois
+    command.""",
+    show_default=True)
+@click.option(
+    "--min-days", "-d", type=int, default=90,
+    help="""how many days need to have passed from the last time a device
+    was seen for it to be deleted.""",
+    show_default=True)
+@click.option(
+    "--min-surviving", "-s", type=int, default=1,
+    help="""stop processing devices when only this number of devices is
+    left for this user. Allows to reduce disruption by preserving recently
+    used devices/sessions.""",
+    show_default=True)
+@click.option(
+    "--device-id", "-i", type=str, default=None,
+    help="""only search devices with this ID.
+    The other options still apply if they're not 0.""",
+    show_default=True)
+@click.pass_obj
+@click.pass_context
+def prune(ctx, helper, user_id, list_only, min_days, min_surviving, device_id):
+    """ deletes devices of a user and invalidates any access token associated
+        with them. Starts from deleting the oldest devices, not seen in a
+        number of days, which may be abandoned.
+        Note that this will affect the encryption and decryption of messages
+        sent by other users to this user or to rooms where the user is present.
+    """
+    # ctx.invoke(user_details_cmd, user_id=user_id)
+    devices_data = helper.api.user_devices(user_id)
+    devices_todelete = []
+    devices_count = devices_data.get("total", 0)
+    if devices_count <= min_surviving:
+        # Nothing to do
+        return
+
+    devices = devices_data.get("devices", [])
+    devices.sort(key=lambda k : k["last_seen_ts"] or 0)
+    for device in devices:
+        if devices_count-len(devices_todelete) <= min_surviving:
+            break
+        if device_id:
+            if device.get("device_id", None) == device_id:
+                devices_todelete.append(device)
+                # We found all we were looking for
+                break
+            else:
+                continue
+        if min_days:
+            # Get the UNIX epoch in ms the device was last seen.
+            seen = device.get("last_seen_ts", None)
+            # A device with "null" as last seen was seen a very long time ago.
+            # Otherwise skip the device if it was seen recently enough.
+            if seen and (time.time()-(seen/1000) < min_days*3600*24):
+                continue
+        # If no conditions were met, just add to the devices to delete.
+        devices_todelete.append(device)
+        
+    if len(devices_todelete) < 1:
+        # We didn't find anything to do.
+        if helper.output_format == "human":
+            click.echo("User {} had no relevant devices to delete.".format(user_id))
+        return
+
+    helper.output(devices_todelete)
+    if not list_only:
+        devices_todelete_ids = [d.get("device_id", None) for d in devices_todelete]
+        deleted = helper.api.user_devices_delete(user_id, devices_todelete_ids)
+        # We should have received an empty dict
+        if len(deleted) > 0:
+            click.echo("Failed deleting user {} devices: {}."
+                       .format(user_id, deleted))
+            raise SystemExit(1)
+        if helper.output_format == "human":
+            click.echo("User {} devices successfully deleted: {}."
+                       .format(user_id, ", ".join(devices_todelete_ids)))
 
 
 @user.command(name="password")
