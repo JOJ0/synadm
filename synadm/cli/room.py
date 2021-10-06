@@ -40,6 +40,16 @@ def join(helper, room_id_or_alias, user_id):
     helper.output(out)
 
 
+@room.command()
+@click.argument("room_alias", type=str)
+@click.pass_obj
+def resolve(helper, room_alias):
+    """ lookup room id from alias
+    """
+    out = helper.matrix_api.resolve(room_alias)
+    helper.output(out)
+
+
 @room.command(name="list")
 @click.pass_obj
 @click.option(
