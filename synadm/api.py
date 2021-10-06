@@ -32,6 +32,7 @@ import requests
 from http.client import HTTPConnection
 import datetime
 import json
+import urllib.parse
 
 
 class ApiRequest:
@@ -206,6 +207,11 @@ class Matrix(ApiRequest):
             "user": f"{user_id}",
             "initial_device_display_name": "synadm matrix login command"
         })
+
+    def resolve(self, room_alias):
+        """ Allow a user to get the room_id with a given room_alias
+        """
+        return self.query("get", f"client/r0/directory/room/{urllib.parse.quote(room_alias)}")
 
     def raw_request(self, endpoint, method, data, token=None):
         data_dict = {}
