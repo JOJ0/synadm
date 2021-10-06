@@ -41,12 +41,24 @@ def join(helper, room_id_or_alias, user_id):
 
 
 @room.command()
-@click.argument("room_alias", type=str)
+@click.argument("room_id_or_alias", type=str)
+@click.option(
+    "--reverse", "-r", is_flag=True, default=False, show_default=True,
+    help="""Fetch all room aliases corresponding to a given room ID,
+    instead of the other way round.
+    """)
 @click.pass_obj
-def resolve(helper, room_alias):
-    """ lookup room id from alias
+def resolve(helper, room_id_or_alias, reverse):
+    """ lookup room ID from alias or vice versa
     """
-    out = helper.matrix_api.resolve(room_alias)
+    if reverse:
+        out = helper.matrix_api.room_get_aliases(room_id_or_alias)
+    else:
+        out = helper.matrix_api.room_get_id(room_id_or_alias)
+
+    if out is None:
+        click.echo("Room resolve failed.")
+        raise SystemExit(1)
     helper.output(out)
 
 

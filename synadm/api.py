@@ -208,10 +208,35 @@ class Matrix(ApiRequest):
             "initial_device_display_name": "synadm matrix login command"
         })
 
-    def resolve(self, room_alias):
-        """ Allow a user to get the room_id with a given room_alias
+    def room_get_id(self, room_alias):
+        """ Get the room ID for a given room alias
+
+        Args:
+            room_alias (string): A Matrix room alias (#name:example.org)
+
+        Returns:
+            string or None: The room ID for the alias or None on errors
         """
-        return self.query("get", f"client/r0/directory/room/{urllib.parse.quote(room_alias)}")
+        room_directory = self.query(
+            "get", f"client/r0/directory/room/{urllib.parse.quote(room_alias)}"
+        )
+        if room_directory:
+            return room_directory['room_id']
+        else:
+            return None
+
+    def room_get_aliases(self, room_id):
+        """ Get a list of room aliases for a given room ID
+
+        Args:
+            room_id (string): A Matrix room ID (!abc123:example.org)
+
+        Returns:
+            list or None: A list of room aliases or None on errors
+        """
+        return self.query(
+            "get", f"client/r0/rooms/{urllib.parse.quote(room_id)}/aliases"
+        )
 
     def raw_request(self, endpoint, method, data, token=None):
         data_dict = {}
