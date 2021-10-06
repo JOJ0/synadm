@@ -215,15 +215,17 @@ class Matrix(ApiRequest):
             room_alias (string): A Matrix room alias (#name:example.org)
 
         Returns:
-            string or None: The room ID for the alias or None on errors
+            string, dict or None: A dict containing the room ID for the alias.
+                If room_id is missing in the response we return the whole
+                response as it might contain Synapse's error message.
         """
         room_directory = self.query(
             "get", f"client/r0/directory/room/{urllib.parse.quote(room_alias)}"
         )
-        if room_directory:
-            return room_directory['room_id']
+        if "room_id" in room_directory:
+            return room_directory["room_id"]
         else:
-            return None
+            return room_directory  # might contain useful error message
 
     def room_get_aliases(self, room_id):
         """ Get a list of room aliases for a given room ID
@@ -232,7 +234,8 @@ class Matrix(ApiRequest):
             room_id (string): A Matrix room ID (!abc123:example.org)
 
         Returns:
-            list or None: A list of room aliases or None on errors
+            dict or None: A dict containing a list of room aliases, Synapse's
+                error message or None on exceptions.
         """
         return self.query(
             "get", f"client/r0/rooms/{urllib.parse.quote(room_id)}/aliases"
