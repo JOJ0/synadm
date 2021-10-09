@@ -164,15 +164,20 @@ def password_cmd(helper, user_id, password, no_logout):
 
 @user.command()
 @click.argument("user_id", type=str)
+@click.option(
+    "--aliases/--ids", is_flag=True, default=True,
+    help="Display rooms as canonical aliases or room ID's.  [default: aliases]")
 @click.pass_obj
-def membership(helper, user_id):
+def membership(helper, user_id, aliases):
     """ list all rooms a user is member of. Provide matrix user ID
     (@user:server) as argument.
     """
-    joined_rooms = helper.api.user_membership(user_id)
+    joined_rooms = helper.api.user_membership(user_id, aliases,
+                                              helper.matrix_api)
     if joined_rooms is None:
         click.echo("Membership could not be fetched.")
         raise SystemExit(1)
+
     if helper.output_format == "human":
         click.echo("User is member of {} rooms."
                    .format(joined_rooms["total"]))
