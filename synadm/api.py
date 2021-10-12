@@ -328,17 +328,29 @@ class SynapseAdmin(ApiRequest):
             "user_id": _user_id
         })
 
-    def user_membership(self, user_id):
+    def user_membership(self, user_id, return_aliases, matrix_api):
         """Get a list of rooms the given user is member of
 
         Args:
-            user_id (string): fully qualified Matrix user ID
+            user_id (string): Fully qualified Matrix user ID
+            room_aliases (bool): Return human readable room aliases instead of
+                room ID's if applicable.
+            matrix_api (object): An initialized Matrix object needs to be passes
+                as we need some Matrix API functionality here.
 
         Returns:
             string: JSON string containing the admin API's response or None if
                 an exception occured. See Synapse admin API docs for details.
         """
-        return self.query("get", f"v1/users/{user_id}/joined_rooms")
+
+        rooms = self.query("get", f"v1/users/{user_id}/joined_rooms")
+        # Translate room ID's into aliases if requested.
+        if return_aliases and rooms is not None and "joined_rooms" in rooms:
+            for i, room_id in enumerate(rooms["joined_rooms"]):
+                aliases = matrix_api.room_get_aliases(room_id)
+                if aliases["aliases"] != []:
+                    rooms["joined_rooms"][i] = " ".join(aliases["aliases"])
+            return rooms
 
     def user_deactivate(self, user_id, gdpr_erase):
         """Delete a given user
