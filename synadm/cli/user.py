@@ -282,6 +282,14 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     if password_prompt and password:
         click.echo("Use either '-p' or '-P secret', not both.")
         raise SystemExit(1)
+    if deactivation == "activate" and not (password_prompt or password):
+        if not helper.batch:
+            helper.log.warning(
+                "You have not set a password. In SSO (Single sign-on) "
+                "environments this is a valid use-case. If you do want to set "
+                "a password, either reissue the 'user modify' command using "
+                "option '-p' or '-P secret' or use the 'user password'."
+            )
     if deactivation == "deactivate" and (password_prompt or password):
         click.echo(
             "Deactivating a user and setting a password doesn't make sense.")
