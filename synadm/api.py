@@ -482,6 +482,19 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/whois/{user_id}")
 
+    def user_devices(self, user_id):
+        """ Return information about all devices for a specific user
+        """
+        return self.query("get", f"v2/users/{user_id}/devices")
+
+    def user_devices_delete(self, user_id, devices):
+        """ Delete the specified devices for a specific user.
+        Returns an empty JSON dict.
+        
+        devices is a list of device IDs
+        """
+        return self.query("post", f"v2/users/{user_id}/delete_devices", data={"devices": devices})
+
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
         to a room with a given room_id_or_alias
