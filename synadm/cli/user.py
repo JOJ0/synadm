@@ -21,7 +21,6 @@
 import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 from click_option_group import RequiredAnyOptionGroup
-import time
 
 from synadm import cli
 
@@ -162,7 +161,6 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     The other options still apply if they're not 0.""",
     show_default=True)
 @click.pass_obj
-@click.pass_context
 def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
                       device_id):
     """ Delete devices and invalidate access tokens of a user.
@@ -174,35 +172,10 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
     Note that this will affect the encryption and decryption of messages sent by
     other users to this user or to rooms where the user is present.
     """
-    # ctx.invoke(user_details_cmd, user_id=user_id)
     devices_data = helper.api.user_devices(user_id)
-    devices_todelete = []
-    devices_count = devices_data.get("total", 0)
-    if devices_count <= min_surviving:
-        # Nothing to do
-        return
-
-    devices = devices_data.get("devices", [])
-    devices.sort(key=lambda k: k["last_seen_ts"] or 0)
-    for device in devices:
-        if devices_count-len(devices_todelete) <= min_surviving:
-            break
-        if device_id:
-            if device.get("device_id", None) == device_id:
-                devices_todelete.append(device)
-                # We found all we were looking for
-                break
-            else:
-                continue
-        if min_days:
-            # Get the UNIX epoch in ms the device was last seen.
-            seen = device.get("last_seen_ts", None)
-            # A device with "null" as last seen was seen a very long time ago.
-            # Otherwise skip the device if it was seen recently enough.
-            if seen and (time.time()-(seen/1000) < min_days*3600*24):
-                continue
-        # If no conditions were met, just add to the devices to delete.
-        devices_todelete.append(device)
+    devices_todelete = helper.api.user_devices_get_todelete(
+        devices_data, min_days, min_surviving, device_id
+    )
 
     if len(devices_todelete) < 1:
         # We didn't find anything to do.

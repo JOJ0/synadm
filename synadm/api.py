@@ -33,6 +33,7 @@ from http.client import HTTPConnection
 import datetime
 import json
 import urllib.parse
+import time
 
 
 class ApiRequest:
@@ -486,6 +487,41 @@ class SynapseAdmin(ApiRequest):
         """ Return information about all devices for a specific user
         """
         return self.query("get", f"v2/users/{user_id}/devices")
+
+    def user_devices_get_todelete(self, devices_data, min_days, min_surviving,
+                                  device_id):
+        """ Gather a list of devices that possibly could be deleted.
+
+        This method is used by the 'user prune-devices' command.
+        """
+        devices_todelete = []
+        devices_count = devices_data.get("total", 0)
+        if devices_count <= min_surviving:
+            # Nothing to do
+            return
+
+        devices = devices_data.get("devices", [])
+        devices.sort(key=lambda k: k["last_seen_ts"] or 0)
+        for device in devices:
+            if devices_count-len(devices_todelete) <= min_surviving:
+                break
+            if device_id:
+                if device.get("device_id", None) == device_id:
+                    devices_todelete.append(device)
+                    # We found all we were looking for
+                    break
+                else:
+                    continue
+            if min_days:
+                # Get the UNIX epoch in ms the device was last seen.
+                seen = device.get("last_seen_ts", None)
+                # A device with "null" as last seen was seen a very long time ago.
+                # Otherwise skip the device if it was seen recently enough.
+                if seen and (time.time()-(seen/1000) < min_days*3600*24):
+                    continue
+            # If no conditions were met, just add to the devices to delete.
+            devices_todelete.append(device)
+        return devices_todelete
 
     def user_devices_delete(self, user_id, devices):
         """ Delete the specified devices for a specific user.
