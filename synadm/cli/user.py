@@ -165,11 +165,14 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
 @click.pass_context
 def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
                       device_id):
-    """ deletes devices of a user and invalidates any access token associated
-        with them. Starts from deleting the oldest devices, not seen in a
-        number of days, which may be abandoned.
-        Note that this will affect the encryption and decryption of messages
-        sent by other users to this user or to rooms where the user is present.
+    """ Delete devices and invalidate access tokens of a user.
+
+    Deletes devices of a user and invalidates any access token associated with
+    them. Starts from deleting the oldest devices, not seen in a number of days,
+    which may be abandoned.
+
+    Note that this will affect the encryption and decryption of messages sent by
+    other users to this user or to rooms where the user is present.
     """
     # ctx.invoke(user_details_cmd, user_id=user_id)
     devices_data = helper.api.user_devices(user_id)
