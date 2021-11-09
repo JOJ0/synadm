@@ -21,10 +21,10 @@
 import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 from click_option_group import RequiredAnyOptionGroup
+import time
 
 from synadm import cli
 
-import time
 
 # helper function to retrieve functions from within this package from another
 # package (e.g used in ctx.invoke calls)
@@ -163,7 +163,8 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     show_default=True)
 @click.pass_obj
 @click.pass_context
-def prune(ctx, helper, user_id, list_only, min_days, min_surviving, device_id):
+def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
+                      device_id):
     """ deletes devices of a user and invalidates any access token associated
         with them. Starts from deleting the oldest devices, not seen in a
         number of days, which may be abandoned.
@@ -179,7 +180,7 @@ def prune(ctx, helper, user_id, list_only, min_days, min_surviving, device_id):
         return
 
     devices = devices_data.get("devices", [])
-    devices.sort(key=lambda k : k["last_seen_ts"] or 0)
+    devices.sort(key=lambda k: k["last_seen_ts"] or 0)
     for device in devices:
         if devices_count-len(devices_todelete) <= min_surviving:
             break
@@ -199,7 +200,7 @@ def prune(ctx, helper, user_id, list_only, min_days, min_surviving, device_id):
                 continue
         # If no conditions were met, just add to the devices to delete.
         devices_todelete.append(device)
-        
+
     if len(devices_todelete) < 1:
         # We didn't find anything to do.
         if helper.output_format == "human":
