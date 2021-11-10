@@ -173,6 +173,11 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
     other users to this user or to rooms where the user is present.
     """
     devices_data = helper.api.user_devices(user_id)
+    if "devices" not in devices_data:
+        # Most probably the requested user is not existing, show error and quit.
+        helper.output(devices_data)
+        raise SystemExit(1)
+
     devices_todelete = helper.api.user_devices_get_todelete(
         devices_data, min_days, min_surviving, device_id
     )
