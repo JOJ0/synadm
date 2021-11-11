@@ -497,8 +497,9 @@ class SynapseAdmin(ApiRequest):
         devices_todelete = []
         devices_count = devices_data.get("total", 0)
         if devices_count <= min_surviving:
-            # Nothing to do
-            return
+            # Nothing to do but return empty list anyway. Makes sure
+            # checks of callers stay valid (eg. len()).
+            return devices_todelete
 
         devices = devices_data.get("devices", [])
         devices.sort(key=lambda k: k["last_seen_ts"] or 0)
