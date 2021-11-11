@@ -182,7 +182,7 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
         devices_data, min_days, min_surviving, device_id
     )
 
-    if devices_todelete is None or len(devices_todelete) < 1:
+    if len(devices_todelete) < 1:
         # We didn't find anything to do.
         if helper.output_format == "human":
             click.echo("User {} had no relevant devices to delete."
