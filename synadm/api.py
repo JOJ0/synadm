@@ -484,7 +484,14 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", f"v1/whois/{user_id}")
 
     def user_devices(self, user_id):
-        """ Return information about all devices for a specific user
+        """ Return information about all devices for a specific user.
+
+        Args:
+            user_id (string): Fully qualified Matrix user ID.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
         """
         return self.query("get", f"v2/users/{user_id}/devices")
 
@@ -493,6 +500,15 @@ class SynapseAdmin(ApiRequest):
         """ Gather a list of devices that possibly could be deleted.
 
         This method is used by the 'user prune-devices' command.
+
+        Args:
+            devices_data (list): Containing dicts of all the user's devices, as
+                returned by the user_devices method (the user/devices API
+                endpoint).
+
+        Returns:
+            list: Containing dicts of devices that possibly could be deleted. If
+                non apply, an empty list is returned.
         """
         devices_todelete = []
         devices_count = devices_data.get("total", 0)
@@ -516,18 +532,24 @@ class SynapseAdmin(ApiRequest):
             if min_days:
                 # Get the UNIX epoch in ms the device was last seen.
                 seen = device.get("last_seen_ts", None)
-                # A device with "null" as last seen was seen a very long time ago.
-                # Otherwise skip the device if it was seen recently enough.
-                if seen and (time.time()-(seen/1000) < min_days*3600*24):
-                    continue
-            # If no conditions were met, just add to the devices to delete.
-            devices_todelete.append(device)
+                # A device with "null" as last seen was seen a very long time
+                # ago. Otherwise skip the device if it was seen recently enough.
+                if seen:
+                    if time.time()-(seen/1000) < min_days*3600*24:
+                        continue
+                if seen is not None:  # Skip ts to str conversion on null
+                    readable_seen = self._datetime_from_timestamp(
+                        seen
+                    ).strftime("%Y-%m-%d %H:%M:%S")
+                    device["last_seen_ts"] = readable_seen
+                # If no conditions were met, just add to the devices to delete.
+                devices_todelete.append(device)
         return devices_todelete
 
     def user_devices_delete(self, user_id, devices):
         """ Delete the specified devices for a specific user.
         Returns an empty JSON dict.
-        
+
         devices is a list of device IDs
         """
         return self.query("post", f"v2/users/{user_id}/delete_devices", data={"devices": devices})
