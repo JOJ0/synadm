@@ -147,16 +147,34 @@ class ApiRequest:
         """
         return int(_datetime.timestamp()) * 1000
 
-    def _datetime_from_timestamp(self, timestamp):
+    def _datetime_from_timestamp(self, timestamp, as_str=False):
         """ Get a datetime object from a unix timestamp in ms
 
         Args:
             timestamp (int): a unix timestamp in milliseconds (ms)
 
         Returns:
-            datetime object: an object built by datetime.datetime
+            datetime object: an object built by datetime.datetime.
+                If as_str is set, return a string formatted by
+                self._format_datetime() instead.
         """
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        dt_o = datetime.datetime.fromtimestamp(timestamp / 1000)
+        if as_str:
+            return self._format_datetime(dt_o)
+        else:
+            return dt_o
+
+    def _format_datetime(self, datetime_obj):
+        """ Get a formatted date as a string.
+
+        Args:
+            datetime_obj (int): A datetime object.
+
+        Returns:
+            string: A date in the format we use it throughout synadm. No sanity
+                checking.
+        """
+        return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Matrix(ApiRequest):
@@ -505,11 +523,28 @@ class SynapseAdmin(ApiRequest):
             devices_data (list): Containing dicts of all the user's devices, as
                 returned by the user_devices method (the user/devices API
                 endpoint).
+            min_days (int): At least this number of days need to have passed
+                from the last time a device was seen for it to be deleted.
+                A reasonable default should be sent by the CLI level method.
+            min_surviving: At least this amount of devices will be kept alive.
+                A reasonable default should be sent by the CLI level method.
+            device_id: Only search devices with this ID.
 
         Returns:
-            list: Containing dicts of devices that possibly could be deleted. If
-                non apply, an empty list is returned.
+            list: Containing dicts of devices that possibly could be deleted.
+                If non apply, an empty list is returned.
         """
+        def _log_kept_min_days(seen, min_days_ts):
+            self.log.debug("Keeping device, since it's been used recently:")
+            self.log.debug("Last seen:        {} / {}".format(
+                seen, self._datetime_from_timestamp(
+                    seen, as_str=True))
+            )
+            self.log.debug("Delete threshold: {} / {}".format(
+                min_days_ts, self._datetime_from_timestamp(
+                    min_days_ts, as_str=True))
+            )
+
         devices_todelete = []
         devices_count = devices_data.get("total", 0)
         if devices_count <= min_surviving:
@@ -521,28 +556,37 @@ class SynapseAdmin(ApiRequest):
         devices.sort(key=lambda k: k["last_seen_ts"] or 0)
         for device in devices:
             if devices_count-len(devices_todelete) <= min_surviving:
+                self.log.debug("Keeping device, since min_surviving threshold "
+                               "is reached.")
                 break
             if device_id:
                 if device.get("device_id", None) == device_id:
+                    # Found device in question. Make last_seen_ts human readable
+                    # and add to deletion list.
+                    device["last_seen_ts"] = self._datetime_from_timestamp(
+                        device.get("last_seen_ts", None),
+                        as_str=True
+                    )
                     devices_todelete.append(device)
-                    # We found all we were looking for
                     break
                 else:
+                    # Continue looking for the device in question.
                     continue
             if min_days:
-                # Get the UNIX epoch in ms the device was last seen.
-                seen = device.get("last_seen_ts", None)
-                # A device with "null" as last seen was seen a very long time
-                # ago. Otherwise skip the device if it was seen recently enough.
+                seen = device.get("last_seen_ts", None)  # Get timestamp or None
+                # A device with "null" as last seen was either seen a very long
+                # time ago _or_ was created through the matrix API (e.g. via
+                # `synadm matrix login`).
                 if seen:
-                    if time.time()-(seen/1000) < min_days*3600*24:
+                    min_days_ts = self._timestamp_from_days_ago(min_days)
+                    if seen > min_days_ts:
+                        # Device was seen recently enough, keep it!
+                        _log_kept_min_days(seen, min_days_ts)
                         continue
-                if seen is not None:  # Skip ts to str conversion on null
-                    readable_seen = self._datetime_from_timestamp(
-                        seen
-                    ).strftime("%Y-%m-%d %H:%M:%S")
-                    device["last_seen_ts"] = readable_seen
-                # If no conditions were met, just add to the devices to delete.
+                    # Make seen human readable.
+                    device["last_seen_ts"] = self._datetime_from_timestamp(
+                        seen, as_str=True)
+                # Finally add to devices deletion list.
                 devices_todelete.append(device)
         return devices_todelete
 
