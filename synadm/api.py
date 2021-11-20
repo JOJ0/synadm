@@ -33,6 +33,7 @@ from http.client import HTTPConnection
 import datetime
 import json
 import urllib.parse
+import time
 
 
 class ApiRequest:
@@ -146,16 +147,34 @@ class ApiRequest:
         """
         return int(_datetime.timestamp()) * 1000
 
-    def _datetime_from_timestamp(self, timestamp):
+    def _datetime_from_timestamp(self, timestamp, as_str=False):
         """ Get a datetime object from a unix timestamp in ms
 
         Args:
             timestamp (int): a unix timestamp in milliseconds (ms)
 
         Returns:
-            datetime object: an object built by datetime.datetime
+            datetime object: an object built by datetime.datetime.
+                If as_str is set, return a string formatted by
+                self._format_datetime() instead.
         """
-        return datetime.datetime.fromtimestamp(timestamp / 1000)
+        dt_o = datetime.datetime.fromtimestamp(timestamp / 1000)
+        if as_str:
+            return self._format_datetime(dt_o)
+        else:
+            return dt_o
+
+    def _format_datetime(self, datetime_obj):
+        """ Get a formatted date as a string.
+
+        Args:
+            datetime_obj (int): A datetime object.
+
+        Returns:
+            string: A date in the format we use it throughout synadm. No sanity
+                checking.
+        """
+        return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Matrix(ApiRequest):
@@ -483,14 +502,98 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", f"v1/whois/{user_id}")
 
     def user_devices(self, user_id):
-        """ Return information about all devices for a specific user
+        """ Return information about all devices for a specific user.
+
+        Args:
+            user_id (string): Fully qualified Matrix user ID.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
         """
         return self.query("get", f"v2/users/{user_id}/devices")
+
+    def user_devices_get_todelete(self, devices_data, min_days, min_surviving,
+                                  device_id):
+        """ Gather a list of devices that possibly could be deleted.
+
+        This method is used by the 'user prune-devices' command.
+
+        Args:
+            devices_data (list): Containing dicts of all the user's devices, as
+                returned by the user_devices method (the user/devices API
+                endpoint).
+            min_days (int): At least this number of days need to have passed
+                from the last time a device was seen for it to be deleted.
+                A reasonable default should be sent by the CLI level method.
+            min_surviving: At least this amount of devices will be kept alive.
+                A reasonable default should be sent by the CLI level method.
+            device_id: Only search devices with this ID.
+
+        Returns:
+            list: Containing dicts of devices that possibly could be deleted.
+                If non apply, an empty list is returned.
+        """
+        def _log_kept_min_days(seen, min_days_ts):
+            self.log.debug("Keeping device, since it's been used recently:")
+            self.log.debug("Last seen:        {} / {}".format(
+                seen, self._datetime_from_timestamp(
+                    seen, as_str=True))
+            )
+            self.log.debug("Delete threshold: {} / {}".format(
+                min_days_ts, self._datetime_from_timestamp(
+                    min_days_ts, as_str=True))
+            )
+
+        devices_todelete = []
+        devices_count = devices_data.get("total", 0)
+        if devices_count <= min_surviving:
+            # Nothing to do but return empty list anyway. Makes sure
+            # checks of callers stay valid (eg. len()).
+            return devices_todelete
+
+        devices = devices_data.get("devices", [])
+        devices.sort(key=lambda k: k["last_seen_ts"] or 0)
+        for device in devices:
+            if devices_count-len(devices_todelete) <= min_surviving:
+                self.log.debug("Keeping device, since min_surviving threshold "
+                               "is reached.")
+                break
+            if device_id:
+                if device.get("device_id", None) == device_id:
+                    # Found device in question. Make last_seen_ts human readable
+                    # and add to deletion list.
+                    device["last_seen_ts"] = self._datetime_from_timestamp(
+                        device.get("last_seen_ts", None),
+                        as_str=True
+                    )
+                    devices_todelete.append(device)
+                    break
+                else:
+                    # Continue looking for the device in question.
+                    continue
+            if min_days:
+                seen = device.get("last_seen_ts", None)  # Get timestamp or None
+                # A device with "null" as last seen was either seen a very long
+                # time ago _or_ was created through the matrix API (e.g. via
+                # `synadm matrix login`).
+                if seen:
+                    min_days_ts = self._timestamp_from_days_ago(min_days)
+                    if seen > min_days_ts:
+                        # Device was seen recently enough, keep it!
+                        _log_kept_min_days(seen, min_days_ts)
+                        continue
+                    # Make seen human readable.
+                    device["last_seen_ts"] = self._datetime_from_timestamp(
+                        seen, as_str=True)
+                # Finally add to devices deletion list.
+                devices_todelete.append(device)
+        return devices_todelete
 
     def user_devices_delete(self, user_id, devices):
         """ Delete the specified devices for a specific user.
         Returns an empty JSON dict.
-        
+
         devices is a list of device IDs
         """
         return self.query("post", f"v2/users/{user_id}/delete_devices", data={"devices": devices})
