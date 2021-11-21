@@ -192,9 +192,10 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
         raise SystemExit(0)
     else:
         if helper.output_format == "human":
+            keep_count = len(devices_data["devices"]) - len(devices_todelete)
             click.echo("User {} has {} device(s) marked for deletion "
                        "and {} device(s) to be kept alive."
-                       .format(user_id, len(devices_todelete), min_surviving))
+                       .format(user_id, len(devices_todelete), keep_count))
 
     helper.output(devices_todelete)
     if not list_only:
