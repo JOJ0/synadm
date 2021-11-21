@@ -161,7 +161,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     they're not 0.""",
     show_default=True)
 @click.option(
-    "--datetime/--timestamp", "-d/-t", default=True,
+    "--datetime/--timestamp", "--dt/--ts", default=True,
     help="""Display 'last seen date/time' in a human readable format, or as a
     unix timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
