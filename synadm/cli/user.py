@@ -140,25 +140,25 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
 @click.argument("user_id", type=str)
 @click.option(
     "--list-only", "-l", is_flag=True, default=False,
-    help="""dry-run: does not perform the deletion but shows what would be
-    done. If you want to list all sessions, you can also use the whois
+    help="""Dry-run: does not perform the deletion but shows what would be done.
+    If you want to list all devices/sessions, you can also use the whois
     command.""",
     show_default=True)
 @click.option(
     "--min-days", "-d", type=int, default=90,
-    help="""how many days need to have passed from the last time a device
-    was seen for it to be deleted.""",
+    help="""How many days need to have passed from the last time a device was
+    seen for it to be deleted.""",
     show_default=True)
 @click.option(
     "--min-surviving", "-s", type=int, default=1,
-    help="""stop processing devices when only this number of devices is
-    left for this user. Allows to reduce disruption by preserving recently
-    used devices/sessions.""",
+    help="""Stop processing devices when only this number of devices is left for
+    this user. Allows to reduce disruption by preserving recently used
+    devices/sessions.""",
     show_default=True)
 @click.option(
     "--device-id", "-i", type=str, default=None,
-    help="""only search devices with this ID.
-    The other options still apply if they're not 0.""",
+    help="""Only search devices with this ID. The other options still apply if
+    they're not 0.""",
     show_default=True)
 @click.pass_obj
 def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
@@ -181,13 +181,15 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
     devices_todelete = helper.api.user_devices_get_todelete(
         devices_data, min_days, min_surviving, device_id
     )
-
     if len(devices_todelete) < 1:
         # We didn't find anything to do.
         if helper.output_format == "human":
-            click.echo("User {} had no relevant devices to delete."
-                       .format(user_id))
+            click.echo(f"User {user_id} had no relevant devices to delete.")
         raise SystemExit(0)
+    else:
+        if helper.output_format == "human":
+            click.echo("User {} has {} devices marked for deletion.".format(
+                user_id, len(devices_todelete)))
 
     helper.output(devices_todelete)
     if not list_only:
@@ -195,8 +197,8 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
         deleted = helper.api.user_devices_delete(user_id, devices_todelete_ids)
         # We should have received an empty dict
         if len(deleted) > 0:
-            click.echo("Failed deleting user {} devices: {}."
-                       .format(user_id, deleted))
+            helper.log.error(f"Failed deleting user {user_id} "
+                             f"devices: {deleted}.")
             raise SystemExit(1)
         if helper.output_format == "human":
             click.echo("User {} devices successfully deleted: {}."
