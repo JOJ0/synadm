@@ -514,7 +514,7 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", f"v2/users/{user_id}/devices")
 
     def user_devices_get_todelete(self, devices_data, min_days, min_surviving,
-                                  device_id):
+                                  device_id, readable_seen):
         """ Gather a list of devices that possibly could be deleted.
 
         This method is used by the 'user prune-devices' command.
@@ -529,6 +529,8 @@ class SynapseAdmin(ApiRequest):
             min_surviving: At least this amount of devices will be kept alive.
                 A reasonable default should be sent by the CLI level method.
             device_id: Only search devices with this ID.
+            datetime: When True, 'last seen timestamp' is replaced with a human
+                readable format.
 
         Returns:
             list: Containing dicts of devices that possibly could be deleted.
@@ -562,11 +564,10 @@ class SynapseAdmin(ApiRequest):
             if device_id:
                 if device.get("device_id", None) == device_id:
                     # Found device in question. Make last_seen_ts human readable
-                    # and add to deletion list.
-                    device["last_seen_ts"] = self._datetime_from_timestamp(
-                        device.get("last_seen_ts", None),
-                        as_str=True
-                    )
+                    # (if requested) and add to deletion list.
+                    if readable_seen:
+                        device["last_seen_ts"] = self._datetime_from_timestamp(
+                            device.get("last_seen_ts", None), as_str=True)
                     devices_todelete.append(device)
                     break
                 else:
@@ -583,9 +584,10 @@ class SynapseAdmin(ApiRequest):
                         # Device was seen recently enough, keep it!
                         _log_kept_min_days(seen, min_days_ts)
                         continue
-                    # Make seen human readable.
-                    device["last_seen_ts"] = self._datetime_from_timestamp(
-                        seen, as_str=True)
+                    # Make seen human readable if requested.
+                    if readable_seen:
+                        device["last_seen_ts"] = self._datetime_from_timestamp(
+                            seen, as_str=True)
                 # Finally add to devices deletion list.
                 devices_todelete.append(device)
         return devices_todelete

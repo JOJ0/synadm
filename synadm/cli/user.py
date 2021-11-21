@@ -160,9 +160,13 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     help="""Only search devices with this ID. The other options still apply if
     they're not 0.""",
     show_default=True)
+@click.option(
+    "--datetime/--timestamp", "-d/-t", default=True,
+    help="""Display 'last seen date/time' in a human readable format, or as a
+    unix timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
 def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
-                      device_id):
+                      device_id, datetime):
     """ Delete devices and invalidate access tokens of a user.
 
     Deletes devices of a user and invalidates any access token associated with
@@ -179,7 +183,7 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
         raise SystemExit(1)
 
     devices_todelete = helper.api.user_devices_get_todelete(
-        devices_data, min_days, min_surviving, device_id
+        devices_data, min_days, min_surviving, device_id, datetime
     )
     if len(devices_todelete) < 1:
         # We didn't find anything to do.
