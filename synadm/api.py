@@ -70,24 +70,24 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
 
     def query(self, method, urlpart, params=None, data=None, token=None):
-        """Generic wrapper around requests methods
+        """Generic wrapper around requests methods.
 
-        Handles requests methods, logging and exceptions
+        Handles requests methods, logging and exceptions.
 
         Args:
-            urlpart (string): the path to the API endpoint, excluding
+            urlpart (string): The path to the API endpoint, excluding
                 self.base_url and self.path (the part after
                 proto://fqdn:port/path).
             params (dict, optional): URL parameters (?param1&paarm2).  Defaults
                 to None.
-            data (dict, optional): request body used in POST, PUT, DELETE
+            data (dict, optional): Request body used in POST, PUT, DELETE
                 requests.  Defaults to None.
 
         Returns:
-            string or None: usually a JSON string containing
+            string or None: Usually a JSON string containing
                 the response of the API; responses that are not 200(OK) (usally
                 error messages returned by the API) will also be returned as
-                JSON strings; on exceptions the error type and description are
+                JSON strings. On exceptions the error type and description are
                 logged and None is returned.
         """
         url = f"{self.base_url}/{self.path}/{urlpart}"
@@ -101,9 +101,8 @@ class ApiRequest:
                 params=params, json=data
             )
             if not resp.ok:
-                self.log.warning(
-                    f"Synapse returned status code {resp.status_code}"
-                )
+                self.log.warning(f"Synapse returned status code "
+                                 f"{resp.status_code}")
             return resp.json()
         except Exception as error:
             self.log.error("%s while querying Synapse: %s",
@@ -302,15 +301,15 @@ class SynapseAdmin(ApiRequest):
         """Initialize the SynapseAdmin object
 
         Args:
-            log (logger object): an already initialized logger object
-            user (string): an admin-enabled Synapse user (currently unused).
+            log (logger object): An already initialized logger object
+            user (string): An admin-enabled Synapse user (currently unused).
                 This can either be the fully qualified Matrix user ID,
                 or just the localpart of the user ID. FIXME is that true?
-            token (string): the admin user's token
+            token (string): The admin user's token
             base_url (string): URI e.g https://fqdn:port
-            path (string): the path to the API endpoint; it's put after
+            path (string): The path to the API endpoint; it's put after
                 base_url and the basis for all API endpoint paths
-            timeout (int): requests module timeout used in ApiRequest.query
+            timeout (int): Requests module timeout used in ApiRequest.query
                 method
             debug (bool): enable/disable debugging in requests module
         """

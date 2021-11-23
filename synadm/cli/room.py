@@ -34,7 +34,7 @@ def room():
 @click.argument("user_id", type=str)
 @click.pass_obj
 def join(helper, room_id_or_alias, user_id):
-    """ join a room
+    """ Join a room
     """
     out = helper.api.room_join(room_id_or_alias, user_id)
     helper.output(out)
@@ -49,7 +49,7 @@ def join(helper, room_id_or_alias, user_id):
     """)
 @click.pass_obj
 def resolve(helper, room_id_or_alias, reverse):
-    """ lookup room ID from alias or vice versa
+    """ Lookup room ID from alias or vice versa
     """
     if reverse:
         out = helper.matrix_api.room_get_aliases(room_id_or_alias)
@@ -66,7 +66,7 @@ def resolve(helper, room_id_or_alias, reverse):
 @click.pass_obj
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset room listing by given number. This option is also used
+    help="""Offset room listing by given number. This option is also used
     for pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
@@ -86,7 +86,7 @@ def resolve(helper, room_id_or_alias, reverse):
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
 def list_room_cmd(helper, from_, limit, name, sort, reverse):
-    """ list and search for rooms
+    """ List and search for rooms
     """
     rooms = helper.api.room_list(from_, limit, name, sort, reverse)
     if rooms is None:
@@ -106,7 +106,7 @@ def list_room_cmd(helper, from_, limit, name, sort, reverse):
 @click.argument("room_id", type=str)
 @click.pass_obj
 def details(helper, room_id):
-    """ get room details
+    """ Get room details
     """
     room_details = helper.api.room_details(room_id)
     if room_details is None:
@@ -119,7 +119,7 @@ def details(helper, room_id):
 @click.argument("room_id", type=str)
 @click.pass_obj
 def members(helper, room_id):
-    """ list current room members
+    """ List current room members
     """
     room_members = helper.api.room_members(room_id)
     if room_members is None:
@@ -167,7 +167,7 @@ def members(helper, room_id):
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
            no_purge):
-    """ delete and possibly purge a room
+    """ Delete and possibly purge a room
     """
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
@@ -192,14 +192,14 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
 @click.argument("search-term", type=str)
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset room listing by given number. This option is also used
+    help="""Offset room listing by given number. This option is also used
     for pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
     help="Maximum amount of rooms to return.")
 @click.pass_context
 def search_room_cmd(ctx, search_term, from_, limit):
-    """a simplified shortcut to \'synadm room list -n <search-term>\'. Also
+    """A simplified shortcut to \'synadm room list -n <search-term>\'. Also
     it executes a case-insensitive search compared to the original
     command."""
     click.echo("Room search results for '{}':".format(search_term.lower()))
@@ -219,7 +219,7 @@ def search_room_cmd(ctx, search_term, from_, limit):
     another user can optionally be specified.""")
 @click.pass_obj
 def make_admin(helper, room_id, user_id):
-    """ grant a user room admin permission. If the user is not in the room,
+    """Grant a user room admin permission. If the user is not in the room,
     and it is not publicly joinable, then invite the user. """
 
     out = helper.api.room_make_admin(room_id, user_id)

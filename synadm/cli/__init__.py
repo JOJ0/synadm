@@ -32,9 +32,9 @@ from synadm import api
 
 def humanize(data):
     """ Try to display data in a human-readable form:
-    - lists of dicts are displayed as tables
-    - dicts are displayed as pivoted tables
-    - lists are displayed as a simple list
+    - Lists of dicts are displayed as tables.
+    - Dicts are displayed as pivoted tables.
+    - Lists are displayed as a simple list.
     """
     if isinstance(data, list) and len(data):
         if isinstance(data[0], dict):
@@ -49,7 +49,7 @@ def humanize(data):
 
 class APIHelper:
     """ API client enriched with CLI-level functions, used as a proxy to the
-    client object
+    client object.
     """
 
     FORMATTERS = {
@@ -80,7 +80,7 @@ class APIHelper:
         self.output_format_cli = output_format_cli  # override from cli
 
     def init_logger(self, verbose):
-        """ Log both to console (defaults to WARNING) and file (DEBUG)
+        """ Log both to console (defaults to WARNING) and file (DEBUG).
         """
         log_path = os.path.expanduser("~/.local/share/synadm/debug.log")
         os.makedirs(os.path.dirname(log_path), exist_ok=True)
@@ -116,7 +116,7 @@ class APIHelper:
         return True
 
     def load(self):
-        """ Load the configuration and initialize the client
+        """ Load the configuration and initialize the client.
         """
         try:
             with open(self.config_path) as handle:
@@ -151,7 +151,7 @@ class APIHelper:
         return True
 
     def write_config(self, config):
-        """ Write a new version of the configuration to file
+        """ Write a new version of the configuration to file.
         """
         try:
             os.makedirs(os.path.dirname(self.config_path), exist_ok=True)
@@ -159,12 +159,11 @@ class APIHelper:
                 yaml.dump(config, handle, default_flow_style=False,
                           allow_unicode=True)
             if os.name == "posix":
-                click.echo("Restricting access to config file to user only")
+                click.echo("Restricting access to config file to user only.")
                 os.chmod(self.config_path, 0o600)
             else:
-                click.echo(
-                    f"Unsupported OS, please adjust permissions of {self.config_path} manually"
-                )
+                click.echo(f"Unsupported OS, please adjust permissions of "
+                           f"{self.config_path} manually")
 
             return True
         except Exception as error:
@@ -172,7 +171,7 @@ class APIHelper:
             return False
 
     def output(self, data):
-        """ Output data object using the configured formatter
+        """ Output data object using the configured formatter.
         """
         click.echo(self.formatter(data))
 
@@ -182,20 +181,20 @@ class APIHelper:
     context_settings=dict(help_option_names=["-h", "--help"]))
 @click.option(
     "--verbose", "-v", count=True, default=False,
-    help="enable INFO (-v) or DEBUG (-vv) logging on console")
+    help="Enable INFO (-v) or DEBUG (-vv) logging on console.")
 @click.option(
     "--batch/--no-batch", default=False,
-    help="enable batch behavior (no interactive prompts)")
+    help="Enable batch behavior (no interactive prompts).")
 @click.option(
     "--output", "-o", default="",
     type=click.Choice(["yaml", "json", "human", "pprint",
                        "y", "j", "h", "p", ""]),
     show_choices=True,
-    help="""override default output format.""")
+    help="""Override default output format.""")
 @click.option(
     "--config-file", "-c", type=click.Path(),
     default="~/.config/synadm.yaml",
-    help="configuration file path", show_default=True)
+    help="Configuration file path.", show_default=True)
 @click.pass_context
 def root(ctx, verbose, batch, output, config_file):
     """ the Matrix-Synapse admin CLI
@@ -204,7 +203,7 @@ def root(ctx, verbose, batch, output, config_file):
     helper_loaded = ctx.obj.load()
     if ctx.invoked_subcommand != "config" and not helper_loaded:
         if batch:
-            click.echo("Please setup synadm: " + sys.argv[0] + " config")
+            click.echo("Please setup synadm: " + sys.argv[0] + " config.")
             raise SystemExit(2)
         else:
             ctx.invoke(config_cmd)
@@ -213,37 +212,37 @@ def root(ctx, verbose, batch, output, config_file):
 @root.command(name="config")
 @click.option(
     "--user", "-u", type=str,
-    help="admin user for accessing the Synapse admin API's")
+    help="Admin user allowed to access the Synapse admin API's.")
 @click.option(
     "--token", "-t", type=str,
-    help="admin user's access token for the Synapse admin API's")
+    help="The Admin user's access token.")
 @click.option(
     "--base-url", "-b", type=str,
-    help="""the base URL Synapse is running on. Typically this is
+    help="""The base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
     configured to expose its admin API's to the outside world it might as
     well be something like this: https://example.org:8448""")
 @click.option(
     "--admin-path", "-p", type=str,
-    help="""the path Synapse provides its admin API's, usually the default is
-    alright for most installations.""")
+    help="""The path Synapse provides its admin API's, usually the default fits
+    most installations.""")
 @click.option(
     "--matrix-path", "-m", type=str,
-    help="""the path Synapse provides the Matrix client API's, usually the
-    default is alright for most installations.""")
+    help="""The path Synapse provides the regular Matrix API's, usually the
+    default fits most installations.""")
 @click.option(
     "--timeout", "-w", type=int,
-    help="""the timeout for http queries to admin API's or Matrix Client
-    API's. The default is 7 seconds. """)
+    help="""The time in seconds synadm should wait for responses from admin
+    API's or Matrix API's. The default is 7 seconds. """)
 @click.option(
     "--output", "-o", type=click.Choice(["yaml", "json", "human", "pprint"]),
-    help="""how should synadm display data by default? 'human' gives a
-    tabular or list view depending on the fetched data. This mode needs your
-    terminal to be quite wide! 'json' displays exactely as the API responded.
-    'pprint' shows nicely formatted json. 'yaml' is the currently recommended
-    output format. It doesn't need as much terminal width as 'human' does.
-    Note that the default output format can always be overridden by using
-    global switch -o (eg 'synadm -o pprint user list').""")
+    help="""How synadm displays data by default. 'human' gives a tabular or list
+    view depending on the fetched data. This mode needs your terminal to be
+    quite wide! 'json' displays exactly as the API responded. 'pprint' shows
+    nicely formatted json. 'yaml' is the currently recommended output format. It
+    doesn't need as much terminal width as 'human' does. Note that the default
+    output format can always be overridden by using global switch -o (eg 'synadm
+    -o pprint user list').""")
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
                output, timeout):
@@ -311,7 +310,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
 @root.command()
 @click.pass_obj
 def version(helper):
-    """ Get the synapse server version
+    """ Get the Synapse server version.
     """
     version_info = helper.api.version()
     if version_info is None:

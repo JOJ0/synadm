@@ -34,40 +34,40 @@ def get_function(function_name):
 
 @cli.root.group()
 def user():
-    """ list, add, modify, deactivate/erase users, reset passwords
+    """ List, add, modify, deactivate/erase users, reset passwords
     """
 
 
 @user.command(name="list")
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset user listing by given number. This option is also used for
+    help="""Offset user listing by given number. This option is also used for
     pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
-    help="limit user listing to given number")
+    help="Limit user listing to given number")
 @click.option(
     "--guests/--no-guests", "-g/-G", default=None, show_default=True,
-    help="show guest users.")
+    help="Show guest users.")
 @click.option(
     "--deactivated", "-d", is_flag=True, default=False,
-    help="also show deactivated/erased users", show_default=True)
+    help="Also show deactivated/erased users", show_default=True)
 @optgroup.group(
     "Search options",
     cls=MutuallyExclusiveOptionGroup,
     help="")
 @optgroup.option(
     "--name", "-n", type=str,
-    help="""search users by name - filters to only return users with user ID
+    help="""Search users by name - filters to only return users with user ID
     localparts or displaynames that contain this value (localpart is the left
     part before the colon of the matrix ID (@user:server)""")
 @optgroup.option(
     "--user-id", "-i", type=str,
-    help="""search users by ID - filters to only return users with Matrix IDs
+    help="""Search users by ID - filters to only return users with Matrix IDs
     (@user:server) that contain this value""")
 @click.pass_obj
 def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
-    """ list and search for users
+    """ List and search for users
     """
     users = helper.api.user_list(from_, limit, guests, deactivated, name,
                                  user_id)
@@ -91,14 +91,14 @@ def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
 @click.argument("user_id", type=str)
 @click.option(
     "--gdpr-erase", "-e", is_flag=True, default=False,
-    help="""marks the user as GDPR-erased. This means messages sent by the
+    help="""Marks the user as GDPR-erased. This means messages sent by the
     user will still be visible by anyone that was in the room when these
     messages were sent, but hidden from users joining the room
     afterwards.""", show_default=True)
 @click.pass_obj
 @click.pass_context
 def deactivate(ctx, helper, user_id, gdpr_erase):
-    """ deactivate or gdpr-erase a user. Provide matrix user ID (@user:server)
+    """ Deactivate or gdpr-erase a user. Provide matrix user ID (@user:server)
     as argument. It removes active access tokens, resets the password, and
     deletes third-party IDs (to prevent the user requesting a password
     reset).
@@ -215,14 +215,15 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
 @click.argument("user_id", type=str)
 @click.option(
     "--no-logout", "-n", is_flag=True, default=False,
-    help="don't log user out of all sessions on all devices.")
+    help="Don't log user out of all sessions on all devices.")
 @click.option(
     "--password", "-p", prompt=True, hide_input=True,
-    confirmation_prompt=True, help="new password")
+    confirmation_prompt=True, help="New password.")
 @click.pass_obj
 def password_cmd(helper, user_id, password, no_logout):
-    """ change a user's password. To prevent the user from being logged out of all
-    sessions use option -n
+    """ Change a user's password.
+
+    To prevent the user from being logged out of all sessions use option -n.
     """
     changed = helper.api.user_password(user_id, password, no_logout)
     if changed is None:
@@ -244,8 +245,9 @@ def password_cmd(helper, user_id, password, no_logout):
     help="Display rooms as canonical aliases or room ID's.  [default: aliases]")
 @click.pass_obj
 def membership(helper, user_id, aliases):
-    """ list all rooms a user is member of. Provide matrix user ID
-    (@user:server) as argument.
+    """ List all rooms a user is member of.
+
+    Provide matrix user ID (@user:server) as argument.
     """
     joined_rooms = helper.api.user_membership(user_id, aliases,
                                               helper.matrix_api)
@@ -266,16 +268,17 @@ def membership(helper, user_id, aliases):
 @click.argument("search-term", type=str)
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset user listing by given number. This option is also used
+    help="""Offset user listing by given number. This option is also used
     for pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
-    help="maximum amount of users to return.")
+    help="Maximum amount of users to return.")
 @click.pass_context
 def user_search_cmd(ctx, search_term, from_, limit):
-    """ a simplified shortcut to \'synadm user list -d -g -n <search-term>\'
-    (Searches for users by name/matrix-ID, including deactivated users
-    as well as guest users). Also it executes a case-insensitive search
+    """ A shortcut to \'synadm user list -d -g -n <search-term>\'.
+
+    Searches for users by name/matrix-ID, including deactivated users
+    as well as guest users. Also it executes a case-insensitive search
     compared to the original command.
     """
     click.echo("User search results for '{}':".format(search_term.lower()))
@@ -291,7 +294,7 @@ def user_search_cmd(ctx, search_term, from_, limit):
 @click.argument("user_id", type=str)
 @click.pass_obj
 def user_details_cmd(helper, user_id):
-    """ view details of a user account.
+    """ View details of a user account.
     """
     user_data = helper.api.user_details(user_id)
     if user_data is None:
@@ -311,16 +314,16 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @optgroup.group(cls=UserModifyOptionGroup)
 @optgroup.option(
     "--password-prompt", "-p", is_flag=True,
-    help="set password interactively.")
+    help="Set password interactively.")
 @optgroup.option(
     "--password", "-P", type=str,
-    help="set password on command line.")
+    help="Set password on command line.")
 @optgroup.option(
     "--display-name", "-n", type=str,
-    help="set display name. defaults to the value of user_id")
+    help="Set display name. defaults to the value of user_id")
 @optgroup.option(
     "--threepid", "-t", type=str, multiple=True, nargs=2,
-    help="""add a third-party identifier. This can be an email address or a
+    help="""Add a third-party identifier. This can be an email address or a
     phone number. Threepids are used for several things: For use when
     logging in, as an alternative to the user id. In the case of email, as
     an alternative contact to help with account recovery, as well as
@@ -330,19 +333,19 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     configured.""")
 @optgroup.option(
     "--avatar-url", "-v", type=str,
-    help="""set avatar URL. Must be a MXC URI
+    help="""Set avatar URL. Must be a MXC URI
     (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris)
     """)
 @optgroup.option(
     "--admin/--no-admin", "-a/-u", default=None,
-    help="""grant user admin permission. Eg user is allowed to use the admin
-    API""", show_default=True,)
+    help="""Grant user admin permission. Eg user is allowed to use the admin
+    API.""", show_default=True,)
 @optgroup.option(
     "--activate", "deactivation", flag_value="activate",
-    help="""re-activate user.""")
+    help="""Re-activate user.""")
 @optgroup.option(
     "--deactivate", "deactivation", flag_value="deactivate",
-    help="""deactivate user. Use with caution! Deactivating a user
+    help="""Deactivate user. Use with caution! Deactivating a user
     removes their active access tokens, resets their password, kicks them out
     of all rooms and deletes third-party identifiers (to prevent the user
     requesting a password reset). See also "user deactivate" command.""")
@@ -350,7 +353,7 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
            threepid, avatar_url, admin, deactivation):
-    """ create or modify a local user. Provide matrix user ID (@user:server)
+    """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
     # sanity checks that can't easily be handled by Click.
@@ -428,11 +431,11 @@ def whois(helper, user_id):
 @click.argument("user_id", type=str)
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset media listing by given number. This option is also used for
+    help="""Offset media listing by given number. This option is also used for
     pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
-    help="limit media listing to given number")
+    help="Limit media listing to given number")
 @click.option(
     "--sort", "-s", type=click.Choice([
         "media_id", "upload_name", "created_ts", "last_access_ts",
@@ -447,8 +450,9 @@ def whois(helper, user_id):
     --order-by method.""")
 @click.pass_obj
 def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
-    """ list all local media uploaded by a user. Provide matrix user ID
-    (@user:server) as argument.
+    """ List all local media uploaded by a user.
+
+    Provide matrix user ID (@user:server) as argument.
 
     Gets a list of all local media that a specific user_id has created. By
     default, the response is ordered by descending creation date and
@@ -489,18 +493,18 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
     help="")
 @optgroup.option(
     "--expire-days", "-d", type=int,
-    help="""expire token after this number of days.""")
+    help="""Expire token after this number of days.""")
 @optgroup.option(
     "--expire", type=click.DateTime(),
-    help="""expire token after this point in time. Eg. '2021-01-01', see
+    help="""Expire token after this point in time. Eg. '2021-01-01', see
     above for available date/time formats.""")
 @optgroup.option(
     "--expire-ts", type=int,
-    help="""expire token after this point in time giving a unix
+    help="""Expire token after this point in time giving a unix
     timestamp in ms.""")
 @optgroup.option(
     "--expire-never", is_flag=True, default=False, show_default=True,
-    help="""never expire token.""")
+    help="""Never expire token.""")
 @click.pass_obj
 def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
                    expire_never):

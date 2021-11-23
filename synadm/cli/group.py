@@ -33,7 +33,7 @@ def group():
 @click.argument("group_id", type=str)
 @click.pass_obj
 def delete(helper, group_id):
-    """ delete a local group (community)
+    """ Delete a local group (community)
     """
     sure = (
         helper.batch or

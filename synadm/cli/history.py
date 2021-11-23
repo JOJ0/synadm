@@ -26,7 +26,7 @@ from synadm import cli
 
 @cli.root.group()
 def history():
-    """ purge historic events from Synapse database
+    """ Purge historic events from Synapse database
     """
 
 
@@ -38,28 +38,28 @@ def history():
     help="")
 @optgroup.option(
     "--before-event-id", "-i", type=str,
-    help="""purge all history before this event ID. Event ID's contain $,
+    help="""Purge all history before this event ID. Event ID's contain $,
     which is interpreted by the shell. Make sure it is surrounded by single
     quotes ('id').""")
 @optgroup.option(
     "--before-days", "-d", type=int,
-    help="""purge all history before this number of days ago.""")
+    help="""Purge all history before this number of days ago.""")
 @optgroup.option(
     "--before", type=click.DateTime(),
-    help="""purge all history before this point in time. Eg. '2021-01-01', see
+    help="""Purge all history before this point in time. Eg. '2021-01-01', see
     above for available date/time formats.""")
 @optgroup.option(
     "--before-ts", type=int,
-    help="""purge all history before this point in time giving a unix
+    help="""Purge all history before this point in time giving a unix
     timestamp in ms. """)
 @click.option(
     "--delete-local", is_flag=True,
-    help="""this option overrides the default behavior and forces removal of
+    help="""This option overrides the default behavior and forces removal of
     events sent by local users.""")
 @click.pass_obj
 def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
                       before_ts, delete_local):
-    """ purge room events before a point in time or before an event ID.
+    """ Purge room events before a point in time or before an event ID.
 
     The purge history API allows server admins to purge historic events from
     their database, reclaiming disk space.
@@ -112,7 +112,7 @@ def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
 @click.argument("purge_id", type=str)
 @click.pass_obj
 def history_purge_status_cmd(helper, purge_id):
-    """ view status of a recent history purge. Provide purge ID as argument.
+    """ View status of a recent history purge. Provide purge ID as argument.
 
     The status will be one of active, complete, or failed.
     """

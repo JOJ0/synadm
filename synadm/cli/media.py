@@ -39,18 +39,18 @@ def media():
     help="")
 @optgroup.option(
     "--room-id", "-r", type=str,
-    help="""list all media in room with this room ID ('!abcdefg').""")
+    help="""List all media in room with this room ID ('!abcdefg').""")
 @optgroup.option(
     "--user-id", "-u", type=str,
-    help="""list all media uploaded by user with this matrix ID
+    help="""List all media uploaded by user with this matrix ID
     (@user:server).""")
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""offset media listing by given number. This option is also used for
+    help="""Offset media listing by given number. This option is also used for
     pagination but only supported together with --user-id.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
-    help="""limit media listing to given number. This option is only supported
+    help="""Limit media listing to given number. This option is only supported
     together with --user-id.""")
 @click.option(
     "--sort", "-s", type=click.Choice([
@@ -69,7 +69,7 @@ def media():
 @click.pass_obj
 @click.pass_context
 def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
-    """ list local media by room or user
+    """ List local media by room or user
     """
     if room_id:
         media_list = helper.api.room_media_list(room_id)
@@ -90,25 +90,25 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
     help="")
 @optgroup.option(
     "--media-id", "-i", type=str,
-    help="""the media with this specific media ID will be quarantined.
+    help="""The media with this specific media ID will be quarantined.
     """)
 @optgroup.option(
     "--room-id", "-r", type=str,
-    help="""all media in room with this room ID (!abcdefg) will be
+    help="""All media in room with this room ID (!abcdefg) will be
     quarantined.""")
 @optgroup.option(
     "--user-id", "-u", type=str,
-    help="""all media uploaded by user with this matrix ID (@user:server) will
+    help="""All media uploaded by user with this matrix ID (@user:server) will
     be quarantined.""")
 @click.option(
     "--server-name", "-s", type=str,
-    help="""the server name of the media, mandatory when --media-id is used and
+    help="""The server name of the media, mandatory when --media-id is used and
     _remote_ media should be processed. For locally stored media this option can
     be omitted.
     """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
-    """ quarantine media in rooms, by users or by media ID
+    """ Quarantine media in rooms, by users or by media ID
     """
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
@@ -134,7 +134,7 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
 @click.argument("media_id", type=str)
 @click.pass_obj
 def media_protect_cmd(helper, media_id):
-    """ protect specific media from being quarantined
+    """ Protect specific media from being quarantined
     """
     media_protected = helper.api.media_protect(media_id)
     if media_protected is None:
@@ -180,38 +180,38 @@ def media_purge_cmd(helper, before_days, before, before_ts):
     help="")
 @optgroup.option(
     "--media-id", "-i", type=str,
-    help="""the media with this specific media ID will be deleted.""")
+    help="""The media with this specific media ID will be deleted.""")
 @optgroup.option(
     "--before-days", "-d", type=int,
-    help="""delete all media that was last accessed before this number of
+    help="""Delete all media that was last accessed before this number of
     days ago.
     """)
 @optgroup.option(
     "--before", "-b", type=click.DateTime(),
-    help="""delete all media that was last accessed before this date/time. Eg.
+    help="""Delete all media that was last accessed before this date/time. Eg.
     '2021-01-01', see above for available date/time formats.""")
 @optgroup.option(
     "--before-ts", "-t", type=int,
-    help="""delete all media that was last accessed before this unix
+    help="""Delete all media that was last accessed before this unix
     timestamp in ms.""")
 @optgroup.group(
-    "additional switches",
+    "Additional switches",
     cls=OptionGroup,
     help="")
 @optgroup.option(
     "--size", "--kib", type=int,
-    help="""delete all media that is larger than this size in KiB
+    help="""Delete all media that is larger than this size in KiB
     (1 KiB = 1024 bytes).""")
 @optgroup.option(
     "--delete-profiles", "--all", is_flag=True,
-    help="""also delete files that are still used in image data
+    help="""Also delete files that are still used in image data
     (e.g user profile, room avatar). If set, these files will be
     deleted too. Not valid when a specific media is being deleted
     (--media-id)""")
 @click.pass_obj
 def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
-    """ delete media by ID, size or age
+    """ Delete media by ID, size or age
     """
     server_name = helper.matrix_api.server_name()
     if not server_name:
