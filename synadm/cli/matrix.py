@@ -113,8 +113,8 @@ def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
     """ Execute a raw request to the Matrix API.
 
     The endpoint argument is the part of the URL _after_ the configured base URL
-    and Matrix path (see `synadm config`). A simple get request would e.g like
-    this: `synadm matrix raw client/versions`
+    and Matrix path (see `synadm config`). A simple get request would e.g look
+    like this: `synadm matrix raw client/versions`
 
     Use either --token or --prompt to provide a user's token and execute Matrix
     commands on their behalf. Respect the privacy of others! Be responsible!

@@ -199,9 +199,10 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
     help="Maximum amount of rooms to return.")
 @click.pass_context
 def search_room_cmd(ctx, search_term, from_, limit):
-    """A simplified shortcut to \'synadm room list -n <search-term>\'. Also
-    it executes a case-insensitive search compared to the original
-    command."""
+    """ A shortcut to \'synadm room list -n <search-term>\'.
+
+    Also, compared to the original command, a case-insensitive search is done.
+    """
     click.echo("Room search results for '{}':".format(search_term.lower()))
     ctx.invoke(list_room_cmd, from_=from_, limit=limit,
                name=search_term.lower())
@@ -219,8 +220,11 @@ def search_room_cmd(ctx, search_term, from_, limit):
     another user can optionally be specified.""")
 @click.pass_obj
 def make_admin(helper, room_id, user_id):
-    """Grant a user room admin permission. If the user is not in the room,
-    and it is not publicly joinable, then invite the user. """
+    """ Grant a user room admin permission.
+    
+    If the user is not in the room, and it is not publicly joinable, then invite
+    the user.
+    """
 
     out = helper.api.room_make_admin(room_id, user_id)
     helper.output(out)

@@ -107,7 +107,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     Note that deactivating/gdpr-erasing a user leads to the following:
     - Removal from all joined rooms
     - Password reset
-    - Deletion of third-party-IDs (to prevent the user requesting a password
+    - Deletion of third-party-IDs (to prevent the user requesting a password)
     """)
     ctx.invoke(user_details_cmd, user_id=user_id)
     ctx.invoke(membership, user_id=user_id)
@@ -277,9 +277,9 @@ def membership(helper, user_id, aliases):
 def user_search_cmd(ctx, search_term, from_, limit):
     """ A shortcut to \'synadm user list -d -g -n <search-term>\'.
 
-    Searches for users by name/matrix-ID, including deactivated users
-    as well as guest users. Also it executes a case-insensitive search
-    compared to the original command.
+    Searches for users by name/matrix-ID, including deactivated users as well as
+    guest users. Also, compared to the original command, a case-insensitive
+    search is done.
     """
     click.echo("User search results for '{}':".format(search_term.lower()))
     ctx.invoke(list_user_cmd, from_=from_, limit=limit,
