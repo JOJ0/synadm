@@ -597,7 +597,8 @@ class SynapseAdmin(ApiRequest):
 
         devices is a list of device IDs
         """
-        return self.query("post", f"v2/users/{user_id}/delete_devices", data={"devices": devices})
+        return self.query("post", f"v2/users/{user_id}/delete_devices",
+                          data={"devices": devices})
 
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
@@ -851,7 +852,11 @@ class SynapseAdmin(ApiRequest):
         })
 
         # Change expiry_time to a human readable format if requested
-        if readable_expiry and result is not None and "registration_tokens" in result:
+        if (
+            readable_expiry
+            and result is not None
+            and "registration_tokens" in result
+        ):
             for i, regtok in enumerate(result["registration_tokens"]):
                 expiry_time = regtok["expiry_time"]
                 if expiry_time is not None:

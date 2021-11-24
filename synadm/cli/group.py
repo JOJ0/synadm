@@ -48,4 +48,3 @@ def delete(helper, group_id):
         helper.output(group_del)
     else:
         click.echo("Abort.")
-

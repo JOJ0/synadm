@@ -199,7 +199,9 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
 
     helper.output(devices_todelete)
     if not list_only:
-        devices_todelete_ids = [d.get("device_id", None) for d in devices_todelete]
+        devices_todelete_ids = [
+            d.get("device_id", None) for d in devices_todelete
+        ]
         deleted = helper.api.user_devices_delete(user_id, devices_todelete_ids)
         # We should have received an empty dict
         if len(deleted) > 0:
