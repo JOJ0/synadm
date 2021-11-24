@@ -862,9 +862,7 @@ class SynapseAdmin(ApiRequest):
                 if expiry_time is not None:
                     result["registration_tokens"][i][
                         "expiry_time"
-                    ] = self._datetime_from_timestamp(expiry_time).strftime(
-                        "%Y-%m-%d %H:%M:%S"
-                    )
+                    ] = self._datetime_from_timestamp(expiry_time, as_str=True)
 
         return result
 
@@ -885,11 +883,14 @@ class SynapseAdmin(ApiRequest):
         result = self.query("get", f"v1/registration_tokens/{token}")
 
         # Change expiry_time to a human readable format if requested
-        if readable_expiry and result is not None:
-            if result.get("expiry_time") is not None:
-                result["expiry_time"] = self._datetime_from_timestamp(
-                    result["expiry_time"]
-                ).strftime("%Y-%m-%d %H:%M:%S")
+        if (
+            readable_expiry
+            and result is not None
+            and result.get("expiry_time") is not None
+        ):
+            result["expiry_time"] = self._datetime_from_timestamp(
+                result["expiry_time"], as_str=True
+            )
 
         return result
 
