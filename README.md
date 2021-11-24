@@ -239,6 +239,7 @@ python3 setup.py install
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user query <user id>` (alias of `user details`)
       * [ ] `user create <user id>` (alias of `user modify ...`)
+      * [x] `user prune-devices <user id>`
 * [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
   * [x] `version`
 * [x] [Registration Tokens](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
