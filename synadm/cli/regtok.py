@@ -36,7 +36,7 @@ def regtok():
     "--valid/--invalid", "-v/-V", default=None, show_default=True,
     help="List only valid/invalid tokens.")
 @click.option(
-    "--datetime/--timestamp", "-d/-t", default=True,
+    "--datetime/--timestamp", "--dt/--ts", default=True,
     help="""Display expiry time in a human readable format, or as a unix
     timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
@@ -62,7 +62,7 @@ def regtok_list_cmd(helper, valid, datetime):
 @regtok.command(name="details")
 @click.argument("token", type=str)
 @click.option(
-    "--datetime/--timestamp", "-d/-t", default=True,
+    "--datetime/--timestamp", "--dt/--ts", default=True,
     help="""Display expiry time in a human readable format, or as a unix
     timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
