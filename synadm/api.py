@@ -681,15 +681,23 @@ class SynapseAdmin(ApiRequest):
             "post", f"v1/user/{user_id}/media/quarantine", data={}
         )
 
-    def user_media(self, user_id, _from, limit, order_by, reverse):
+    def user_media(self, user_id, _from, limit, order_by, reverse, readable):
         """ Get a user's uploaded media
         """
-        return self.query("get", f"v1/users/{user_id}/media", params={
+        result = self.query("get", f"v1/users/{user_id}/media", params={
             "from": _from,
             "limit": limit,
             "order_by": order_by,
             "dir": "b" if reverse else None
         })
+        if (readable and result is not None and "media" in result):
+            for i, media in enumerate(result["media"]):
+                created_ts = media["created_ts"]
+                if created_ts is not None:
+                    result["media"][i][
+                        "created_ts"
+                    ] = self._datetime_from_timestamp(created_ts, as_str=True)
+        return result
 
     def media_delete(self, server_name, media_id):
         """ Delete a specific (local) media_id

@@ -450,8 +450,12 @@ def whois(helper, user_id):
     "--reverse", "-r", is_flag=True, default=False,
     help="""Direction of media order. If set it will reverse the sort order of
     --order-by method.""")
+@click.option(
+    "--datetime/--timestamp", "--dt/--ts", default=True,
+    help="""Display created and last accessed timestamps in a human readable format, or as a unix
+    timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
-def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
+def user_media_cmd(helper, user_id, from_, limit, sort, reverse, datetime):
     """ List all local media uploaded by a user.
 
     Provide matrix user ID (@user:server) as argument.
@@ -467,7 +471,8 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse):
     safe_from_quarantine), this can cause a large load on the database,
     especially for large environments
     """
-    media = helper.api.user_media(user_id, from_, limit, sort, reverse)
+    media = helper.api.user_media(user_id, from_, limit, sort, reverse,
+                                  datetime)
     if media is None:
         click.echo("Media could not be fetched.")
         raise SystemExit(1)
