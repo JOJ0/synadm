@@ -66,9 +66,15 @@ def media():
     help="""Direction of media order. If set it will reverse the sort order of
     --order-by method. This option is only supported together with --user-id.
     """)
+@click.option(
+    "--datetime/--timestamp", "--dt/--ts", default=True,
+    help="""Display created and last accessed timestamps in a human readable
+    format, or as a unix timestamp in milliseconds. This option only applies to
+    user media and is ignored with room media.  [default: datetime].""")
 @click.pass_obj
 @click.pass_context
-def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
+def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
+                   datetime):
     """ List local media by room or user
     """
     if room_id:
@@ -79,8 +85,11 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse):
         helper.output(media_list)
     elif user_id:
         from synadm.cli import user
-        ctx.invoke(user.get_function("user_media_cmd"), user_id=user_id,
-                   from_=from_, limit=limit, sort=sort, reverse=reverse)
+        ctx.invoke(
+            user.get_function("user_media_cmd"),
+            user_id=user_id, from_=from_, limit=limit, sort=sort,
+            reverse=reverse, datetime=datetime
+        )
 
 
 @media.command(name="quarantine")
