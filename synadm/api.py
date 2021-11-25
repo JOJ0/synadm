@@ -692,11 +692,16 @@ class SynapseAdmin(ApiRequest):
         })
         if (readable and result is not None and "media" in result):
             for i, media in enumerate(result["media"]):
-                created_ts = media["created_ts"]
-                if created_ts is not None:
+                created = media["created_ts"]
+                last_access = media["last_access_ts"]
+                if created is not None:
                     result["media"][i][
                         "created_ts"
-                    ] = self._datetime_from_timestamp(created_ts, as_str=True)
+                    ] = self._datetime_from_timestamp(created, as_str=True)
+                if last_access is not None:
+                    result["media"][i][
+                        "last_access_ts"
+                    ] = self._datetime_from_timestamp(last_access, as_str=True)
         return result
 
     def media_delete(self, server_name, media_id):

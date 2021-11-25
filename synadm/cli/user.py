@@ -452,8 +452,8 @@ def whois(helper, user_id):
     --order-by method.""")
 @click.option(
     "--datetime/--timestamp", "--dt/--ts", default=True,
-    help="""Display created and last accessed timestamps in a human readable format, or as a unix
-    timestamp in milliseconds.  [default: datetime].""")
+    help="""Display created and last accessed timestamps in a human readable
+    format, or as a unix timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
 def user_media_cmd(helper, user_id, from_, limit, sort, reverse, datetime):
     """ List all local media uploaded by a user.
