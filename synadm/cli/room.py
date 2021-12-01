@@ -85,10 +85,15 @@ def resolve(helper, room_id_or_alias, reverse):
     "--reverse", "-r", is_flag=True, default=False,
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
-def list_room_cmd(helper, from_, limit, name, sort, reverse):
+@click.option(
+    "--empty", "-e", is_flag=True, default=False,
+    help="""Only show rooms with zero joined local members.
+    """)
+def list_room_cmd(helper, from_, limit, name, sort, reverse, empty):
     """ List and search for rooms
     """
-    rooms = helper.api.room_list(from_, limit, name, sort, reverse)
+    rooms = helper.api.room_list(from_, limit, name, sort, reverse,
+                                 empty_only=True)
     if rooms is None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)

@@ -607,16 +607,24 @@ class SynapseAdmin(ApiRequest):
         data = {"user_id": user_id}
         return self.query("post", f"v1/join/{room_id_or_alias}", data=data)
 
-    def room_list(self, _from, limit, name, order_by, reverse):
+    def room_list(self, _from, limit, name, order_by, reverse, empty_only):
         """ List and search rooms
         """
-        return self.query("get", "v1/rooms", params={
+        import pprint
+        result = self.query("get", "v1/rooms", params={
             "from": _from,
             "limit": limit,
             "search_term": name,
             "order_by": order_by,
             "dir": "b" if reverse else None
         })
+        if empty_only and result is not None:
+            empty_rooms = []
+            for i, room in enumerate(result["rooms"]):
+                if room["joined_local_members"] == 0:
+                    empty_rooms.append(room)
+            result["rooms"] = empty_rooms
+        return result
 
     def room_details(self, room_id):
         """ Get details about a room
