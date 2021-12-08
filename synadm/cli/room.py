@@ -118,6 +118,19 @@ def details(helper, room_id):
 @room.command()
 @click.argument("room_id", type=str)
 @click.pass_obj
+def state(helper, room_id):
+    """ Get a list of all state events in a room.
+    """
+    room_state = helper.api.room_state(room_id)
+    if room_state is None:
+        click.echo("Room state could not be fetched.")
+        raise SystemExit(1)
+    helper.output(room_state)
+
+
+@room.command()
+@click.argument("room_id", type=str)
+@click.pass_obj
 def members(helper, room_id):
     """ List current room members
     """

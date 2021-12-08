@@ -628,6 +628,18 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/rooms/{room_id}/members")
 
+    def room_state(self, room_id):
+        """ Get a list of all state events in a room.
+
+        Args:
+            room_id (string)
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
+        """
+        return self.query("get", f"v1/rooms/{room_id}/state")
+
     def room_delete(self, room_id, new_room_user_id, room_name, message,
                     block, no_purge):
         """ Delete a room and purge it if requested
