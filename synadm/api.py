@@ -610,10 +610,9 @@ class SynapseAdmin(ApiRequest):
     def room_list(self, _from, limit, name, order_by, reverse, empty_only):
         """ List and search rooms
         """
-        import pprint
         result = self.query("get", "v1/rooms", params={
-            "from": _from,
-            "limit": limit,
+            "from": 0 if empty_only else _from,
+            "limit": 10000000 if empty_only else limit,
             "search_term": name,
             "order_by": order_by,
             "dir": "b" if reverse else None
@@ -624,6 +623,7 @@ class SynapseAdmin(ApiRequest):
                 if room["joined_local_members"] == 0:
                     empty_rooms.append(room)
             result["rooms"] = empty_rooms
+            result["total_rooms"] = len(empty_rooms)
         return result
 
     def room_details(self, room_id):

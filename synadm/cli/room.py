@@ -86,25 +86,36 @@ def resolve(helper, room_id_or_alias, reverse):
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
 @click.option(
-    "--empty", "-e", is_flag=True, default=False,
-    help="""Only show rooms with zero joined local members.
+    "--empty", "-e", "empty_only", is_flag=True, default=False,
+    help="""Only show rooms with zero joined local members. Disables pagination
+    with --from and hardcodes --limit to 1,000,000 (one million) rooms.
     """)
-def list_room_cmd(helper, from_, limit, name, sort, reverse, empty):
+def list_room_cmd(helper, from_, limit, name, sort, reverse, empty_only):
     """ List and search for rooms
     """
-    rooms = helper.api.room_list(from_, limit, name, sort, reverse,
-                                 empty_only=True)
+    rooms = helper.api.room_list(from_, limit, name, sort, reverse, empty_only)
     if rooms is None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)
     if helper.output_format == "human":
         if int(rooms["total_rooms"]) != 0:
             helper.output(rooms["rooms"])
-        if "next_batch" in rooms:
+            if empty_only:
+                click.echo("Total empty rooms on homeserver: {}"
+                           .format(rooms["total_rooms"]))
+            else:
+                click.echo("Total rooms on homeserver: {}"
+                           .format(rooms["total_rooms"]))
+        if "next_batch" in rooms and "next_batch" not in rooms:
             click.echo("There are more rooms than shown, use '--from {}'"
                        .format(rooms["next_batch"]))
     else:
         helper.output(rooms)
+
+    # Throw this error in any output mode.
+    if empty_only and "next_batch" in rooms:
+        log.error("Empty rooms filtering not supported with more than "
+                  "1,000,000 rooms total.")
 
 
 @room.command()
