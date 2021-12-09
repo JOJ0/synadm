@@ -640,6 +640,37 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/rooms/{room_id}/state")
 
+    def room_power_levels(self, room_id):
+        """ Get a list of configured power_levels in all rooms.
+
+        or a single room.
+
+        Args:
+            room_id (string): If left out, all rooms are fetched.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
+        """
+        if room_id:
+            rooms = [room_id]
+        else:
+            rooms = self.room_list(0, 10000, None, None, None)
+
+        import pprint
+        
+        rooms_power_levels = []
+        for room in rooms["rooms"]:
+            state = self.room_state(room["room_id"])
+            for item in state["state"]:
+                if item["type"] == "m.room.power_levels":
+                    # add to list
+                    print("room_id: {}".format(item["room_id"]))
+                    print("content: {}".format(item["content"]["users"]))
+                    print()
+                    #pprint.pprint(content["users"])
+        # return rooms
+
     def room_delete(self, room_id, new_room_user_id, room_name, message,
                     block, no_purge):
         """ Delete a room and purge it if requested

@@ -129,6 +129,24 @@ def state(helper, room_id):
 
 
 @room.command()
+@click.option(
+    "--room-id", "-i", type=str,
+    help="""View power levels of this room only.""")
+@click.pass_obj
+def power_levels(helper, room_id):
+    """ List power levels of all rooms or a single room.
+
+    This is a combination of `room list` and `room state` commands. FIXME limit
+    is hardcoded.
+    """
+    rooms = helper.api.room_power_levels(room_id)
+    if rooms is None:
+        click.echo("Power levels could not be fetched.")
+        raise SystemExit(1)
+    helper.output(rooms)
+
+
+@room.command()
 @click.argument("room_id", type=str)
 @click.pass_obj
 def members(helper, room_id):
