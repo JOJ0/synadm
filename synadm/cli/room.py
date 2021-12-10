@@ -132,18 +132,40 @@ def state(helper, room_id):
 @click.option(
     "--room-id", "-i", type=str,
     help="""View power levels of this room only.""")
+@click.option(
+    "--from", "-f", "from_", type=int, default=0, show_default=True,
+    help="""Offset room listing by given number. This option is also used
+    for pagination.""")
+@click.option(
+    "--limit", "-l", type=int, default=100, show_default=True,
+    help="Maximum amount of rooms to return.")
+@click.option(
+    "--name", "-n", type=str,
+    help="""Filter rooms by their room name. Search term can be contained in
+    any part of the room name)""")
+@click.option(
+    "--sort", "-s", type=click.Choice(
+        ["name", "canonical_alias", "joined_members", "joined_local_members",
+         "version", "creator", "encryption", "federatable", "public",
+         "join_rules", "guest_access", "history_visibility", "state_events"]),
+    help="The method in which to sort the returned list of rooms.")
+@click.option(
+    "--reverse", "-r", is_flag=True, default=False,
+    help="""Direction of room order. If set it will reverse the sort order of
+    --order-by method.""")
 @click.pass_obj
-def power_levels(helper, room_id):
+def power_levels(helper, room_id, from_, limit, name, sort, reverse):
     """ List power levels of all rooms or a single room.
 
     This is a combination of `room list` and `room state` commands. FIXME limit
     is hardcoded.
     """
-    rooms = helper.api.room_power_levels(room_id)
-    if rooms is None:
+    rooms_power = helper.api.room_power_levels(from_, limit, name, sort,
+                                               reverse, room_id)
+    if rooms_power is None:
         click.echo("Power levels could not be fetched.")
         raise SystemExit(1)
-    helper.output(rooms)
+    helper.output(rooms_power)
 
 
 @room.command()

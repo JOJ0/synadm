@@ -640,7 +640,8 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/rooms/{room_id}/state")
 
-    def room_power_levels(self, room_id=None):
+    def room_power_levels(self, _from, limit, name, order_by,
+                          reverse, room_id=None):
         """ Get a list of configured power_levels in all rooms.
 
         or a single room.
@@ -655,7 +656,7 @@ class SynapseAdmin(ApiRequest):
         if room_id:
             rooms = [room_id]
         else:
-            rooms = self.room_list(0, 10000, None, None, None)
+            rooms = self.room_list(_from, limit, name, order_by, reverse)
 
         rooms_power_levels = []
         for room in rooms["rooms"]:
@@ -666,7 +667,11 @@ class SynapseAdmin(ApiRequest):
                         "room_id": item["room_id"],
                         "users": item["content"]["users"]
                     })
-        return rooms_power_levels
+
+        return {
+            "total_rooms": len(rooms_power_levels),
+            "rooms": rooms_power_levels
+        }
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
                     block, no_purge):
