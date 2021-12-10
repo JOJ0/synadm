@@ -179,7 +179,7 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
                        .format(rooms_power["rooms_with_power_levels_found"]))
             click.echo("Total rooms existing on server: {}"
                        .format(rooms_power["total_rooms"]))
-        if "next_batch" in rooms:
+        if "next_batch" in rooms_power:
             click.echo("There are more rooms than shown, use '--from {}'"
                        .format(rooms_power["next_batch"]))
     else:
