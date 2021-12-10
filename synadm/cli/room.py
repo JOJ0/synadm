@@ -133,12 +133,16 @@ def state(helper, room_id):
     "--room-id", "-i", type=str,
     help="""View power levels of this room only.""")
 @click.option(
+    "--all-details", "-a", is_flag=True, default=False,
+    help="""Show detailed information about each room. The default is to only
+    show room_id, name, canonical_alias and power_levels.""")
+@click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
     help="""Offset room listing by given number. This option is also used
     for pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
-    help="Maximum amount of rooms to return.")
+    help="Maximum amount of rooms to return. Pagination is not available with ")
 @click.option(
     "--name", "-n", type=str,
     help="""Filter rooms by their room name. Search term can be contained in
@@ -154,18 +158,32 @@ def state(helper, room_id):
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
 @click.pass_obj
-def power_levels(helper, room_id, from_, limit, name, sort, reverse):
+def power_levels(helper, room_id, all_details, from_, limit, name, sort,
+                 reverse):
     """ List power levels of all rooms or a single room.
 
-    This is a combination of `room list` and `room state` commands. FIXME limit
-    is hardcoded.
+    This is a combination of `room list` and `room state` commands. Per default
+    it lists all existing rooms on the server, and if available, adds a list of
+    users with power_levels set.
     """
-    rooms_power = helper.api.room_power_levels(from_, limit, name, sort,
-                                               reverse, room_id)
+    rooms_power = helper.api.room_power_levels(from_, limit, name, sort, reverse,
+                                               room_id, all_details)
     if rooms_power is None:
         click.echo("Power levels could not be fetched.")
         raise SystemExit(1)
-    helper.output(rooms_power)
+
+    if helper.output_format == "human":
+        if int(rooms_power["total_rooms"]) != 0:
+            helper.output(rooms_power["rooms"])
+            click.echo("'Rooms with power levels found in current batch: {}"
+                       .format(rooms_power["rooms_with_power_levels_found"]))
+            click.echo("Total rooms existing on server: {}"
+                       .format(rooms_power["total_rooms"]))
+        if "next_batch" in rooms:
+            click.echo("There are more rooms than shown, use '--from {}'"
+                       .format(rooms_power["next_batch"]))
+    else:
+        helper.output(rooms_power)
 
 
 @room.command()

@@ -640,8 +640,8 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/rooms/{room_id}/state")
 
-    def room_power_levels(self, _from, limit, name, order_by,
-                          reverse, room_id=None):
+    def room_power_levels(self, from_, limit, name, order_by, reverse,
+                          room_id=None, all_details=True):
         """ Get a list of configured power_levels in all rooms.
 
         or a single room.
@@ -656,22 +656,26 @@ class SynapseAdmin(ApiRequest):
         if room_id:
             rooms = [room_id]
         else:
-            rooms = self.room_list(_from, limit, name, order_by, reverse)
+            rooms = self.room_list(from_, limit, name, order_by, reverse)
 
-        rooms_power_levels = []
-        for room in rooms["rooms"]:
+        rooms_with_power_levels_found = 0
+        for i, room in enumerate(rooms["rooms"]):
+            rooms["rooms"][i]["power_levels"] = {}
             state = self.room_state(room["room_id"])
             for item in state["state"]:
                 if item["type"] == "m.room.power_levels":
-                    rooms_power_levels.append({
-                        "room_id": item["room_id"],
-                        "users": item["content"]["users"]
-                    })
+                    rooms["rooms"][i]["power_levels"] = item["content"]["users"]
+                    rooms_with_power_levels_found += 1
+            if not all_details:
+                for del_item in ["creator", "encryption", "federatable",
+                                 "guest_access", "history_visibility",
+                                 "join_rules", "joined_local_members",
+                                 "joined_members", "public", "state_events",
+                                 "version"]:
+                    del(rooms["rooms"][i][del_item])
 
-        return {
-            "total_rooms": len(rooms_power_levels),
-            "rooms": rooms_power_levels
-        }
+        rooms["rooms_with_power_levels_found"] = rooms_with_power_levels_found
+        return rooms
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
                     block, no_purge):
