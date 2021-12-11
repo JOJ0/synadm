@@ -654,7 +654,9 @@ class SynapseAdmin(ApiRequest):
                 an exception occured. See Synapse admin API docs for details.
         """
         if room_id:
-            rooms = [room_id]
+            # We use the "name search" possibility of the room list API to get a
+            # single room via it's ID.
+            rooms = self.room_list(from_, limit, room_id, order_by, reverse)
         else:
             rooms = self.room_list(from_, limit, name, order_by, reverse)
 

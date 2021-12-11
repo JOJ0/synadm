@@ -175,7 +175,7 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
     if helper.output_format == "human":
         if int(rooms_power["total_rooms"]) != 0:
             helper.output(rooms_power["rooms"])
-            click.echo("'Rooms with power levels found in current batch: {}"
+            click.echo("Rooms with power levels found in current batch: {}"
                        .format(rooms_power["rooms_with_power_levels_found"]))
             click.echo("Total rooms existing on server: {}"
                        .format(rooms_power["total_rooms"]))
