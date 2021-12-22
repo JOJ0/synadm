@@ -216,6 +216,7 @@ python3 setup.py install
   * [x] `room members <room id>`
   * [x] `room delete <room id>`
   * [x] `room make-admin <room id> <user id>`
+  * [x] `room resolve <room alias>`
   * [x] `room state <room id>`
   * [ ] Additional commands and aliases derived from rooms API's
     * [ ] `room count`
@@ -237,7 +238,6 @@ python3 setup.py install
   * [x] `user login <user id>`
   * [ ] Additional commands and aliases derived from user API's
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
-      * [ ] `user query <user id>` (alias of `user details`)
       * [ ] `user create <user id>` (alias of `user modify ...`)
       * [x] `user prune-devices <user id>`
 * [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
