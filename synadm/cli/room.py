@@ -138,11 +138,11 @@ def state(helper, room_id):
     show room_id, name, canonical_alias and power_levels.""")
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""Offset room listing by given number. This option is also used
-    for pagination.""")
+    help="""Offset room listing by given number. This option is used for
+    pagination.""")
 @click.option(
-    "--limit", "-l", type=int, default=100, show_default=True,
-    help="Maximum amount of rooms to return. Pagination is not available with ")
+    "--limit", "-l", type=int, default=10, show_default=True,
+    help="Maximum amount of rooms to return.")
 @click.option(
     "--name", "-n", type=str,
     help="""Filter rooms by their room name. Search term can be contained in
@@ -163,8 +163,10 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
     """ List power levels of all rooms or a single room.
 
     This is a combination of `room list` and `room state` commands. Per default
-    it lists all existing rooms on the server, and if available, adds a list of
-    users with power_levels set.
+    it lists the first 10 rooms on the server, and if available, adds a list of
+    users with power_levels set. Increase the number of rooms fetched using the
+    option --limit/-l or use the pagination option --from/-f. Be aware of that
+    this command can take quite some time to complete.
     """
     rooms_power = helper.api.room_power_levels(from_, limit, name, sort, reverse,
                                                room_id, all_details)
@@ -180,7 +182,7 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
             click.echo("Total rooms: {}"
                        .format(rooms_power["total_rooms"]))
         if "next_batch" in rooms_power:
-            click.echo("Use '--from/-f {} to move to next batch.'"
+            click.echo("Use '--from/-f {}' to view next batch."
                        .format(rooms_power["next_batch"]))
     else:
         helper.output(rooms_power)
