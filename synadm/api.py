@@ -660,14 +660,14 @@ class SynapseAdmin(ApiRequest):
         else:
             rooms = self.room_list(from_, limit, name, order_by, reverse)
 
-        rooms_with_power_levels_found = 0
+        rooms_w_power_count = 0
         for i, room in enumerate(rooms["rooms"]):
             rooms["rooms"][i]["power_levels"] = {}
             state = self.room_state(room["room_id"])
             for item in state["state"]:
                 if item["type"] == "m.room.power_levels":
                     rooms["rooms"][i]["power_levels"] = item["content"]["users"]
-                    rooms_with_power_levels_found += 1
+                    rooms_w_power_count += 1
             if not all_details:
                 for del_item in ["creator", "encryption", "federatable",
                                  "guest_access", "history_visibility",
@@ -676,7 +676,7 @@ class SynapseAdmin(ApiRequest):
                                  "version"]:
                     del(rooms["rooms"][i][del_item])
 
-        rooms["rooms_with_power_levels_found"] = rooms_with_power_levels_found
+        rooms["rooms_w_power_levels_curr_batch"] = rooms_w_power_count
         return rooms
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
