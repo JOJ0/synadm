@@ -641,7 +641,7 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", f"v1/rooms/{room_id}/state")
 
     def room_power_levels(self, from_, limit, name, order_by, reverse,
-                          room_id=None, all_details=True):
+                          room_id=None, all_details=True, output_format="json"):
         """ Get a list of configured power_levels in all rooms.
 
         or a single room.
@@ -664,9 +664,19 @@ class SynapseAdmin(ApiRequest):
         for i, room in enumerate(rooms["rooms"]):
             rooms["rooms"][i]["power_levels"] = {}
             state = self.room_state(room["room_id"])
-            for item in state["state"]:
-                if item["type"] == "m.room.power_levels":
-                    rooms["rooms"][i]["power_levels"] = item["content"]["users"]
+            for s in state["state"]:
+                if s["type"] == "m.room.power_levels":
+                    if output_format == "human":
+                        levels_list = [
+                            f"{u} {l}" for u, l in s["content"]["users"].items()
+                        ]
+                        rooms["rooms"][i][
+                            "power_levels"
+                        ] = "\n".join(levels_list)
+                    else:
+                        rooms["rooms"][i][
+                            "power_levels"
+                        ] = s["content"]["users"]
                     rooms_w_power_count += 1
             if not all_details:
                 for del_item in ["creator", "encryption", "federatable",

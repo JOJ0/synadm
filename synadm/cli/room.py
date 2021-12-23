@@ -168,8 +168,9 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
     option --limit/-l or use the pagination option --from/-f. Be aware of that
     this command can take quite some time to complete.
     """
-    rooms_power = helper.api.room_power_levels(from_, limit, name, sort, reverse,
-                                               room_id, all_details)
+    rooms_power = helper.api.room_power_levels(
+        from_, limit, name, sort, reverse, room_id, all_details,
+        helper.output_format)
     if rooms_power is None:
         click.echo("Power levels could not be fetched.")
         raise SystemExit(1)
