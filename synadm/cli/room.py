@@ -66,15 +66,15 @@ def resolve(helper, room_id_or_alias, reverse):
 @click.pass_obj
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""Offset room listing by given number. This option is also used
-    for pagination.""")
+    help="""Offset room listing by given number. This option is used for
+    pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
     help="Maximum amount of rooms to return.")
 @click.option(
     "--name", "-n", type=str,
-    help="""Filter rooms by their room name. Search term can be contained in
-    any part of the room name)""")
+    help="""Filter rooms by parts of their room name, canonical alias and room
+    id.""")
 @click.option(
     "--sort", "-s", type=click.Choice(
         ["name", "canonical_alias", "joined_members", "joined_local_members",
@@ -86,7 +86,7 @@ def resolve(helper, room_id_or_alias, reverse):
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
 def list_room_cmd(helper, from_, limit, name, sort, reverse):
-    """ List and search for rooms
+    """ List and search for rooms.
     """
     rooms = helper.api.room_list(from_, limit, name, sort, reverse)
     if rooms is None:
@@ -145,8 +145,8 @@ def state(helper, room_id):
     help="Maximum amount of rooms to return.")
 @click.option(
     "--name", "-n", type=str,
-    help="""Filter rooms by their room name. Search term can be contained in
-    any part of the room name)""")
+    help="""Filter rooms by parts of their room name, canonical alias and room
+    id.""")
 @click.option(
     "--sort", "-s", type=click.Choice(
         ["name", "canonical_alias", "joined_members", "joined_local_members",
@@ -160,13 +160,15 @@ def state(helper, room_id):
 @click.pass_obj
 def power_levels(helper, room_id, all_details, from_, limit, name, sort,
                  reverse):
-    """ List power levels of all rooms or a single room.
+    """ List power levels of rooms.
 
-    This is a combination of `room list` and `room state` commands. Per default
-    it lists the first 10 rooms on the server, and if available, adds a list of
-    users with power_levels set. Increase the number of rooms fetched using the
-    option --limit/-l or use the pagination option --from/-f. Be aware of that
-    this command can take quite some time to complete.
+    This is a combination of `room list` and `room state` commands. It enriches
+    the room list response with a list of users and their power-levels set
+    and only displays a subset of the available information (room name, id,
+    aliases and power-levels). Increase the number of rooms fetched using
+    --limit/-l (default: 10) or use the pagination option --from/-f to
+    go beyond the default. Use --name/-n to search. This command can take quite
+    some time to complete depending on those options.
     """
     rooms_power = helper.api.room_power_levels(
         from_, limit, name, sort, reverse, room_id, all_details,
