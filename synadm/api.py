@@ -640,6 +640,55 @@ class SynapseAdmin(ApiRequest):
         """
         return self.query("get", f"v1/rooms/{room_id}/state")
 
+    def room_power_levels(self, from_, limit, name, order_by, reverse,
+                          room_id=None, all_details=True, output_format="json"):
+        """ Get a list of configured power_levels in all rooms.
+
+        or a single room.
+
+        Args:
+            room_id (string): If left out, all rooms are fetched.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
+        """
+        if room_id:
+            # We use the "name search" possibility of the room list API to get a
+            # single room via it's ID.
+            rooms = self.room_list(from_, limit, room_id, order_by, reverse)
+        else:
+            rooms = self.room_list(from_, limit, name, order_by, reverse)
+
+        rooms_w_power_count = 0
+        for i, room in enumerate(rooms["rooms"]):
+            rooms["rooms"][i]["power_levels"] = {}
+            state = self.room_state(room["room_id"])
+            for s in state["state"]:
+                if s["type"] == "m.room.power_levels":
+                    if output_format == "human":
+                        levels_list = [
+                            f"{u} {l}" for u, l in s["content"]["users"].items()
+                        ]
+                        rooms["rooms"][i][
+                            "power_levels"
+                        ] = "\n".join(levels_list)
+                    else:
+                        rooms["rooms"][i][
+                            "power_levels"
+                        ] = s["content"]["users"]
+                    rooms_w_power_count += 1
+            if not all_details:
+                for del_item in ["creator", "encryption", "federatable",
+                                 "guest_access", "history_visibility",
+                                 "join_rules", "joined_local_members",
+                                 "joined_members", "public", "state_events",
+                                 "version"]:
+                    del(rooms["rooms"][i][del_item])
+
+        rooms["rooms_w_power_levels_curr_batch"] = rooms_w_power_count
+        return rooms
+
     def room_delete(self, room_id, new_room_user_id, room_name, message,
                     block, no_purge):
         """ Delete a room and purge it if requested

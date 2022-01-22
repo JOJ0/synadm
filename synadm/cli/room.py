@@ -66,15 +66,15 @@ def resolve(helper, room_id_or_alias, reverse):
 @click.pass_obj
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""Offset room listing by given number. This option is also used
-    for pagination.""")
+    help="""Offset room listing by given number. This option is used for
+    pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
     help="Maximum amount of rooms to return.")
 @click.option(
     "--name", "-n", type=str,
-    help="""Filter rooms by their room name. Search term can be contained in
-    any part of the room name)""")
+    help="""Filter rooms by parts of their room name, canonical alias and room
+    id.""")
 @click.option(
     "--sort", "-s", type=click.Choice(
         ["name", "canonical_alias", "joined_members", "joined_local_members",
@@ -86,7 +86,7 @@ def resolve(helper, room_id_or_alias, reverse):
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
 def list_room_cmd(helper, from_, limit, name, sort, reverse):
-    """ List and search for rooms
+    """ List and search for rooms.
     """
     rooms = helper.api.room_list(from_, limit, name, sort, reverse)
     if rooms is None:
@@ -126,6 +126,69 @@ def state(helper, room_id):
         click.echo("Room state could not be fetched.")
         raise SystemExit(1)
     helper.output(room_state)
+
+
+@room.command()
+@click.option(
+    "--room-id", "-i", type=str,
+    help="""View power levels of this room only.""")
+@click.option(
+    "--all-details", "-a", is_flag=True, default=False,
+    help="""Show detailed information about each room. The default is to only
+    show room_id, name, canonical_alias and power_levels.""")
+@click.option(
+    "--from", "-f", "from_", type=int, default=0, show_default=True,
+    help="""Offset room listing by given number. This option is used for
+    pagination.""")
+@click.option(
+    "--limit", "-l", type=int, default=10, show_default=True,
+    help="Maximum amount of rooms to return.")
+@click.option(
+    "--name", "-n", type=str,
+    help="""Filter rooms by parts of their room name, canonical alias and room
+    id.""")
+@click.option(
+    "--sort", "-s", type=click.Choice(
+        ["name", "canonical_alias", "joined_members", "joined_local_members",
+         "version", "creator", "encryption", "federatable", "public",
+         "join_rules", "guest_access", "history_visibility", "state_events"]),
+    help="The method in which to sort the returned list of rooms.")
+@click.option(
+    "--reverse", "-r", is_flag=True, default=False,
+    help="""Direction of room order. If set it will reverse the sort order of
+    --order-by method.""")
+@click.pass_obj
+def power_levels(helper, room_id, all_details, from_, limit, name, sort,
+                 reverse):
+    """ List power levels of rooms.
+
+    This is a combination of `room list` and `room state` commands. It enriches
+    the room list response with a list of users and their power-levels set
+    and only displays a subset of the available information (room name, id,
+    aliases and power-levels). Increase the number of rooms fetched using
+    --limit/-l (default: 10) or use the pagination option --from/-f to
+    go beyond the default. Use --name/-n to search. This command can take quite
+    some time to complete depending on those options.
+    """
+    rooms_power = helper.api.room_power_levels(
+        from_, limit, name, sort, reverse, room_id, all_details,
+        helper.output_format)
+    if rooms_power is None:
+        click.echo("Power levels could not be fetched.")
+        raise SystemExit(1)
+
+    if helper.output_format == "human":
+        if int(rooms_power["total_rooms"]) != 0:
+            helper.output(rooms_power["rooms"])
+            click.echo("Rooms with power levels found in current batch: {}"
+                       .format(rooms_power["rooms_w_power_levels_curr_batch"]))
+            click.echo("Total rooms: {}"
+                       .format(rooms_power["total_rooms"]))
+        if "next_batch" in rooms_power:
+            click.echo("Use '--from/-f {}' to view next batch."
+                       .format(rooms_power["next_batch"]))
+    else:
+        helper.output(rooms_power)
 
 
 @room.command()
