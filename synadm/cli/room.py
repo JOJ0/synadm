@@ -160,21 +160,21 @@ def state(helper, room_id):
 @click.pass_obj
 def power_levels(helper, room_id, all_details, from_, limit, name, sort,
                  reverse):
-    """ List power levels of rooms.
+    """ List user's power levels set in rooms.
 
-    This is a combination of `room list` and `room state` commands. It enriches
-    the room list response with a list of users and their power-levels set
-    and only displays a subset of the available information (room name, id,
-    aliases and power-levels). Increase the number of rooms fetched using
-    --limit/-l (default: 10) or use the pagination option --from/-f to
-    go beyond the default. Use --name/-n to search. This command can take quite
-    some time to complete depending on those options.
+    A combination of commands `room list` and `room state`. It enriches
+    the room list response with a list of users and their corresponding
+    power levels set. It only displays a subset of the available information
+    (room name, id, aliases and power levels). Increase the number of rooms
+    fetched using --limit/-l (default: 10) or use the pagination option
+    --from/-f to go beyond the default. Use --name/-n to search. This command
+    can require quite some time to complete depending on those options.
     """
     rooms_power = helper.api.room_power_levels(
         from_, limit, name, sort, reverse, room_id, all_details,
         helper.output_format)
     if rooms_power is None:
-        click.echo("Power levels could not be fetched.")
+        click.echo("Rooms and power levels could not be fetched.")
         raise SystemExit(1)
 
     if helper.output_format == "human":
