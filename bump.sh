@@ -18,8 +18,8 @@ fi
 
 if [[ "$2" == "doit" ]]; then
     bumpversion $PART --verbose
-    echo "All good? Then push tags:"
-    echo "git push --tags"
+    echo "All good? Then push with:"
+    echo "git push --follow-tags"
 else
     bumpversion $PART --verbose --dry-run
 fi
