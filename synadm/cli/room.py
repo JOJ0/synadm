@@ -268,24 +268,27 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
 @click.argument("search-term", type=str)
 @click.option(
     "--from", "-f", "from_", type=int, default=0, show_default=True,
-    help="""Offset room listing by given number. This option is also used
-    for pagination.""")
+    help="""Offset room listing by given number. This option is used for
+    pagination.""")
 @click.option(
     "--limit", "-l", type=int, default=100, show_default=True,
     help="Maximum amount of rooms to return.")
+@click.option(
+    "--sort", "-s", type=click.Choice(
+        ["name", "canonical_alias", "joined_members", "joined_local_members",
+         "version", "creator", "encryption", "federatable", "public",
+         "join_rules", "guest_access", "history_visibility", "state_events"]),
+    help="The method in which to sort the returned list of rooms.")
+@click.option(
+    "--reverse", "-r", is_flag=True, default=False,
+    help="""Direction of room order. If set it will reverse the sort order of
+    --order-by method.""")
 @click.pass_context
-def search_room_cmd(ctx, search_term, from_, limit):
-    """ A shortcut to \'synadm room list -n <search-term>\'.
-
-    Also, compared to the original command, a case-insensitive search is done.
+def search_room_cmd(ctx, search_term, from_, limit, sort, reverse):
+    """ An alias to `synadm room list -n <search-term>`.
     """
-    click.echo("Room search results for '{}':".format(search_term.lower()))
-    ctx.invoke(list_room_cmd, from_=from_, limit=limit,
-               name=search_term.lower())
-    click.echo("Room search results for '{}':"
-               .format(search_term.capitalize()))
-    ctx.invoke(list_room_cmd, from_=from_, limit=limit,
-               name=search_term.capitalize())
+    ctx.invoke(list_room_cmd, from_=from_, limit=limit, name=search_term,
+               sort=sort, reverse=reverse)
 
 
 @room.command()
