@@ -219,7 +219,7 @@ python3 setup.py install
   * [ ] Additional commands and aliases around room management
     * [x] `room search <search-term>` (alias of `room list -n <search-term>`)
     * [x] `room resolve <room alias>`
-    * [X] `room power-levels`
+    * [x] `room power-levels`
     * [ ] `room count`
     * [ ] `room top-complexity`
     * [ ] `room top-members`
