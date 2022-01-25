@@ -9,4 +9,4 @@ PUSH_OPTS="$2"
 set -x
 VERS=$1
 
-git tag -d v$VERS; git push origin --delete v$VERS; git tag v$VERS; git push $PUSH_OPTS; git push --tags
+git tag -d v$VERS; git push origin --delete v$VERS; git tag v$VERS; git push --follow-tags
