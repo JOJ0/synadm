@@ -769,7 +769,7 @@ class SynapseAdmin(ApiRequest):
         """ Delete a specific (local) media_id
         """
         return self.query(
-            "delete", f"v1/media/{server_name}/{media_id}/", data={}
+            "delete", f"v1/media/{server_name}/{media_id}", data={}
         )
 
     def media_delete_by_date_or_size(self, server_name, before_days, before,
