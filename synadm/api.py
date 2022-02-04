@@ -725,7 +725,7 @@ class SynapseAdmin(ApiRequest):
         """ Quarantine a single piece of local or remote media
         """
         return self.query(
-            "post", f"v1/media/quarantine/{server_name}/{media_id}/", data={}
+            "post", f"v1/media/quarantine/{server_name}/{media_id}", data={}
         )
 
     def room_media_quarantine(self, room_id):
@@ -769,7 +769,7 @@ class SynapseAdmin(ApiRequest):
         """ Delete a specific (local) media_id
         """
         return self.query(
-            "delete", f"v1/media/{server_name}/{media_id}/", data={}
+            "delete", f"v1/media/{server_name}/{media_id}", data={}
         )
 
     def media_delete_by_date_or_size(self, server_name, before_days, before,
@@ -821,7 +821,7 @@ class SynapseAdmin(ApiRequest):
         from being quarantined
         """
         return self.query(
-            "post", f"v1/media/protect/{media_id}/", data={}
+            "post", f"v1/media/protect/{media_id}", data={}
         )
 
     def purge_media_cache(self, before_days, before, _before_ts):
