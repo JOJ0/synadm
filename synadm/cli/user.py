@@ -554,3 +554,16 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
             raise SystemExit(1)
         else:
             helper.output(user_login)
+
+@user.command(name="shadow-ban")
+@click.argument("user_id", type=str)
+@click.option(
+    "-u", "--unban", is_flag=True, default=False, show_default=False,
+    help="Unban the specified user"
+)
+@click.pass_obj
+def user_shadow_ban(helper: cli.APIHelper, user_id, unban):
+    """Shadow-ban or unban a user
+    """
+    user_ban = helper.api.user_shadow_ban(user_id, unban)
+    helper.output(user_ban)
