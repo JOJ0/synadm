@@ -234,7 +234,7 @@ python3 setup.py install
   * [x] `user password <user id>`
   * [x] `user membership <user id>`
   * [x] `user whois <user id>`
-  * [ ] `user shadow_ban <user id>`
+  * [x] `user shadow_ban <user id>`
   * [x] `user media -u <user id>` (also available as `media list -u <user id>`)
   * [x] `user login <user id>`
   * [ ] Additional commands and aliases around user management
