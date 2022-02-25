@@ -562,8 +562,16 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
     help="Unban the specified user"
 )
 @click.pass_obj
-def user_shadow_ban(helper: cli.APIHelper, user_id, unban):
-    """Shadow-ban or unban a user
+def user_shadow_ban(helper, user_id, unban):
+    """Shadow-ban or unban a user.
+
+    Useful for moderating malicious or egregiously abusive users.
+
+    A shadow-banned user will not receive any notification, but still will be
+    unable to contact anyone on the server. Use this as a tool of last resort since it
+    may lead to confusing or broken behaviour for the client. 
+    
+    Generally, it is more appropriate to ban or kick abusive users.
     """
     user_ban = helper.api.user_shadow_ban(user_id, unban)
     helper.output(user_ban)
