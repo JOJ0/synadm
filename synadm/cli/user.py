@@ -568,10 +568,20 @@ def user_shadow_ban(helper, user_id, unban):
     Useful for moderating malicious or egregiously abusive users.
 
     A shadow-banned user will not receive any notification, but still will be
-    unable to contact anyone on the server. Use this as a tool of last resort since it
-    may lead to confusing or broken behaviour for the client. 
-    
+    unable to contact anyone on the server. Use this as a tool of last resort
+    since it may lead to confusing or broken behaviour for the client.
+
     Generally, it is more appropriate to ban or kick abusive users.
     """
     user_ban = helper.api.user_shadow_ban(user_id, unban)
-    helper.output(user_ban)
+    if user_ban is None:
+        click.echo("Failed to shadow-ban: {}".format(user_id))
+        raise SystemExit(1)
+    if helper.output_format == "human":
+        if user_ban:
+            click.echo("Failed to shadow-ban the user: {}".format(user_id))
+            helper.output(user_ban)
+        else:
+            click.echo("Successfully shadow-banned user: {}".format(user_id))
+    else:
+        helper.output(user_ban)
