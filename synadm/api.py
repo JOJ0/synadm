@@ -1063,3 +1063,16 @@ class SynapseAdmin(ApiRequest):
 
         """
         return self.query("delete", f"v1/registration_tokens/{token}")
+
+    def user_shadow_ban(self, user_id, unban):
+        """ Shadow-ban or unban a user.
+
+        Args:
+            user_id (string): The user to be banned/unbanned.
+            unban (boolean): Unban the specified user.
+        """
+        if unban:
+            method = "delete"
+        else:
+            method = "post"
+        return self.query(method, f"v1/users/{user_id}/shadow_ban")
