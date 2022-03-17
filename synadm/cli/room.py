@@ -36,7 +36,8 @@ def room():
 def join(helper, room_id_or_alias, user_id):
     """ Join a room
     """
-    out = helper.api.room_join(room_id_or_alias, user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    out = helper.api.room_join(room_id_or_alias, mxid)
     helper.output(out)
 
 
@@ -253,8 +254,9 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
                      type=bool, default=False, show_default=False)
     )
     if sure:
+        mxid = helper.matrix_api.generate_mxid(new_room_user_id)
         room_del = helper.api.room_delete(
-            room_id, new_room_user_id, room_name,
+            room_id, mxid, room_name,
             message, block, no_purge)
         if room_del is None:
             click.echo("Room not deleted.")
@@ -305,5 +307,6 @@ def make_admin(helper, room_id, user_id):
     the user.
     """
 
-    out = helper.api.room_make_admin(room_id, user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    out = helper.api.room_make_admin(room_id, mxid)
     helper.output(out)

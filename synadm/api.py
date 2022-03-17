@@ -34,6 +34,7 @@ import datetime
 import json
 import urllib.parse
 import time
+import re
 
 
 class ApiRequest:
@@ -288,6 +289,26 @@ class Matrix(ApiRequest):
             self.log.error("Local server name could not be fetched.")
             return None
         return resp['server_name']
+
+    def generate_mxid(self, user_id):
+        """ Checks if the given user ID is already a MXID else generating
+            the MXID from the plain user name and the server domain.
+
+        Args:
+            user_id (string): User ID given by user as command argument.
+
+        Returns:
+            string: the fully qualified Matrix User ID (MXID) or None if the 
+                user_id parameter is None.
+        """
+        if user_id is None:
+            return None
+        elif any(x in user_id for x in ["@", ":"]):
+            return user_id
+        else:
+            mxid = "@{}:{}".format(re.sub("@|:", "", user_id), 
+                                   self.server_name())
+            return mxid
 
 
 class SynapseAdmin(ApiRequest):

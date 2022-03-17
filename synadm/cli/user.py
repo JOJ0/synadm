@@ -69,8 +69,9 @@ def user():
 def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
     """ List and search for users
     """
+    mxid = helper.matrix_api.generate_mxid(user_id)
     users = helper.api.user_list(from_, limit, guests, deactivated, name,
-                                 user_id)
+                                 mxid)
     if users is None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
@@ -109,8 +110,9 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     - Password reset
     - Deletion of third-party-IDs (to prevent the user requesting a password)
     """)
-    ctx.invoke(user_details_cmd, user_id=user_id)
-    ctx.invoke(membership, user_id=user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    ctx.invoke(user_details_cmd, user_id=mxid)
+    ctx.invoke(membership, user_id=mxid)
     m_erase_or_deact = "gdpr-erase" if gdpr_erase else "deactivate"
     m_erase_or_deact_p = "gdpr-erased" if gdpr_erase else "deactivated"
     sure = (
@@ -120,7 +122,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
                      type=bool, default=False, show_default=False)
     )
     if sure:
-        deactivated = helper.api.user_deactivate(user_id, gdpr_erase)
+        deactivated = helper.api.user_deactivate(mxid, gdpr_erase)
         if deactivated is None:
             click.echo("User could not be {}.".format(m_erase_or_deact))
             raise SystemExit(1)
@@ -176,7 +178,8 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
     Note that this will affect the encryption and decryption of messages sent by
     other users to this user or to rooms where the user is present.
     """
-    devices_data = helper.api.user_devices(user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    devices_data = helper.api.user_devices(mxid)
     if "devices" not in devices_data:
         # Most probably the requested user is not existing, show error and quit.
         helper.output(devices_data)
@@ -227,7 +230,8 @@ def password_cmd(helper, user_id, password, no_logout):
 
     To prevent the user from being logged out of all sessions use option -n.
     """
-    changed = helper.api.user_password(user_id, password, no_logout)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    changed = helper.api.user_password(mxid, password, no_logout)
     if changed is None:
         click.echo("Password could not be reset.")
         raise SystemExit(1)
@@ -251,7 +255,8 @@ def membership(helper, user_id, aliases):
 
     Provide matrix user ID (@user:server) as argument.
     """
-    joined_rooms = helper.api.user_membership(user_id, aliases,
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    joined_rooms = helper.api.user_membership(mxid, aliases,
                                               helper.matrix_api)
     if joined_rooms is None:
         click.echo("Membership could not be fetched.")
@@ -298,7 +303,8 @@ def user_search_cmd(ctx, search_term, from_, limit):
 def user_details_cmd(helper, user_id):
     """ View details of a user account.
     """
-    user_data = helper.api.user_details(user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    user_data = helper.api.user_details(mxid)
     if user_data is None:
         click.echo("User details could not be fetched.")
         raise SystemExit(1)
@@ -367,8 +373,9 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             "Deactivating a user and setting a password doesn't make sense.")
         raise SystemExit(1)
 
+    mxid = helper.matrix_api.generate_mxid(user_id)
     click.echo("Current user account settings:")
-    ctx.invoke(user_details_cmd, user_id=user_id)
+    ctx.invoke(user_details_cmd, user_id=mxid)
     click.echo("User account settings to be modified:")
     for key, value in ctx.params.items():
         if key in ["user_id", "password", "password_prompt"]:  # skip these
@@ -402,7 +409,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     )
     if sure:
         modified = helper.api.user_modify(
-            user_id, password, display_name, threepid,
+            mxid, password, display_name, threepid,
             avatar_url, admin, deactivation)
         if modified is None:
             click.echo("User could not be modified.")
@@ -425,7 +432,8 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 def whois(helper, user_id):
     """ Return information about the active sessions for a specific user
     """
-    user_data = helper.api.user_whois(user_id)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    user_data = helper.api.user_whois(mxid)
     helper.output(user_data)
 
 
@@ -471,7 +479,8 @@ def user_media_cmd(helper, user_id, from_, limit, sort, reverse, datetime):
     safe_from_quarantine), this can cause a large load on the database,
     especially for large environments
     """
-    media = helper.api.user_media(user_id, from_, limit, sort, reverse,
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    media = helper.api.user_media(mxid, from_, limit, sort, reverse,
                                   datetime)
     if media is None:
         click.echo("Media could not be fetched.")
@@ -532,12 +541,13 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
     admin user calls /logout/all from any of their devices, but the token will
     not expire if the target user does the same.
     """
+    mxid = helper.matrix_api.generate_mxid(user_id)
     if expire_never:
-        user_login = helper.api.user_login(user_id, None, None, None)
+        user_login = helper.api.user_login(mxid, None, None, None)
     elif not expire_days and not expire and not expire_ts:
-        user_login = helper.api.user_login(user_id, 1, expire, expire_ts)
+        user_login = helper.api.user_login(mxid, 1, expire, expire_ts)
     else:
-        user_login = helper.api.user_login(user_id, expire_days, expire,
+        user_login = helper.api.user_login(mxid, expire_days, expire,
                                            expire_ts)
 
     if helper.batch:
@@ -573,7 +583,8 @@ def user_shadow_ban(helper, user_id, unban):
 
     Generally, it is more appropriate to ban or kick abusive users.
     """
-    user_ban = helper.api.user_shadow_ban(user_id, unban)
+    mxid = helper.matrix_api.generate_mxid(user_id)
+    user_ban = helper.api.user_shadow_ban(mxid, unban)
     if user_ban is None:
         click.echo("Failed to shadow-ban: {}".format(user_id))
         raise SystemExit(1)
