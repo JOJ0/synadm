@@ -291,8 +291,9 @@ class Matrix(ApiRequest):
         return resp['server_name']
 
     def generate_mxid(self, user_id):
-        """ Checks if the given user ID is already a MXID else generating
-            the MXID from the plain user name and the server domain.
+        """ Checks whether the given user ID is an MXID already or else
+        generates it from the passed string and the homeserver name fetched
+        via the server_name method.
 
         Args:
             user_id (string): User ID given by user as command argument.
@@ -304,10 +305,14 @@ class Matrix(ApiRequest):
         if user_id is None:
             return None
         elif any(x in user_id for x in ["@", ":"]):
-            return user_id
+            if re.match(r"\@.+\:.+", user_id):
+                return user_id
+            else:
+                mxid = "@{}:{}".format(re.sub("[@:]", "", user_id), 
+                                    self.server_name())
+                return mxid
         else:
-            mxid = "@{}:{}".format(re.sub("@|:", "", user_id), 
-                                   self.server_name())
+            mxid = "@{}:{}".format(user_id, self.server_name())
             return mxid
 
 
