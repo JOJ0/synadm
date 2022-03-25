@@ -578,10 +578,13 @@ def user_shadow_ban(helper, user_id, unban):
         click.echo("Failed to shadow-ban: {}".format(user_id))
         raise SystemExit(1)
     if helper.output_format == "human":
+        action = "shadow-ban"
+        if unban:
+            action = "shadow-unban"
         if user_ban:
-            click.echo("Failed to shadow-ban the user: {}".format(user_id))
+            click.echo("Failed to {} the user: {}".format(action, user_id))
             helper.output(user_ban)
         else:
-            click.echo("Successfully shadow-banned user: {}".format(user_id))
+            click.echo("Successfully {}ned user: {}".format(action, user_id))
     else:
         helper.output(user_ban)
