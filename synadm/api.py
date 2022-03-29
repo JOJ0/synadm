@@ -299,7 +299,7 @@ class Matrix(ApiRequest):
             user_id (string): User ID given by user as command argument.
 
         Returns:
-            string: the fully qualified Matrix User ID (MXID) or None if the 
+            string: the fully qualified Matrix User ID (MXID) or None if the
                 user_id parameter is None.
         """
         if user_id is None:
@@ -308,8 +308,8 @@ class Matrix(ApiRequest):
             if re.match(r"\@.+\:.+", user_id):
                 return user_id
             else:
-                mxid = "@{}:{}".format(re.sub("[@:]", "", user_id), 
-                                    self.server_name())
+                mxid = "@{}:{}".format(re.sub("[@:]", "", user_id),
+                                       self.server_name())
                 return mxid
         else:
             mxid = "@{}:{}".format(user_id, self.server_name())
