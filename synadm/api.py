@@ -304,15 +304,11 @@ class Matrix(ApiRequest):
         """
         if user_id is None:
             return None
-        elif any(x in user_id for x in ["@", ":"]):
-            if re.match(r"\@.+\:.+", user_id):
-                return user_id
-            else:
-                mxid = "@{}:{}".format(re.sub("[@:]", "", user_id),
-                                       self.server_name())
-                return mxid
+        elif re.match(r"@[\w\d\_\.\_\=\-\/]+:[\w\d]+", user_id):
+            return user_id
         else:
-            mxid = "@{}:{}".format(user_id, self.server_name())
+            localpart = re.sub("[@:]", "", user_id)
+            mxid = "@{}:{}".format(localpart, self.server_name())
             return mxid
 
 
