@@ -44,7 +44,7 @@ def humanize(data):
         return "\n".join(data)
     if isinstance(data, dict):
         return tabulate.tabulate(data.items(), tablefmt="plain")
-    return None
+    return str(data)
 
 
 class APIHelper:
