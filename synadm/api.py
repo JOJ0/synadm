@@ -304,7 +304,7 @@ class Matrix(ApiRequest):
         """
         if user_id is None:
             return None
-        elif re.match(r"@[\w\d\_\.\_\=\-\/]+:[\w\d]+", user_id):
+        elif re.match(r"@[-_/=\w\d\.]+:[-_.\w\d]+", user_id):
             return user_id
         else:
             localpart = re.sub("[@:]", "", user_id)
