@@ -390,7 +390,7 @@ class SynapseAdmin(ApiRequest):
                 aliases = matrix_api.room_get_aliases(room_id)
                 if aliases["aliases"] != []:
                     rooms["joined_rooms"][i] = " ".join(aliases["aliases"])
-            return rooms
+        return rooms
 
     def user_deactivate(self, user_id, gdpr_erase):
         """Delete a given user
