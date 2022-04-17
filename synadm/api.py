@@ -285,7 +285,7 @@ class Matrix(ApiRequest):
                 could not fetch it for any reason.
         """
         resp = self.query("get", "key/v2/server")
-        if "server_name" not in resp:
+        if not resp or not resp.get("server_name"):
             self.log.error("Local server name could not be fetched.")
             return None
         return resp['server_name']
