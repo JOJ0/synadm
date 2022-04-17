@@ -88,7 +88,7 @@ synadm -h
 
 *Note: In case you don't want `synadm` to be installed to a global system directory see chapter [install to virtual environment](#install-to-virtual-environment).*
 
-*Note: synadm is mutli-user aware - it stores it's configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
+*Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
 
 
 
