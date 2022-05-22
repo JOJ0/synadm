@@ -73,7 +73,8 @@ class ApiRequest:
         if debug:
             HTTPConnection.debuglevel = 1
 
-    def query(self, method, urlpart, params=None, data=None, token=None, base_url_override=None):
+    def query(self, method, urlpart, params=None, data=None, token=None,
+              base_url_override=None, verify=True):
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions.
@@ -108,7 +109,7 @@ class ApiRequest:
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
-                params=params, json=data
+                params=params, json=data, verify=verify
             )
             if not resp.ok:
                 self.log.warning(f"Synapse returned status code "
@@ -210,7 +211,11 @@ class MiscRequest(ApiRequest):
     def server_name_well_known(self):
         """Receive the Matrix server's name via it's .well-known resource.
         """
-        resp = self.query("get", ".well-known/matrix/server", base_url_override="https://localhost")
+        resp = self.query(
+            "get", ".well-known/matrix/server",
+            base_url_override="https://localhost",
+            verify=False
+        )
         if resp is not None:
             server = resp["m.server"].split(":")[0]
             return server
