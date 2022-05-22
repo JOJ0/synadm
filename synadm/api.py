@@ -73,7 +73,7 @@ class ApiRequest:
         if debug:
             HTTPConnection.debuglevel = 1
 
-    def query(self, method, urlpart, params=None, data=None, token=None):
+    def query(self, method, urlpart, params=None, data=None, token=None, base_url_override=None):
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions.
@@ -94,11 +94,17 @@ class ApiRequest:
                 JSON strings. On exceptions the error type and description are
                 logged and None is returned.
         """
-        url = f"{self.base_url}/{self.path}/{urlpart}"
+        if base_url_override:
+            self.log.debug("base_url override!")
+            url = f"{base_url_override}/{self.path}/{urlpart}"
+        else:
+            url = f"{self.base_url}/{self.path}/{urlpart}"
         self.log.info("Querying %s on %s", method, url)
+
         if token:
             self.log.debug("Token override! Adjusting headers.")
             self.headers["Authorization"] = "Bearer " + token
+
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
@@ -178,6 +184,37 @@ class ApiRequest:
                 checking.
         """
         return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+
+class MiscRequest(ApiRequest):
+    """ Miscellaneous HTTP requests
+
+    Inheritance:
+        ApiRequest (object): parent class containing general properties and
+            methods for requesting REST API's
+    """
+    def __init__(self, log, timeout, debug):
+        """Initialize the MiscRequest object
+
+        Args:
+            log (logger object): an already initialized logger object
+            timeout (int): requests module timeout used in ApiRequest.query
+                method
+            debug (bool): enable/disable debugging in requests module
+        """
+        super().__init__(
+            log, "", "",  # Set user and token to empty string
+            "", "",  # Set base_url and path to empty string
+            timeout, debug
+        )
+
+    def server_name_well_known(self):
+        """Receive the Matrix server's name via it's .well-known resource.
+        """
+        resp = self.query("get", ".well-known/matrix/server", base_url_override="https://localhost")
+        if resp is not None:
+            server = resp["m.server"].split(":")[0]
+            return server
+        return None
 
 
 class Matrix(ApiRequest):

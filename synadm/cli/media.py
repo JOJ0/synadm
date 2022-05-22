@@ -224,7 +224,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ Delete media by ID, size or age
     """
-    server_name = helper.matrix_api.server_name()
+    server_name = helper.misc_request.server_name_well_known()
     if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:

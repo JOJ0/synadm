@@ -151,6 +151,10 @@ class APIHelper:
             self.config["timeout"], self.requests_debug,
             self.config["server_discovery"], self.config["hostname"]
         )
+        self.misc_request = api.MiscRequest(
+            self.log,
+            self.config["timeout"], self.requests_debug,
+        )
         return True
 
     def write_config(self, config):
