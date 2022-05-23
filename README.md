@@ -9,6 +9,7 @@
 - [Configuration](#configuration)
   - [Getting an admin token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
+  - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
 - [Update](#update)
   - [Update PyPI package](#update-pypi-package)
@@ -125,6 +126,16 @@ Configuration will be saved in `~/.config/synadm.yaml`
 
 
 *Note: Be aware that once you configured `synadm`, your admin user's token is saved in the configuration file. On Posix compatible systems permissions are set to mode 0600, on other OS's it is your responsibilty to change permissions accordingly.*
+
+### matrix-docker-ansible-deploy
+
+Additional information for `synadm` usage with Synapse homeservers that were installed using [matrix-docker-ansible-deploy](https://github.com/spantaleev/matrix-docker-ansible-deploy).
+
+- There is no special configuration required in vars.yaml. The default settings will do.
+- The Synapse Admin API is accessible on the Client-Server API port, at https://matrix.DOMAIN
+- Install `synadm` on a separate machine..
+- Configure `synadm` to access it at `https://matrix.DOMAIN:443/_synapse/admin`
+- Alternatively, you can access the API on the container network (named `matrix` by default) using http://matrix-synapse:8008 (http here, not https).
 
 ## Usage
 
