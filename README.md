@@ -129,13 +129,23 @@ Configuration will be saved in `~/.config/synadm.yaml`
 
 ### matrix-docker-ansible-deploy
 
-Additional information for `synadm` usage with Synapse homeservers that were installed using [matrix-docker-ansible-deploy](https://github.com/spantaleev/matrix-docker-ansible-deploy).
+To use `synadm` with Synapse homeservers that were installed using [matrix-docker-ansible-deploy](https://github.com/spantaleev/matrix-docker-ansible-deploy) you have two options.
 
-- There is no special configuration required in vars.yaml. The default settings will do.
-- The Synapse Admin API is accessible on the Client-Server API port, at https://matrix.DOMAIN
-- Install `synadm` on a separate machine..
-- Configure `synadm` to access it at `https://matrix.DOMAIN:443/_synapse/admin`
-- Alternatively, you can access the API on the container network (named `matrix` by default) using http://matrix-synapse:8008 (http here, not https).
+Access the Synapse Admin API's "via the public endpoint" similar to a Matrix client.
+
+- In `vars.yaml` set `matrix_nginx_proxy_proxy_matrix_client_api_forwarded_location_synapse_admin_api_enabled: true`.
+- The API's are accessible on the Client-Server API port, at `https://matrix.DOMAIN`.
+- Install `synadm` on your Docker host or on a separate machine.
+- Configure `synadm` to access at `https://matrix.DOMAIN:443/_synapse/admin`
+
+Alternatively, you can access the API's on the container network `matrix`.
+
+- Synapse is accessible via the hostname `matrix-synapse` resolved by the internal Docker DNS server.
+- The containers are connected internally via a network named `matrix` by default.
+- Start a container on that same network and install `synadm` into it.
+- Configure `synadm` to access at `http://matrix-synapse:8008/_synapse/admin` (http here, not https).
+
+Find some more details about the topic in [this issue post on the matrix-docker-ansible-deploy repo](https://github.com/spantaleev/matrix-docker-ansible-deploy/issues/1846#issuecomment-1135516112).
 
 ## Usage
 
