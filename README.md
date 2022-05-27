@@ -133,7 +133,7 @@ To use `synadm` with Synapse homeservers that were installed using [matrix-docke
 
 Access the Synapse Admin API's "via the public endpoint" similar to a Matrix client.
 
-- In `vars.yaml` set `matrix_nginx_proxy_proxy_matrix_client_api_forwarded_location_synapse_admin_api_enabled: true`.
+- In [vars.yaml](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook.md#configuring-the-ansible-playbook) set `matrix_nginx_proxy_proxy_matrix_client_api_forwarded_location_synapse_admin_api_enabled: true`.
 - The API's are accessible on the Client-Server API port, at `https://matrix.DOMAIN`.
 - Install `synadm` on your Docker host or on a separate machine.
 - Configure `synadm` to access at `https://matrix.DOMAIN:443/_synapse/admin`
@@ -146,6 +146,10 @@ Alternatively, you can access the API's on the container network `matrix`.
 - Configure `synadm` to access at `http://matrix-synapse:8008/_synapse/admin` (http here, not https).
 
 Find some more details about the topic in [this issue post on the matrix-docker-ansible-deploy repo](https://github.com/spantaleev/matrix-docker-ansible-deploy/issues/1846#issuecomment-1135516112).
+
+_Note that currently `synadm` is using a part of the Server-Server (Federation) API (`keys/v2/server`) to retrieve "its own homeserver name". This affects some of the `media` management commands. By default and also as the Matrix spec recommends, this API is not accessible via the Client-Server API port. We are working on a better solution to retrieve the own servername but as a workaround the `key` API's can be exposed by setting `matrix_synapse_http_listener_resource_names: ["client","keys"]` in [vars.yaml](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook.md#configuring-the-ansible-playbook)._
+
+Find more details about the topic [here](https://github.com/spantaleev/matrix-docker-ansible-deploy/issues/1761#issuecomment-1101170229).
 
 ## Usage
 
