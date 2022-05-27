@@ -233,45 +233,6 @@ class MiscRequest(ApiRequest):
         self.log.error(".well-known/matrix/server could not be fetched.")
         return None
 
-    def server_name_keys_api(self, server_server_uri):
-        """Retrieve the Matrix server's own homeserver name via the
-        Server-Server (Federation) API.
-
-        Args:
-            server_server_uri (string): proto://name:port or proto://fqdn:port
-
-        Returns:
-            string: The Matrix server's homeserver name or FQDN, usually
-            something like matrix.DOMAIN or DOMAIN
-        """
-        resp = self.query("get", "key/v2/server",
-            base_url_override=server_server_uri
-        )
-        if not resp or not resp.get("server_name"):
-            self.log.error("The homeserver name could not be fetched via the "
-                           "federation API key/v2/server.")
-            return None
-        return resp['server_name']
-
-    def retrieve_homeserver_name(self, uri):
-        """Try to retrieve the homeserver name via .well-known and a
-        Server-Server (Federation) API.
-
-        FIXME: Fall back to a statically configured name in config.yaml or
-        rather use the configured name if present and just don't try to
-        fetch.
-
-        Args:
-            uri (string): proto://name:port or proto://fqdn:port
-
-        Returns:
-            string: hostname, FQDN or DOMAIN; or None on errors.
-        """
-        federation_uri = self.server_name_well_known(uri)
-        if not federation_uri:
-            return None
-        return self.server_name_keys_api(federation_uri)
-
 
 class Matrix(ApiRequest):
     """ Matrix API client
@@ -425,6 +386,26 @@ class Matrix(ApiRequest):
             localpart = re.sub("[@:]", "", user_id)
             mxid = "@{}:{}".format(localpart, self.server_name())
             return mxid
+
+    def server_name_keys_api(self, server_server_uri):
+        """Retrieve the Matrix server's own homeserver name via the
+        Server-Server (Federation) API.
+
+        Args:
+            server_server_uri (string): proto://name:port or proto://fqdn:port
+
+        Returns:
+            string: The Matrix server's homeserver name or FQDN, usually
+            something like matrix.DOMAIN or DOMAIN
+        """
+        resp = self.query("get", "key/v2/server",
+            base_url_override=server_server_uri
+        )
+        if not resp or not resp.get("server_name"):
+            self.log.error("The homeserver name could not be fetched via the "
+                           "federation API key/v2/server.")
+            return None
+        return resp['server_name']
 
 
 class SynapseAdmin(ApiRequest):

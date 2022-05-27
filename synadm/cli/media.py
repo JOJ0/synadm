@@ -224,9 +224,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ Delete media by ID, size or age
     """
-    server_name = helper.misc_request.retrieve_homeserver_name(
-        helper.config["base_url"]
-    )
+    server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
     if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:

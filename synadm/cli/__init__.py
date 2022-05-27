@@ -182,6 +182,25 @@ class APIHelper:
         """
         click.echo(self.formatter(data))
 
+    def retrieve_homeserver_name(self, uri):
+        """Try to retrieve the homeserver name via .well-known and a
+        Server-Server (Federation) API.
+
+        FIXME: Fall back to a statically configured name in config.yaml or
+        rather use the configured name if present and just don't try to
+        fetch.
+
+        Args:
+            uri (string): proto://name:port or proto://fqdn:port
+
+        Returns:
+            string: hostname, FQDN or DOMAIN; or None on errors.
+        """
+        federation_uri = self.misc_request.server_name_well_known(uri)
+        if not federation_uri:
+            return None
+        return self.matrix_api.server_name_keys_api(federation_uri)
+
 
 @click.group(
     invoke_without_command=False,
