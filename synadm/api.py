@@ -209,15 +209,15 @@ class MiscRequest(ApiRequest):
             timeout, debug
         )
 
-    def server_name_well_known(self, base_url):
-        """Retrieve the Matrix server's name and Server-Server API port via its
-        .well-known resource.
+    def federation_uri_well_known(self, base_url):
+        """Retrieve the URI to the Server-Server (Federation) API port via the
+        .well-known resource of a Matrix server/domain.
 
         Args:
             base_url: proto://name or proto://fqdn
 
         Returns:
-            string: proto://fqdn:port of the delegated server for server-server
+            string: proto://fqdn:port of the delegated server for Server-Server
                 communication between Matrix homeservers or None on errors.
         """
         resp = self.query(
@@ -227,9 +227,9 @@ class MiscRequest(ApiRequest):
         )
         if resp is not None:
             if ":" in resp["m.server"]:
-                return resp["m.server"]
+                return "https://" + resp["m.server"]
             else:
-                return resp["m.server"] + ":8448"
+                return "https://" + resp["m.server"] + ":8448"
         self.log.error(".well-known/matrix/server could not be fetched.")
         return None
 

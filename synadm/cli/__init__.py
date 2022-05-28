@@ -196,12 +196,10 @@ class APIHelper:
         Returns:
             string: hostname, FQDN or DOMAIN; or None on errors.
         """
-        federation_servername = self.misc_request.server_name_well_known(uri)
-        if not federation_servername:
+        federation_uri = self.misc_request.federation_uri_well_known(uri)
+        if not federation_uri:
             return None
-        return self.matrix_api.server_name_keys_api(
-            "https://" + federation_servername
-        )
+        return self.matrix_api.server_name_keys_api(federation_uri)
 
 
 @click.group(
