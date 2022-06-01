@@ -26,6 +26,11 @@ from synadm import cli
 @cli.root.group()
 def room():
     """ Manipulate rooms and room membership
+
+    The syntax of room IDs in synadm is as the Matrix spec defines:
+    https://spec.matrix.org/latest/#room-structure.
+    Make sure to escape the ! character from your shell. In bash and zsh this
+    can be achieved by using single quotes ('), eg. '!id123abc:matrix.DOMAIN'
     """
 
 
