@@ -65,7 +65,7 @@ class APIHelper:
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
         "matrix_path": "/_matrix",
-        "timeout": 7
+        "timeout": 30
     }
 
     def __init__(self, config_path, verbose, batch, output_format_cli):
