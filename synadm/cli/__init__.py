@@ -26,6 +26,7 @@ import json
 import click
 import yaml
 import tabulate
+from urllib.parse import urlparse
 
 from synadm import api
 
@@ -205,8 +206,12 @@ class APIHelper:
                 return None
             return self.matrix_api.server_name_keys_api(federation_uri)
         elif self.config["server_discovery"] == "dns":
-            self.log.warning("Not implemented yet. FIXME")
-            return None
+            # TODO: Retrieve hostname in another way
+            record = dns.resolver.query(
+                "_matrix._tcp.{}".format(urlparse(uri).hostname), "SRV")
+            print(record)
+            server = str(record[0].target)[:-1]
+            return server
 
 
 @click.group(
