@@ -27,6 +27,7 @@ import click
 import yaml
 import tabulate
 from urllib.parse import urlparse
+import dns.resolver
 
 from synadm import api
 
