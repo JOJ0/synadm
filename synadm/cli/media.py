@@ -122,7 +122,8 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     """
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
-        fetched_name = helper.matrix_api.server_name()
+        fetched_name = helper.retrieve_homeserver_name(
+            helper.config["base_url"])
         media_quarantined = helper.api.media_quarantine(fetched_name, media_id)
     elif server_name and not media_id:
         click.echo("Media ID missing.")
