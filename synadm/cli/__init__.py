@@ -207,12 +207,23 @@ class APIHelper:
                 return None
             return self.matrix_api.server_name_keys_api(federation_uri)
         elif self.config["server_discovery"] == "dns":
-            # TODO: Retrieve hostname in another way
-            record = dns.resolver.query(
-                "_matrix._tcp.{}".format(urlparse(uri).hostname), "SRV")
-            print(record)
-            server = str(record[0].target)[:-1]
-            return server
+            hostname = urlparse(uri).hostname
+            try:
+                record = dns.resolver.query(
+                    "_matrix._tcp.{}".format(hostname),
+                    "SRV"
+                )
+            except Exception as error:
+                self.log.error(
+                    "resolving Matrix delegation for %s: %s: %s",
+                    hostname, type(error).__name__, error
+                )
+            else:
+                federation_uri = "https://{}:{}".format(
+                    record[0].target, record[0].port
+                )
+                return self.matrix_api.server_name_keys_api(federation_uri)
+            return None
 
 
 @click.group(
