@@ -189,9 +189,10 @@ class APIHelper:
 
         When homeserver is set in the config already, it's just returned and
         nothing is tried to be fetched automatically. If not, either the
-        location of the federation API is looked up via a .well-known resource
+        location of the Federation API is looked up via a .well-known resource
         or a DNS SRV lookup. This depends on the server_discovery setting in the
-        config.
+        config. Finally the Federation API is used to retrieve the homeserver
+        name.
 
         Args:
             uri (string): proto://name:port or proto://fqdn:port
