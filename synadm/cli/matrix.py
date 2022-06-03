@@ -56,7 +56,7 @@ def login_cmd(helper, user_id, password):
         else:
             password = click.prompt("Password", hide_input=True)
 
-    mxid = helper.matrix_api.generate_mxid(user_id)
+    mxid = helper.generate_mxid(user_id)
     login = helper.matrix_api.user_login(mxid, password)
 
     if helper.batch:

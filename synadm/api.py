@@ -34,11 +34,6 @@ import datetime
 import json
 import urllib.parse
 import time
-import re
-import dns.resolver
-import urllib3
-
-urllib3.disable_warnings()
 
 class ApiRequest:
     """Basic API request handling and helper utilities
@@ -330,60 +325,6 @@ class Matrix(ApiRequest):
                 return None
 
         return self.query(method, endpoint, data=data_dict, token=token)
-
-    def server_name(self):
-        """Fetch the local server name
-
-        using the API for retrieving public server keys:
-        https://matrix.org/docs/spec/server_server/r0.1.4#retrieving-server-keys
-
-        Returns:
-            string: the local Matrix server name or None if the query method
-                could not fetch it for any reason.
-        """
-        if self.server_discovery == "local":
-            # TODO: Request '.well-known' using query function => Maybe adjust
-            # the query function if needed.
-            resp = requests.get(
-                "https://localhost/.well-known/matrix/server",
-                verify=False)
-            if resp.status_code == 200:
-                server = resp.json()["m.server"].split(":")[0]
-            else:
-                # TODO: Maybe include more detailed error information
-                self.log.error("Server name could not be retrieved.")
-                raise SystemExit(1)
-        elif self.server_discovery == "dns":
-            # TODO: Retrieve hostname in another way
-            record = dns.resolver.query("_matrix._tcp.{}"
-                                        .format(self.hostname), "SRV")
-            server = str(record[0].target)[:-1]
-        else:
-            self.log.error("Invalid server discovery mode '{}'"
-                            .format(self.server_discovery))
-            raise SystemExit(1)
-        return server
-
-    def generate_mxid(self, user_id):
-        """ Checks whether the given user ID is an MXID already or else
-        generates it from the passed string and the homeserver name fetched
-        via the server_name method.
-
-        Args:
-            user_id (string): User ID given by user as command argument.
-
-        Returns:
-            string: the fully qualified Matrix User ID (MXID) or None if the
-                user_id parameter is None.
-        """
-        if user_id is None:
-            return None
-        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
-            return user_id
-        else:
-            localpart = re.sub("[@:]", "", user_id)
-            mxid = "@{}:{}".format(localpart, self.server_name())
-            return mxid
 
     def server_name_keys_api(self, server_server_uri):
         """Retrieve the Matrix server's own homeserver name via the

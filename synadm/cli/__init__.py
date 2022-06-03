@@ -28,6 +28,7 @@ import yaml
 import tabulate
 from urllib.parse import urlparse
 import dns.resolver
+import re
 
 from synadm import api
 
@@ -183,7 +184,7 @@ class APIHelper:
         """
         click.echo(self.formatter(data))
 
-    def retrieve_homeserver_name(self, uri):
+    def retrieve_homeserver_name(self, uri=None):
         """Try to retrieve the homeserver name.
 
         When homeserver is set in the config already, it's just returned and
@@ -198,6 +199,7 @@ class APIHelper:
         Returns:
             string: hostname, FQDN or DOMAIN; or None on errors.
         """
+        uri = uri if uri else self.config["base_url"]
         if self.config["homeserver"] != "auto-retrieval":
             return  self.config["homeserver"]
 
@@ -224,6 +226,28 @@ class APIHelper:
                 )
                 return self.matrix_api.server_name_keys_api(federation_uri)
             return None
+
+    def generate_mxid(self, user_id):
+        """ Checks whether the given user ID is an MXID already or else
+        generates it from the passed string and the homeserver name fetched
+        via the retrieve_homeserver_name method.
+
+        Args:
+            user_id (string): User ID given by user as command argument.
+
+        Returns:
+            string: the fully qualified Matrix User ID (MXID) or None if the
+                user_id parameter is None.
+        """
+        if user_id is None:
+            return None
+        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
+            return user_id
+        else:
+            localpart = re.sub("[@:]", "", user_id)
+            mxid = "@{}:{}".format(localpart, self.retrieve_homeserver_name())
+            return mxid
+
 
 
 @click.group(
