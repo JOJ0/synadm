@@ -218,7 +218,6 @@ class MiscRequest(ApiRequest):
         resp = self.query(
             "get", ".well-known/matrix/server",
             base_url_override=base_url,
-            verify=False
         )
         if resp is not None:
             if ":" in resp["m.server"]:
