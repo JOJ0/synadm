@@ -226,7 +226,10 @@ class APIHelper:
                     record[0].target, record[0].port
                 )
                 return self.matrix_api.server_name_keys_api(federation_uri)
-            return None
+        else:
+            self.log.error("Unknown server_discovery mode. "
+                           "Launch synadm config!")
+        return None
 
     def generate_mxid(self, user_id):
         """ Checks whether the given user ID is an MXID already or else
