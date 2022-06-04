@@ -97,8 +97,10 @@ class ApiRequest:
         if base_url_override:
             self.log.debug("base_url override!")
             url = f"{base_url_override}/{self.path}/{urlpart}"
+            host_descr = urllib.parse.urlparse(base_url_override).netloc
         else:
             url = f"{self.base_url}/{self.path}/{urlpart}"
+            host_descr = "Synapse"
         self.log.info("Querying %s on %s", method, url)
 
         if token:
@@ -111,12 +113,12 @@ class ApiRequest:
                 params=params, json=data, verify=verify
             )
             if not resp.ok:
-                self.log.warning(f"Synapse returned status code "
+                self.log.warning(f"{host_descr} returned status code "
                                  f"{resp.status_code}")
             return resp.json()
         except Exception as error:
-            self.log.error("%s while querying Synapse: %s",
-                           type(error).__name__, error)
+            self.log.error("%s while querying %s: %s",
+                           type(error).__name__, host_descr, error)
         return None
 
     def _timestamp_from_days_ago(self, days):
