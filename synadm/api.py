@@ -82,6 +82,10 @@ class ApiRequest:
                 to None.
             data (dict, optional): Request body used in POST, PUT, DELETE
                 requests.  Defaults to None.
+            base_url_override (bool): The default setting of self.base_url set
+                on initialization can be overwritten using this argument.
+            verify(bool): Mandatory SSL verification is turned on by default and
+                can be turned off using this method.
 
         Returns:
             string or None: Usually a JSON string containing
