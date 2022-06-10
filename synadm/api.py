@@ -218,7 +218,7 @@ class MiscRequest(ApiRequest):
             base_url: proto://name or proto://fqdn
 
         Returns:
-            string: proto://fqdn:port of the delegated server for Server-Server
+            string: https://fqdn:port of the delegated server for Server-Server
                 communication between Matrix homeservers or None on errors.
         """
         resp = self.query(
