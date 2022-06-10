@@ -35,7 +35,10 @@ import json
 import urllib.parse
 import time
 import re
+import dns.resolver
+import urllib3
 
+urllib3.disable_warnings()
 
 class ApiRequest:
     """Basic API request handling and helper utilities
@@ -185,7 +188,7 @@ class Matrix(ApiRequest):
             methods for requesting REST API's
     """
     def __init__(self, log, user, token, base_url, matrix_path,
-                 timeout, debug):
+                 timeout, debug, server_discovery, hostname):
         """Initialize the Matrix API object
 
         Args:
@@ -207,6 +210,8 @@ class Matrix(ApiRequest):
             timeout, debug
         )
         self.user = user
+        self.server_discovery = server_discovery
+        self.hostname = hostname
 
     def user_login(self, user_id, password):
         """Login as a Matrix user and retrieve an access token
@@ -284,11 +289,28 @@ class Matrix(ApiRequest):
             string: the local Matrix server name or None if the query method
                 could not fetch it for any reason.
         """
-        resp = self.query("get", "key/v2/server")
-        if not resp or not resp.get("server_name"):
-            self.log.error("Local server name could not be fetched.")
-            return None
-        return resp['server_name']
+        if self.server_discovery == "local":
+            # TODO: Request '.well-known' using query function => Maybe adjust
+            # the query function if needed.
+            resp = requests.get(
+                "https://localhost/.well-known/matrix/server",
+                verify=False)
+            if resp.status_code == 200:
+                server = resp.json()["m.server"].split(":")[0]
+            else:
+                # TODO: Maybe include more detailed error information
+                self.log.error("Server name could not be retrieved.")
+                raise SystemExit(1)
+        elif self.server_discovery == "dns":
+            # TODO: Retrieve hostname in another way
+            record = dns.resolver.query("_matrix._tcp.{}"
+                                        .format(self.hostname), "SRV")
+            server = str(record[0].target)[:-1]
+        else:
+            self.log.error("Invalid server discovery mode '{}'"
+                            .format(self.server_discovery))
+            raise SystemExit(1)
+        return server
 
     def generate_mxid(self, user_id):
         """ Checks whether the given user ID is an MXID already or else

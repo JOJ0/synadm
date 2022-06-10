@@ -65,7 +65,9 @@ class APIHelper:
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
         "matrix_path": "/_matrix",
-        "timeout": 30
+        "timeout": 30,
+        "server_discovery": "local",
+        "hostname": ""
     }
 
     def __init__(self, config_path, verbose, batch, output_format_cli):
@@ -146,7 +148,8 @@ class APIHelper:
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["matrix_path"],
-            self.config["timeout"], self.requests_debug
+            self.config["timeout"], self.requests_debug,
+            self.config["server_discovery"], self.config["hostname"]
         )
         return True
 
@@ -243,9 +246,19 @@ def root(ctx, verbose, batch, output, config_file):
     doesn't need as much terminal width as 'human' does. Note that the default
     output format can always be overridden by using global switch -o (eg 'synadm
     -o pprint user list').""")
+@click.option(
+    "--server-discovery", "-d", type=click.Choice(["local", "dns"]),
+    help="""The method used for server discovery. This can either be 'local' 
+    or 'dns'. The 'local' mode is using the '.well-known' file of your server, 
+    if present. The 'dns' mode is using the SRV record of your domain."""
+)
+@click.option(
+    "--hostname", "-n", type=str,
+    help="Synapse server hostname."
+)
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
-               output, timeout):
+               output, timeout, server_discovery, hostname):
     """ Modify synadm's configuration. Configuration details are generally
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
@@ -253,7 +266,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
 
     if helper.batch:
         if not all([user, token, base_url, admin_path, matrix_path,
-                    output, timeout]):
+                    output, timeout, server_discovery, hostname]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -267,7 +280,9 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
                 "admin_path": admin_path,
                 "matrix_path": matrix_path,
                 "format": output,
-                "timeout": timeout
+                "timeout": timeout,
+                "server_discovery": server_discovery,
+                "hostname": hostname
             }):
                 raise SystemExit(0)
             else:
@@ -301,6 +316,15 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             "Default http timeout",
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
+        "server_discovery": click.prompt(
+            "Server discovery mode",
+            default=server_discovery if server_discovery else helper.config.get(
+                "server_discovery", server_discovery),
+            type=click.Choice(["local", "dns"])),
+        "hostname": click.prompt(
+            "Synapse server hostname",
+            default=hostname if hostname else helper.config.get(
+                "hostname", hostname))
     })
     if not helper.load():
         click.echo("Configuration incomplete, quitting.")
