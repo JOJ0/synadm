@@ -242,7 +242,7 @@ class Matrix(ApiRequest):
             methods for requesting REST API's
     """
     def __init__(self, log, user, token, base_url, matrix_path,
-                 timeout, debug, server_discovery, hostname):
+                 timeout, debug):
         """Initialize the Matrix API object
 
         Args:
@@ -264,8 +264,6 @@ class Matrix(ApiRequest):
             timeout, debug
         )
         self.user = user
-        self.server_discovery = server_discovery
-        self.hostname = hostname
 
     def user_login(self, user_id, password):
         """Login as a Matrix user and retrieve an access token
