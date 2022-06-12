@@ -205,11 +205,21 @@ class APIHelper:
             return  self.config["homeserver"]
 
         if self.config["server_discovery"] == "well-known":
-            federation_uri = self.misc_request.federation_uri_well_known(uri)
-            if not federation_uri:
-                return None
+            if "localhost" in self.config["base_url"]:
+                click.echo("Trying to fetch homeserver name via localhost...")
+                return self.matrix_api.server_name_keys_api(
+                    self.config["base_url"]
+                )
+            else:
+                click.echo(
+                    "Trying to fetch federation URI via well-known resource..."
+                )
+                federation_uri = self.misc_request.federation_uri_well_known(uri)
+                if not federation_uri:
+                    return None
             return self.matrix_api.server_name_keys_api(federation_uri)
         elif self.config["server_discovery"] == "dns":
+            click.echo("Trying to fetch federation URI via DNS SRV record...")
             hostname = urlparse(uri).hostname
             try:
                 record = dns.resolver.query(
