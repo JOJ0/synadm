@@ -34,8 +34,6 @@ import datetime
 import json
 import urllib.parse
 import time
-import re
-
 
 class ApiRequest:
     """Basic API request handling and helper utilities
@@ -70,7 +68,8 @@ class ApiRequest:
         if debug:
             HTTPConnection.debuglevel = 1
 
-    def query(self, method, urlpart, params=None, data=None, token=None):
+    def query(self, method, urlpart, params=None, data=None, token=None,
+              base_url_override=None, verify=True):
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions.
@@ -83,6 +82,10 @@ class ApiRequest:
                 to None.
             data (dict, optional): Request body used in POST, PUT, DELETE
                 requests.  Defaults to None.
+            base_url_override (bool): The default setting of self.base_url set
+                on initialization can be overwritten using this argument.
+            verify(bool): Mandatory SSL verification is turned on by default and
+                can be turned off using this method.
 
         Returns:
             string or None: Usually a JSON string containing
@@ -91,23 +94,31 @@ class ApiRequest:
                 JSON strings. On exceptions the error type and description are
                 logged and None is returned.
         """
-        url = f"{self.base_url}/{self.path}/{urlpart}"
+        if base_url_override:
+            self.log.debug("base_url override!")
+            url = f"{base_url_override}/{self.path}/{urlpart}"
+            host_descr = urllib.parse.urlparse(base_url_override).netloc
+        else:
+            url = f"{self.base_url}/{self.path}/{urlpart}"
+            host_descr = "Synapse"
         self.log.info("Querying %s on %s", method, url)
+
         if token:
             self.log.debug("Token override! Adjusting headers.")
             self.headers["Authorization"] = "Bearer " + token
+
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
-                params=params, json=data
+                params=params, json=data, verify=verify
             )
             if not resp.ok:
-                self.log.warning(f"Synapse returned status code "
+                self.log.warning(f"{host_descr} returned status code "
                                  f"{resp.status_code}")
             return resp.json()
         except Exception as error:
-            self.log.error("%s while querying Synapse: %s",
-                           type(error).__name__, error)
+            self.log.error("%s while querying %s: %s",
+                           type(error).__name__, host_descr, error)
         return None
 
     def _timestamp_from_days_ago(self, days):
@@ -175,6 +186,52 @@ class ApiRequest:
                 checking.
         """
         return datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+
+
+class MiscRequest(ApiRequest):
+    """ Miscellaneous HTTP requests
+
+    Inheritance:
+        ApiRequest (object): parent class containing general properties and
+            methods for requesting REST API's
+    """
+    def __init__(self, log, timeout, debug):
+        """Initialize the MiscRequest object
+
+        Args:
+            log (logger object): an already initialized logger object
+            timeout (int): requests module timeout used in ApiRequest.query
+                method
+            debug (bool): enable/disable debugging in requests module
+        """
+        super().__init__(
+            log, "", "",  # Set user and token to empty string
+            "", "",  # Set base_url and path to empty string
+            timeout, debug
+        )
+
+    def federation_uri_well_known(self, base_url):
+        """Retrieve the URI to the Server-Server (Federation) API port via the
+        .well-known resource of a Matrix server/domain.
+
+        Args:
+            base_url: proto://name or proto://fqdn
+
+        Returns:
+            string: https://fqdn:port of the delegated server for Server-Server
+                communication between Matrix homeservers or None on errors.
+        """
+        resp = self.query(
+            "get", ".well-known/matrix/server",
+            base_url_override=base_url,
+        )
+        if resp is not None:
+            if ":" in resp["m.server"]:
+                return "https://" + resp["m.server"]
+            else:
+                return "https://" + resp["m.server"] + ":8448"
+        self.log.error(".well-known/matrix/server could not be fetched.")
+        return None
 
 
 class Matrix(ApiRequest):
@@ -274,42 +331,25 @@ class Matrix(ApiRequest):
 
         return self.query(method, endpoint, data=data_dict, token=token)
 
-    def server_name(self):
-        """Fetch the local server name
-
-        using the API for retrieving public server keys:
-        https://matrix.org/docs/spec/server_server/r0.1.4#retrieving-server-keys
-
-        Returns:
-            string: the local Matrix server name or None if the query method
-                could not fetch it for any reason.
-        """
-        resp = self.query("get", "key/v2/server")
-        if not resp or not resp.get("server_name"):
-            self.log.error("Local server name could not be fetched.")
-            return None
-        return resp['server_name']
-
-    def generate_mxid(self, user_id):
-        """ Checks whether the given user ID is an MXID already or else
-        generates it from the passed string and the homeserver name fetched
-        via the server_name method.
+    def server_name_keys_api(self, server_server_uri):
+        """Retrieve the Matrix server's own homeserver name via the
+        Server-Server (Federation) API.
 
         Args:
-            user_id (string): User ID given by user as command argument.
+            server_server_uri (string): proto://name:port or proto://fqdn:port
 
         Returns:
-            string: the fully qualified Matrix User ID (MXID) or None if the
-                user_id parameter is None.
+            string: The Matrix server's homeserver name or FQDN, usually
+            something like matrix.DOMAIN or DOMAIN
         """
-        if user_id is None:
+        resp = self.query("get", "key/v2/server",
+            base_url_override=server_server_uri
+        )
+        if not resp or not resp.get("server_name"):
+            self.log.error("The homeserver name could not be fetched via the "
+                           "federation API key/v2/server.")
             return None
-        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
-            return user_id
-        else:
-            localpart = re.sub("[@:]", "", user_id)
-            mxid = "@{}:{}".format(localpart, self.server_name())
-            return mxid
+        return resp['server_name']
 
 
 class SynapseAdmin(ApiRequest):

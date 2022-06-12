@@ -85,7 +85,7 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
         helper.output(media_list)
     elif user_id:
         from synadm.cli import user
-        mxid = helper.matrix_api.generate_mxid(user_id)
+        mxid = helper.generate_mxid(user_id)
         ctx.invoke(
             user.get_function("user_media_cmd"),
             user_id=mxid, from_=from_, limit=limit, sort=sort,
@@ -122,7 +122,8 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     """
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
-        fetched_name = helper.matrix_api.server_name()
+        fetched_name = helper.retrieve_homeserver_name(
+            helper.config["base_url"])
         media_quarantined = helper.api.media_quarantine(fetched_name, media_id)
     elif server_name and not media_id:
         click.echo("Media ID missing.")
@@ -132,7 +133,7 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
     elif room_id:
         media_quarantined = helper.api.room_media_quarantine(room_id)
     elif user_id:
-        mxid = helper.matrix_api.generate_mxid(user_id)
+        mxid = helper.generate_mxid(user_id)
         media_quarantined = helper.api.user_media_quarantine(mxid)
 
     if media_quarantined is None:
@@ -224,7 +225,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ Delete media by ID, size or age
     """
-    server_name = helper.matrix_api.server_name()
+    server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
     if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:

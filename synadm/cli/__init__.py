@@ -26,6 +26,9 @@ import json
 import click
 import yaml
 import tabulate
+from urllib.parse import urlparse
+import dns.resolver
+import re
 
 from synadm import api
 
@@ -65,7 +68,9 @@ class APIHelper:
         "base_url": "http://localhost:8008",
         "admin_path": "/_synapse/admin",
         "matrix_path": "/_matrix",
-        "timeout": 30
+        "timeout": 30,
+        "server_discovery": "well-known",
+        "homeserver": "auto-retrieval"
     }
 
     def __init__(self, config_path, verbose, batch, output_format_cli):
@@ -148,6 +153,10 @@ class APIHelper:
             self.config["base_url"], self.config["matrix_path"],
             self.config["timeout"], self.requests_debug
         )
+        self.misc_request = api.MiscRequest(
+            self.log,
+            self.config["timeout"], self.requests_debug,
+        )
         return True
 
     def write_config(self, config):
@@ -174,6 +183,90 @@ class APIHelper:
         """ Output data object using the configured formatter.
         """
         click.echo(self.formatter(data))
+
+    def retrieve_homeserver_name(self, uri=None):
+        """Try to retrieve the homeserver name.
+
+        When homeserver is set in the config already, it's just returned and
+        nothing is tried to be fetched automatically. If not, either the
+        location of the Federation API is looked up via a .well-known resource
+        or a DNS SRV lookup. This depends on the server_discovery setting in the
+        config. Finally the Federation API is used to retrieve the homeserver
+        name.
+
+        Args:
+            uri (string): proto://name:port or proto://fqdn:port
+
+        Returns:
+            string: hostname, FQDN or DOMAIN; or None on errors.
+        """
+        uri = uri if uri else self.config["base_url"]
+        echo = self.log.info if self.batch else click.echo
+        if self.config["homeserver"] != "auto-retrieval":
+            return  self.config["homeserver"]
+
+        if self.config["server_discovery"] == "well-known":
+            if "localhost" in self.config["base_url"]:
+                echo(
+                    "Trying to fetch homeserver name via localhost..."
+                )
+                return self.matrix_api.server_name_keys_api(
+                    self.config["base_url"]
+                )
+            else:
+                echo(
+                    "Trying to fetch federation URI via well-known resource..."
+                )
+                federation_uri = self.misc_request.federation_uri_well_known(uri)
+                if not federation_uri:
+                    return None
+            return self.matrix_api.server_name_keys_api(federation_uri)
+        elif self.config["server_discovery"] == "dns":
+            echo(
+                "Trying to fetch federation URI via DNS SRV record..."
+            )
+            hostname = urlparse(uri).hostname
+            try:
+                record = dns.resolver.query(
+                    "_matrix._tcp.{}".format(hostname),
+                    "SRV"
+                )
+            except Exception as error:
+                self.log.error(
+                    "resolving Matrix delegation for %s: %s: %s",
+                    hostname, type(error).__name__, error
+                )
+            else:
+                federation_uri = "https://{}:{}".format(
+                    record[0].target, record[0].port
+                )
+                return self.matrix_api.server_name_keys_api(federation_uri)
+        else:
+            self.log.error("Unknown server_discovery mode. "
+                           "Launch synadm config!")
+        return None
+
+    def generate_mxid(self, user_id):
+        """ Checks whether the given user ID is an MXID already or else
+        generates it from the passed string and the homeserver name fetched
+        via the retrieve_homeserver_name method.
+
+        Args:
+            user_id (string): User ID given by user as command argument.
+
+        Returns:
+            string: the fully qualified Matrix User ID (MXID) or None if the
+                user_id parameter is None.
+        """
+        if user_id is None:
+            return None
+        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
+            return user_id
+        else:
+            localpart = re.sub("[@:]", "", user_id)
+            mxid = "@{}:{}".format(localpart, self.retrieve_homeserver_name())
+            return mxid
+
 
 
 @click.group(
@@ -243,9 +336,21 @@ def root(ctx, verbose, batch, output, config_file):
     doesn't need as much terminal width as 'human' does. Note that the default
     output format can always be overridden by using global switch -o (eg 'synadm
     -o pprint user list').""")
+@click.option(
+    "--server-discovery", "-d", type=click.Choice(["well-known", "dns"]),
+    help="""FIXME The method used for server discovery. This can either be 'local'
+    or 'dns'. The 'local' mode is using the '.well-known' file of your server, 
+    if present. The 'dns' mode is using the SRV record of your domain. FIXME"""
+)
+@click.option(
+    "--homeserver", "-n", type=str,
+    help="""Synapse homeserver hostname. Usually matrix.DOMAIN or DOMAIN. The
+    default value 'auto-retrieval' will try to discover the name using the
+    method selected by --server-discovery."""
+)
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
-               output, timeout):
+               output, timeout, server_discovery, homeserver):
     """ Modify synadm's configuration. Configuration details are generally
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
@@ -253,7 +358,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
 
     if helper.batch:
         if not all([user, token, base_url, admin_path, matrix_path,
-                    output, timeout]):
+                    output, timeout, server_discovery, hostname]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -267,7 +372,9 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
                 "admin_path": admin_path,
                 "matrix_path": matrix_path,
                 "format": output,
-                "timeout": timeout
+                "timeout": timeout,
+                "server_discovery": server_discovery,
+                "hostname": hostname
             }):
                 raise SystemExit(0)
             else:
@@ -301,6 +408,15 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             "Default http timeout",
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
+        "homeserver": click.prompt(
+            "Homeserver name, (auto-retrieval or matrix.DOMAIN)",
+            default=homeserver if homeserver else helper.config.get(
+                "homeserver", homeserver)),
+        "server_discovery": click.prompt(
+            "Server discovery mode (used with homeserver name auto-retrieval)",
+            default=server_discovery if server_discovery else helper.config.get(
+                "server_discovery", server_discovery),
+            type=click.Choice(["well-known", "dns"])),
     })
     if not helper.load():
         click.echo("Configuration incomplete, quitting.")
