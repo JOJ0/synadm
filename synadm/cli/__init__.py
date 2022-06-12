@@ -403,15 +403,15 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             "Default http timeout",
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
+        "homeserver": click.prompt(
+            "Homeserver name, (auto-retrieval or matrix.DOMAIN)",
+            default=homeserver if homeserver else helper.config.get(
+                "homeserver", homeserver)),
         "server_discovery": click.prompt(
-            "Server discovery mode",
+            "Server discovery mode (used with homeserver name auto-retrieval)",
             default=server_discovery if server_discovery else helper.config.get(
                 "server_discovery", server_discovery),
             type=click.Choice(["well-known", "dns"])),
-        "homeserver": click.prompt(
-            "Synapse homeserver name, usually matrix.DOMAIN or DOMAIN",
-            default=homeserver if homeserver else helper.config.get(
-                "homeserver", homeserver))
     })
     if not helper.load():
         click.echo("Configuration incomplete, quitting.")
