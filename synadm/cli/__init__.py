@@ -338,15 +338,27 @@ def root(ctx, verbose, batch, output, config_file):
     -o pprint user list').""")
 @click.option(
     "--server-discovery", "-d", type=click.Choice(["well-known", "dns"]),
-    help="""FIXME The method used for server discovery. This can either be 'local'
-    or 'dns'. The 'local' mode is using the '.well-known' file of your server, 
-    if present. The 'dns' mode is using the SRV record of your domain. FIXME"""
-)
+    help="""The method used for discovery of "the own homeserver name". Since
+    none of the currently existing Admin API endpoints provide this
+    information, the federation API among other things is asked for help. If
+    set to "well-known" the URI of the federation API is tried to be fetched
+    via the well-known resource of the configured "Synapse base URL". If set to
+    "dns" the SRV record of the domain name found in the "Synapse base URL" is
+    used to get that information. Once the federation URI is known, the
+    homeserver name can be retrieved. In case "Synapse base URL" contains
+    "localhost", it's assumed that the required federation API is listening on
+    localhost:port already (the "keys" Matrix API endpoint). If that is failing
+    as well, as a last resort solution, the homeserver name can just be saved
+    to the configuration directly via the "homeserver" setting. Note that the
+    fetching of the homeserver name is only executed when a synadm subcommand
+    requires it (eg. like some of the media and user subcommands do), and the
+    "homeserver" directive in the config is set to "auto-retrieval".
+    """)
 @click.option(
     "--homeserver", "-n", type=str,
     help="""Synapse homeserver hostname. Usually matrix.DOMAIN or DOMAIN. The
     default value 'auto-retrieval' will try to discover the name using the
-    method selected by --server-discovery."""
+    method set by --server-discovery."""
 )
 @click.pass_obj
 def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
@@ -358,7 +370,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
 
     if helper.batch:
         if not all([user, token, base_url, admin_path, matrix_path,
-                    output, timeout, server_discovery, hostname]):
+                    output, timeout, server_discovery, homeserver]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -374,7 +386,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
                 "format": output,
                 "timeout": timeout,
                 "server_discovery": server_discovery,
-                "hostname": hostname
+                "homeserver": homeserver
             }):
                 raise SystemExit(0)
             else:
