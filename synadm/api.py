@@ -35,6 +35,7 @@ import json
 import urllib.parse
 import time
 
+
 class ApiRequest:
     """Basic API request handling and helper utilities
 
