@@ -134,7 +134,7 @@ class APIHelper:
                 return False
             else:
                 if key == "token":
-                    self.log.debug("Config entry read. %s: SECRET", key)
+                    self.log.debug("Config entry read. %s: REDACTED", key)
                 else:
                     self.log.debug("Config entry read. %s: %s", key, value)
         if self.output_format_cli:  # we have a cli output format override
