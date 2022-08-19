@@ -368,7 +368,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
     defaults in the prompts.
     """
     def get_redacted_token_prompt(cli_token):
-        redacted = ""  # Show as empty: [].
+        redacted = "NOT SET"  # Show as empty: [].
         if cli_token:
             redacted = "REDACTED"  # Token passed via cli, show [REDACTED]
         else:
