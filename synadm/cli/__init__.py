@@ -431,7 +431,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
         "homeserver": click.prompt(
-            "Homeserver name, (auto-retrieval or matrix.DOMAIN)",
+            "Homeserver name (auto-retrieval or matrix.DOMAIN)",
             default=homeserver if homeserver else helper.config.get(
                 "homeserver", homeserver)),
         "server_discovery": click.prompt(
