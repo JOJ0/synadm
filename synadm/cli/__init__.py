@@ -134,7 +134,7 @@ class APIHelper:
                 return False
             else:
                 if key == "token":
-                    self.log.debug("Config entry read. %s: SECRET", key)
+                    self.log.debug("Config entry read. %s: REDACTED", key)
                 else:
                     self.log.debug("Config entry read. %s: %s", key, value)
         if self.output_format_cli:  # we have a cli output format override
@@ -367,6 +367,15 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
     always asked interactively. Command line options override the suggested
     defaults in the prompts.
     """
+    def get_redacted_token_prompt(cli_token):
+        redacted = "NOT SET"  # Show as empty: [].
+        if cli_token:
+            redacted = "REDACTED"  # Token passed via cli, show [REDACTED]
+        else:
+            conf_token = helper.config.get("token", None)
+            if conf_token:
+                redacted = "REDACTED"  # Token found in config, show [REDACTED]
+        return f"Synapse admin user token [{redacted}]"
 
     if helper.batch:
         if not all([user, token, base_url, admin_path, matrix_path,
@@ -398,8 +407,9 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             "Synapse admin user name",
             default=user if user else helper.config.get("user", user)),
         "token": click.prompt(
-            "Synapse admin user token",
-            default=token if token else helper.config.get("token", token)),
+            get_redacted_token_prompt(token),
+            default=token if token else helper.config.get("token", token),
+            show_default=False,),
         "base_url": click.prompt(
             "Synapse base URL",
             default=base_url if base_url else helper.config.get(
@@ -421,7 +431,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
         "homeserver": click.prompt(
-            "Homeserver name, (auto-retrieval or matrix.DOMAIN)",
+            "Homeserver name (auto-retrieval or matrix.DOMAIN)",
             default=homeserver if homeserver else helper.config.get(
                 "homeserver", homeserver)),
         "server_discovery": click.prompt(
