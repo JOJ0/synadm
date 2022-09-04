@@ -22,10 +22,10 @@ copyright = '2020-2022, Johannes Tiefenbacher'
 author = 'Johannes Tiefenbacher'
 
 # The short X.Y version
-version = '0.35'
+version = '0.36'
 
 # The full version, including alpha/beta/rc tags
-release = '0.35'
+release = '0.36'
 
 
 # -- General configuration ---------------------------------------------------
