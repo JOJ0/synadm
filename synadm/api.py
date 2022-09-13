@@ -35,8 +35,6 @@ import json
 import urllib.parse
 import time
 import re
-import click
-
 
 class ApiRequest:
     """Basic API request handling and helper utilities
@@ -1142,7 +1140,7 @@ class SynapseAdmin(ApiRequest):
             method = "post"
         return self.query(method, f"v1/users/{user_id}/shadow_ban")
 
-    def notice_send(self, receivers, content_plain, content_html, batch, paginate):
+    def notice_send(self, receivers, content_plain, content_html, paginate):
         """ Send server notices.
 
         Args:
@@ -1160,39 +1158,23 @@ class SynapseAdmin(ApiRequest):
                         "formatted_body": content_html
                 }
         }
-        def ask_confirmation(users):
-            if batch:
-                return True
-            prompt = "Recipients (list may be incomplete):\n"
-            ctr = 0
-            for user in users:
-                if not re.search(receivers, user) is None:
-                    prompt = prompt + " - " + user + "\n"
-                    ctr = ctr + 1
-                    if ctr == 10:
-                        prompt = prompt + " - ..."
-                        break
-            prompt = prompt + "\nUnformatted message:\n---\n" + content_plain + "\n---\nFormatted message:\n---\n" + content_html + "\n---\nSend now?"
-            return click.confirm(prompt)
 
-        # Only a single user ID was supplied as receiver
-        if receivers[:1] == '@':
-            if ask_confirmation([receivers]):
-                data["user_id"] = receivers
-                return [self.query("post", f"v1/send_server_notice", data=data)]
         # A regular expression was supplied to match receivers.
-        elif receivers[:1] == '^':
+        if receivers[:1] == '^':
             outputs = []
             response = self.user_list(0, paginate, True, False, "", "")
-            if ask_confirmation(map(lambda u: u["name"], response["users"])):
-                while True:
-                    for user in response["users"]:
-                        if not re.search(receivers, user["name"]) is None:
-                            data["user_id"] = user["name"]
-                            outputs.append(self.query("post", f"v1/send_server_notice", data=data))
+            while True:
+                for user in response["users"]:
+                    if not re.search(receivers, user["name"]) is None:
+                        data["user_id"] = user["name"]
+                        outputs.append(self.query("post", 
+                            f"v1/send_server_notice", data=data))
 
-                    if not "next_token" in response:
-                        return outputs
-                    response = self.user_list(response["next_token"], 100, True, False, "", "")
+                if not "next_token" in response:
+                    return outputs
+                response = self.user_list(response["next_token"], 
+                    100, True, False, "", "")
+        # Only a single user ID was supplied as receiver
         else:
-            print("The recipients you specified were neither a matrix ID (starting with an '@'), nor a regular expression (starting with '^').")
+            data["user_id"] = receivers
+            return [self.query("post", f"v1/send_server_notice", data=data)]

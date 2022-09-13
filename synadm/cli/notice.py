@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # synadm
-# Copyright (C) 2020-2022 Philip (a-0)
+# Copyright (C) 2022 Philip (a-0)
 #
 # synadm is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
 """server notice-related CLI commands
 """
 
+import re
 import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 from click_option_group import RequiredAnyOptionGroup
@@ -31,32 +32,61 @@ def notice():
 
 @notice.command(name="send")
 @click.option("--from-file/--from-argument", "-f/-a", default=False,
-    help="Interpret arguments as file paths instead of notice content and read content from those files")
-@click.option("--batch", "--non-interactive", is_flag=True, default=False,
-    help="Skip the confirmation step before sending notices")
+    help="""Interpret arguments as file paths instead of notice content and 
+    read content from those files""")
 @click.option("--paginate", type=int, default=100,
     help="Sets how many users will be retrieved from the server at once")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, batch, paginate, to, plain, formatted):
+def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
     """Send server notices to local users.
 
-    TO - either a matrix ID (e.g. '@abc:example.com') or a regular expression as used in python (e.g. '^.*' to send to all users)
+    TO - either a matrix ID (e.g. '@abc:example.com') or a regular expression 
+        as used in python (e.g. '^.*' to send to all users)
     
     PLAIN - plain text content of the notice
     
-    FORMATTED - (HTML-) formatted content of the notice. If not set, PLAIN will be used.
+    FORMATTED - (HTML-) formatted content of the notice. If not set, PLAIN 
+        will be used.
     """
     if from_file:
-        plain_content = open(plain, "r").read()
+        with open(plain, "r") as plain_file:
+            plain_content = plain_file.read()
         if formatted:
-            formatted_content = open(formatted, "r").read()
+            with open(formatted, "r") as formatted_file:
+                formatted_content = formatted_file.read()
         else:
             formatted_content = plain_content
     else:
         plain_content = plain
         formatted_content = formatted
     
-    helper.api.notice_send(to, plain_content, formatted_content, batch, paginate)
+    def confirm_prompt(users):
+            if helper.batch:
+                return True
+            prompt = "Recipients (list may be incomplete):\n"
+            ctr = 0
+            for user in users:
+                if not re.search(to, user) is None:
+                    prompt = prompt + " - " + user + "\n"
+                    ctr = ctr + 1
+                    if ctr >= 10:
+                        prompt = prompt + " - ..."
+                        break
+            prompt = prompt + "\nUnformatted message:\n---\n" + plain_content\
+                + "\n---\nFormatted message:\n---\n" + formatted_content\
+                + "\n---\nSend now?"
+            return click.confirm(prompt)
+    
+    if to[:1] == '^':
+        first_batch = helper.api.user_list(0, paginate, True, False, "", "")
+        if not confirm_prompt(map(lambda u: u["name"], first_batch["users"])):
+            return
+    else:
+        to = helper.generate_mxid(to)
+        if not confirm_prompt([to]):
+            return
+    
+    helper.api.notice_send(to, plain_content, formatted_content, paginate)
