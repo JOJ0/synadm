@@ -82,7 +82,7 @@ def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
     
     if to[:1] == '^':
         first_batch = helper.api.user_list(0, paginate, True, False, "", "")
-        if not confirm_prompt(map(lambda u: u["name"], first_batch["users"])):
+        if not confirm_prompt([user['name'] for user in first_batch["users"]]):
             return
     else:
         to = helper.generate_mxid(to)
