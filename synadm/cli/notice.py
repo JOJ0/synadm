@@ -36,15 +36,17 @@ def notice():
     read content from those files""")
 @click.option("--paginate", type=int, default=100,
     help="Sets how many users will be retrieved from the server at once")
+@click.option("--to-regex", "-r", default=False, show_default=True, 
+    is_flag=True, help="Interpret TO as regular expression")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
+def notice_send_cmd(helper, from_file, paginate, to_regex, to, plain, formatted):
     """Send server notices to local users.
 
-    TO - either a matrix ID (e.g. '@abc:example.com') or a regular expression 
-        as used in python (e.g. '^.*' to send to all users)
+    TO - localpart or full matrix ID of the notice receiver. If --to-regex is
+        set this will be interpreted as regular expression.
     
     PLAIN - plain text content of the notice
     
@@ -61,7 +63,10 @@ def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
             formatted_content = plain_content
     else:
         plain_content = plain
-        formatted_content = formatted
+        if formatted is None:
+            formatted_content = plain
+        else:
+            formatted_content = formatted
     
     def confirm_prompt(users):
             if helper.batch:
@@ -80,8 +85,10 @@ def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
                 + "\n---\nSend now?"
             return click.confirm(prompt)
     
-    if to[:1] == '^':
+    if to_regex:
         first_batch = helper.api.user_list(0, paginate, True, False, "", "")
+        if "users" not in first_batch:
+            return
         if not confirm_prompt([user['name'] for user in first_batch["users"]]):
             return
     else:
@@ -89,4 +96,4 @@ def notice_send_cmd(helper, from_file, paginate, to, plain, formatted):
         if not confirm_prompt([to]):
             return
     
-    helper.api.notice_send(to, plain_content, formatted_content, paginate)
+    helper.api.notice_send(to, plain_content, formatted_content, paginate, to_regex)

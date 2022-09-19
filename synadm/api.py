@@ -36,6 +36,7 @@ import urllib.parse
 import time
 import re
 
+
 class ApiRequest:
     """Basic API request handling and helper utilities
 
@@ -1140,7 +1141,7 @@ class SynapseAdmin(ApiRequest):
             method = "post"
         return self.query(method, f"v1/users/{user_id}/shadow_ban")
 
-    def notice_send(self, receivers, content_plain, content_html, paginate):
+    def notice_send(self, receivers, content_plain, content_html, paginate, to_regex):
         """ Send server notices.
 
         Args:
@@ -1160,9 +1161,11 @@ class SynapseAdmin(ApiRequest):
         }
 
         # A regular expression was supplied to match receivers.
-        if receivers[:1] == '^':
+        if to_regex:
             outputs = []
             response = self.user_list(0, paginate, True, False, "", "")
+            if "users" not in response:
+                return
             while True:
                 for user in response["users"]:
                     if not re.search(receivers, user["name"]) is None:
