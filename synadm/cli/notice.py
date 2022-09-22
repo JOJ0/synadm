@@ -31,12 +31,12 @@ def notice():
     """
 
 @notice.command(name="send")
-@click.option("--from-file/--from-argument", "-f/-a", default=False,
-    help="""Interpret arguments as file paths instead of notice content and 
-    read content from those files""")
-@click.option("--paginate", type=int, default=100,
+@click.option("--from-file", "-f", default=False, show_default=True
+    is_flag=True, help="""Interpret arguments as file paths instead of notice
+    content and read content from those files""")
+@click.option("--paginate", type=int, default=100, show_default=True,
     help="Sets how many users will be retrieved from the server at once")
-@click.option("--to-regex", "-r", default=False, show_default=True, 
+@click.option("--to-regex", "-r", default=False, show_default=True,
     is_flag=True, help="Interpret TO as regular expression")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
@@ -50,8 +50,8 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, to, plain, formatted)
     
     PLAIN - plain text content of the notice
     
-    FORMATTED - (HTML-) formatted content of the notice. If not set, PLAIN 
-        will be used.
+    FORMATTED - Formatted content of the notice. If not set, PLAIN will be
+        used.
     """
     if from_file:
         with open(plain, "r") as plain_file:
@@ -80,13 +80,13 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, to, plain, formatted)
                     if ctr >= 10:
                         prompt = prompt + " - ..."
                         break
-            prompt = prompt + "\nUnformatted message:\n---\n" + plain_content\
+            prompt = prompt + "\Plaintext message:\n---\n" + plain_content\
                 + "\n---\nFormatted message:\n---\n" + formatted_content\
                 + "\n---\nSend now?"
             return click.confirm(prompt)
     
     if to_regex:
-        first_batch = helper.api.user_list(0, paginate, True, False, "", "")
+        first_batch = helper.api.user_list(0, 100, True, False, "", "")
         if "users" not in first_batch:
             return
         if not confirm_prompt([user['name'] for user in first_batch["users"]]):
