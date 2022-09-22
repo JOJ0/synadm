@@ -20,36 +20,40 @@
 
 import re
 import click
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
-from click_option_group import RequiredAnyOptionGroup
 
 from synadm import cli
+
 
 @cli.root.group()
 def notice():
     """ Send server notices to local users
     """
 
+
 @notice.command(name="send")
-@click.option("--from-file", "-f", default=False, show_default=True
+@click.option("--from-file", "-f", default=False, show_default=True,
     is_flag=True, help="""Interpret arguments as file paths instead of notice
     content and read content from those files""")
 @click.option("--paginate", type=int, default=100, show_default=True,
     help="Sets how many users will be retrieved from the server at once")
 @click.option("--to-regex", "-r", default=False, show_default=True,
     is_flag=True, help="Interpret TO as regular expression")
+@click.option("--match-list-length", type=int, default=10, show_default=True,
+    help="""Length of the displayed list of matched receivers. Does not impact
+    sending behavior""")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, paginate, to_regex, to, plain, formatted):
+def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
+                    to, plain, formatted):
     """Send server notices to local users.
 
     TO - localpart or full matrix ID of the notice receiver. If --to-regex is
         set this will be interpreted as regular expression.
-    
+
     PLAIN - plain text content of the notice
-    
+
     FORMATTED - Formatted content of the notice. If not set, PLAIN will be
         used.
     """
@@ -67,33 +71,50 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, to, plain, formatted)
             formatted_content = plain
         else:
             formatted_content = formatted
-    
-    def confirm_prompt(users):
-            if helper.batch:
-                return True
-            prompt = "Recipients (list may be incomplete):\n"
+
+    def confirm_prompt():
+        if helper.batch:
+            return True
+        prompt = "Recipients:\n"
+        if not to_regex:
+            prompt = prompt + " - " + to + "\n"
+        else:
+            # Build and print a list of receivers matching the regex
             ctr = 0
-            for user in users:
-                if not re.search(to, user) is None:
-                    prompt = prompt + " - " + user + "\n"
-                    ctr = ctr + 1
-                    if ctr >= 10:
-                        prompt = prompt + " - ..."
-                        break
-            prompt = prompt + "\Plaintext message:\n---\n" + plain_content\
-                + "\n---\nFormatted message:\n---\n" + formatted_content\
-                + "\n---\nSend now?"
-            return click.confirm(prompt)
-    
+            next_token = 0
+            # Outer loop: If fetching >1 pages of users is required
+            while ctr < match_list_length:
+                batch = helper.api.user_list(
+                    next_token, paginate, True, False, "", "")
+                if "users" not in batch:
+                    break
+                batch_mxids = [user['name'] for user in batch["users"]]
+                # Match every matrix ID of this batch
+                for mxid in batch_mxids:
+                    if not re.search(to, mxid) is None:
+                        if ctr < match_list_length:
+                            prompt = prompt + " - " + mxid + "\n"
+                            ctr = ctr + 1
+                        else:
+                            prompt = prompt + " - ...\n"
+                            break
+                if "next_token" not in batch:
+                    break
+                next_token = batch["next_token"]
+        prompt = prompt + "\nPlaintext message:\n---\n" + plain_content\
+            + "\n---\nFormatted message:\n---\n" + formatted_content\
+            + "\n---\nSend now?"
+        return click.confirm(prompt)
+
     if to_regex:
-        first_batch = helper.api.user_list(0, 100, True, False, "", "")
-        if "users" not in first_batch:
+        if "users" not in helper.api.user_list(0, 100, True, False, "", ""):
             return
-        if not confirm_prompt([user['name'] for user in first_batch["users"]]):
+        if not confirm_prompt():
             return
     else:
         to = helper.generate_mxid(to)
-        if not confirm_prompt([to]):
+        if not confirm_prompt():
             return
-    
-    helper.api.notice_send(to, plain_content, formatted_content, paginate, to_regex)
+
+    helper.api.notice_send(to, plain_content, formatted_content, paginate,
+                           to_regex)
