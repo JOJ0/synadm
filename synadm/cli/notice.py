@@ -31,14 +31,18 @@ def notice():
 
 
 @notice.command(name="send")
-@click.option("--from-file", "-f", default=False, show_default=True,
-    is_flag=True, help="""Interpret arguments as file paths instead of notice
-    content and read content from those files""")
-@click.option("--paginate", type=int, default=100, show_default=True,
-    help="Sets how many users will be retrieved from the server at once")
-@click.option("--to-regex", "-r", default=False, show_default=True,
-    is_flag=True, help="Interpret TO as regular expression")
-@click.option("--match-list-length", type=int, default=10, show_default=True,
+@click.option(
+    "--from-file", "-f", default=False, show_default=True, is_flag=True,
+    help="""Interpret arguments as file paths instead of notice content and
+    read content from those files""")
+@click.option(
+    "--paginate", type=int, default=100, show_default=True, help="""Sets how
+    many users will be retrieved from the server at once""")
+@click.option(
+    "--to-regex", "-r", default=False, show_default=True, is_flag=True,
+    help="Interpret TO as regular expression")
+@click.option(
+    "--match-list-length", "-l", type=int, default=10, show_default=True,
     help="""Length of the displayed list of matched receivers. Does not impact
     sending behavior""")
 @click.argument("to", type=str, default=None)

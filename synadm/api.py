@@ -1171,9 +1171,10 @@ class SynapseAdmin(ApiRequest):
                     if not re.search(receivers, user["name"]) is None:
                         data["user_id"] = user["name"]
                         outputs.append(
-                            self.query("post",
-                                       f"v1/send_server_notice", data=data)
-                                      )
+                            self.query(
+                                "post", f"v1/send_server_notice", data=data
+                            )
+                        )
 
                 if "next_token" not in response:
                     return outputs
