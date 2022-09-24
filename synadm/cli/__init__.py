@@ -276,8 +276,15 @@ class APIHelper:
     "--verbose", "-v", count=True, default=False,
     help="Enable INFO (-v) or DEBUG (-vv) logging on console.")
 @click.option(
-    "--batch/--no-batch", default=False,
-    help="Enable batch behavior (no interactive prompts).")
+    "--batch", "--yes", "--non-interactive", "--scripting",
+    default=False, is_flag=True,
+    help="""Enable batch processing mode. Use with caution! This will:
+
+    \b
+        - Disable all interactive prompts.
+        - Disable automatic translation of unix timestamps to human readable
+          formats.
+    """)
 @click.option(
     "--output", "-o", default="",
     type=click.Choice(["yaml", "json", "human", "pprint",
