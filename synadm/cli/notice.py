@@ -46,8 +46,8 @@ def notice():
     help="Interpret TO as regular expression")
 @click.option(
     "--match-list-length", "-l", type=int, default=10, show_default=True,
-    help="""Length of the displayed list of matched receivers. Does not impact
-    sending behavior""")
+    help="""Length of the displayed list of matched recipients shown in the
+    confirmation prompt. Does not impact sending behavior""")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
