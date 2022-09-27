@@ -36,8 +36,11 @@ def notice():
     help="""Interpret arguments as file paths instead of notice content and
     read content from those files""")
 @click.option(
-    "--paginate", type=int, default=100, show_default=True, help="""Sets how
-    many users will be retrieved from the server at once""")
+    "--paginate", "-p", type=int, default=100, show_default=True, help="""The
+    send command retrieves pages of users from the homeserver, filters them
+    and sends out the notices, before retrieving the next page. paginate sets
+    how many users are in each of these "pages". It is a performance setting
+    and may be useful for servers with a large amount of users.""")
 @click.option(
     "--to-regex", "-r", default=False, show_default=True, is_flag=True,
     help="Interpret TO as regular expression")
