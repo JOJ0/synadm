@@ -95,7 +95,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
                 batch_mxids = [user['name'] for user in batch["users"]]
                 # Match every matrix ID of this batch
                 for mxid in batch_mxids:
-                    if not re.search(to, mxid) is None:
+                    if re.match(to, mxid):
                         if ctr < match_list_length:
                             prompt = prompt + " - " + mxid + "\n"
                             ctr = ctr + 1
@@ -117,6 +117,8 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
             return
     else:
         to = helper.generate_mxid(to)
+        if to is None:
+            return
         if not confirm_prompt():
             return
 

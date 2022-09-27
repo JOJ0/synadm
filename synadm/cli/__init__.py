@@ -260,12 +260,14 @@ class APIHelper:
         """
         if user_id is None:
             return None
-        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
+        elif re.match(r"@[-./=\w]+:[-\[\].:\w]+$", user_id):
             return user_id
-        else:
+        elif re.match(r"[-./=\w]+$", user_id):
             localpart = re.sub("[@:]", "", user_id)
             mxid = "@{}:{}".format(localpart, self.retrieve_homeserver_name())
             return mxid
+        else:
+            return None
 
 
 

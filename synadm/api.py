@@ -1168,7 +1168,7 @@ class SynapseAdmin(ApiRequest):
                 return
             while True:
                 for user in response["users"]:
-                    if not re.search(receivers, user["name"]) is None:
+                    if re.match(receivers, user["name"]):
                         data["user_id"] = user["name"]
                         outputs.append(
                             self.query(
