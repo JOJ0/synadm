@@ -64,21 +64,6 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
     FORMATTED - Formatted content of the notice. If not set, PLAIN will be
         used.
     """
-    if from_file:
-        with open(plain, "r") as plain_file:
-            plain_content = plain_file.read()
-        if formatted:
-            with open(formatted, "r") as formatted_file:
-                formatted_content = formatted_file.read()
-        else:
-            formatted_content = plain_content
-    else:
-        plain_content = plain
-        if formatted is None:
-            formatted_content = plain
-        else:
-            formatted_content = formatted
-
     def confirm_prompt():
         if helper.batch:
             return True
@@ -112,6 +97,21 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
             + "\n---\nFormatted message:\n---\n" + formatted_content\
             + "\n---\nSend now?"
         return click.confirm(prompt)
+
+    if from_file:
+        with open(plain, "r") as plain_file:
+            plain_content = plain_file.read()
+        if formatted:
+            with open(formatted, "r") as formatted_file:
+                formatted_content = formatted_file.read()
+        else:
+            formatted_content = plain_content
+    else:
+        plain_content = plain
+        if formatted is None:
+            formatted_content = plain
+        else:
+            formatted_content = formatted
 
     if to_regex:
         if "users" not in helper.api.user_list(0, 100, True, False, "", ""):
