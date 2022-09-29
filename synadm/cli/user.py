@@ -142,8 +142,8 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
 @click.argument("user_id", type=str)
 @click.option(
     "--list-only", "-l", is_flag=True, default=False,
-    help="""Dry-run: does not perform the deletion but shows what would be done.
-    If you want to list all devices/sessions, you can also use the whois
+    help="""Dry-run: does not perform the deletion but shows what would be
+    done. If you want to list all devices/sessions, you can also use the whois
     command.""",
     show_default=True)
 @click.option(
@@ -153,8 +153,8 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     show_default=True)
 @click.option(
     "--min-surviving", "-s", type=int, default=1,
-    help="""Stop processing devices when only this number of devices is left for
-    this user. Allows to reduce disruption by preserving recently used
+    help="""Stop processing devices when only this number of devices is left
+    for this user. Allows to reduce disruption by preserving recently used
     devices/sessions.""",
     show_default=True)
 @click.option(
@@ -172,16 +172,16 @@ def prune_devices_cmd(helper, user_id, list_only, min_days, min_surviving,
     """ Delete devices and invalidate access tokens of a user.
 
     Deletes devices of a user and invalidates any access token associated with
-    them. Starts from deleting the oldest devices, not seen in a number of days,
-    which may be abandoned.
+    them. Starts from deleting the oldest devices, not seen in a number of
+    days, which may be abandoned.
 
-    Note that this will affect the encryption and decryption of messages sent by
-    other users to this user or to rooms where the user is present.
+    Note that this will affect the encryption and decryption of messages sent
+    by other users to this user or to rooms where the user is present.
     """
     mxid = helper.generate_mxid(user_id)
     devices_data = helper.api.user_devices(mxid)
     if "devices" not in devices_data:
-        # Most probably the requested user is not existing, show error and quit.
+        # Most probably the requested user is not existing, error out and quit.
         helper.output(devices_data)
         raise SystemExit(1)
 
@@ -248,7 +248,8 @@ def password_cmd(helper, user_id, password, no_logout):
 @click.argument("user_id", type=str)
 @click.option(
     "--aliases/--ids", is_flag=True, default=True,
-    help="Display rooms as canonical aliases or room ID's.  [default: aliases]")
+    help="""Display rooms as canonical aliases or room
+    ID's.  [default: aliases]""")
 @click.pass_obj
 def membership(helper, user_id, aliases):
     """ List all rooms a user is member of.
@@ -284,8 +285,8 @@ def membership(helper, user_id, aliases):
 def user_search_cmd(ctx, search_term, from_, limit):
     """ A shortcut to \'synadm user list -d -g -n <search-term>\'.
 
-    Searches for users by name/matrix-ID, including deactivated users as well as
-    guest users. Also, compared to the original command, a case-insensitive
+    Searches for users by name/matrix-ID, including deactivated users as well
+    as guest users. Also, compared to the original command, a case-insensitive
     search is done.
     """
     click.echo("User search results for '{}':".format(search_term.lower()))
@@ -532,9 +533,9 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
     day (24h) is used. If it's desired that the token never expires, use
     --expire-never
 
-    This API does not generate a new device for the user, and so will not appear
-    in their /devices list, and in general the target user should not be able to
-    tell they have been logged in as.
+    This API does not generate a new device for the user, and so will not
+    appear in their /devices list, and in general the target user should not be
+    able to tell they have been logged in as.
 
     To expire the token before the expiry date/time is reached, call the
     standard /logout API with the token. Note: The token will expire if the
@@ -555,15 +556,16 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
             raise SystemExit(1)
         helper.output(user_login)
     else:
-        click.echo("You are fetching an authentication token of a user, which "
-                   "enables you to execute any Matrix command on their behalf. "
-                   "Please respect their privacy and know what you are doing! "
-                   "Be responsible!\n")
+        click.echo("""You are fetching an authentication token of a user,
+                   which enables you to execute any Matrix command on their
+                   behalf. Please respect their privacy and know what you are
+                   doing! Be responsible!\n""")
         if user_login is None:
             click.echo(f"Login as user {user_id} not successful.")
             raise SystemExit(1)
         else:
             helper.output(user_login)
+
 
 @user.command(name="shadow-ban")
 @click.argument("user_id", type=str)

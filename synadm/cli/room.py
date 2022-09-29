@@ -308,8 +308,8 @@ def search_room_cmd(ctx, search_term, from_, limit, sort, reverse):
 def make_admin(helper, room_id, user_id):
     """ Grant a user room admin permission.
 
-    If the user is not in the room, and it is not publicly joinable, then invite
-    the user.
+    If the user is not in the room, and it is not publicly joinable, then
+    invite the user.
     """
 
     mxid = helper.generate_mxid(user_id)
