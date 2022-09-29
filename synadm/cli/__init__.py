@@ -190,9 +190,9 @@ class APIHelper:
         When homeserver is set in the config already, it's just returned and
         nothing is tried to be fetched automatically. If not, either the
         location of the Federation API is looked up via a .well-known resource
-        or a DNS SRV lookup. This depends on the server_discovery setting in the
-        config. Finally the Federation API is used to retrieve the homeserver
-        name.
+        or a DNS SRV lookup. This depends on the server_discovery setting in
+        the config. Finally the Federation API is used to retrieve the
+        homeserver name.
 
         Args:
             uri (string): proto://name:port or proto://fqdn:port
@@ -203,7 +203,7 @@ class APIHelper:
         uri = uri if uri else self.config["base_url"]
         echo = self.log.info if self.batch else click.echo
         if self.config["homeserver"] != "auto-retrieval":
-            return  self.config["homeserver"]
+            return self.config["homeserver"]
 
         if self.config["server_discovery"] == "well-known":
             if "localhost" in self.config["base_url"]:
@@ -217,7 +217,9 @@ class APIHelper:
                 echo(
                     "Trying to fetch federation URI via well-known resource..."
                 )
-                federation_uri = self.misc_request.federation_uri_well_known(uri)
+                federation_uri = self.misc_request.federation_uri_well_known(
+                    uri
+                )
                 if not federation_uri:
                     return None
             return self.matrix_api.server_name_keys_api(federation_uri)
@@ -268,7 +270,6 @@ class APIHelper:
             return mxid
 
 
-
 @click.group(
     invoke_without_command=False,
     context_settings=dict(help_option_names=["-h", "--help"]))
@@ -311,7 +312,7 @@ def root(ctx, verbose, batch, output, config_file):
 
 @root.command(name="config")
 @click.option(
-    "--user", "-u", type=str,
+    "--user", "-u", "user_", type=str,
     help="Admin user allowed to access the Synapse admin API's.")
 @click.option(
     "--token", "-t", type=str,
@@ -336,13 +337,13 @@ def root(ctx, verbose, batch, output, config_file):
     API's or Matrix API's. The default is 7 seconds. """)
 @click.option(
     "--output", "-o", type=click.Choice(["yaml", "json", "human", "pprint"]),
-    help="""How synadm displays data by default. 'human' gives a tabular or list
-    view depending on the fetched data. This mode needs your terminal to be
-    quite wide! 'json' displays exactly as the API responded. 'pprint' shows
-    nicely formatted json. 'yaml' is the currently recommended output format. It
-    doesn't need as much terminal width as 'human' does. Note that the default
-    output format can always be overridden by using global switch -o (eg 'synadm
-    -o pprint user list').""")
+    help="""How synadm displays data by default. 'human' gives a tabular or
+    list view depending on the fetched data. This mode needs your terminal to
+    be quite wide! 'json' displays exactly as the API responded. 'pprint' shows
+    nicely formatted json. 'yaml' is the currently recommended output format.
+    It doesn't need as much terminal width as 'human' does. Note that the
+    default output format can always be overridden by using global switch -o
+    (eg 'synadm -o pprint user list').""")
 @click.option(
     "--server-discovery", "-d", type=click.Choice(["well-known", "dns"]),
     help="""The method used for discovery of "the own homeserver name". Since
@@ -368,7 +369,7 @@ def root(ctx, verbose, batch, output, config_file):
     method set by --server-discovery."""
 )
 @click.pass_obj
-def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
+def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
                output, timeout, server_discovery, homeserver):
     """ Modify synadm's configuration. Configuration details are generally
     always asked interactively. Command line options override the suggested
@@ -394,7 +395,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
         else:
             click.echo("Saving to config file.")
             if helper.write_config({
-                "user": user,
+                "user": user_,
                 "token": token,
                 "base_url": base_url,
                 "admin_path": admin_path,
@@ -412,7 +413,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
     helper.write_config({
         "user": click.prompt(
             "Synapse admin user name",
-            default=user if user else helper.config.get("user", user)),
+            default=user_ if user_ else helper.config.get("user", user_)),
         "token": click.prompt(
             get_redacted_token_prompt(token),
             default=token if token else helper.config.get("token", token),
@@ -443,7 +444,7 @@ def config_cmd(helper, user, token, base_url, admin_path, matrix_path,
                 "homeserver", homeserver)),
         "server_discovery": click.prompt(
             "Server discovery mode (used with homeserver name auto-retrieval)",
-            default=server_discovery if server_discovery else helper.config.get(
+            default=server_discovery if server_discovery else helper.config.get(  # noqa: E501
                 "server_discovery", server_discovery),
             type=click.Choice(["well-known", "dns"])),
     })
@@ -465,4 +466,4 @@ def version(helper):
 
 
 # Import additional commands
-from synadm.cli import room, user, media, group, history, matrix, regtok
+from synadm.cli import room, user, media, group, history, matrix, regtok  # noqa: F401, E402, E501
