@@ -1182,5 +1182,5 @@ class SynapseAdmin(ApiRequest):
                                           100, True, False, "", "")
         # Only a single user ID was supplied as receiver
         else:
-            data["user_id"] = receivers
+            data["user_id"] = generate_mxid(receivers)
             return [self.query("post", f"v1/send_server_notice", data=data)]
