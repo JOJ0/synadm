@@ -19,7 +19,6 @@
 """
 
 import click
-import sys
 
 from synadm import cli
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
@@ -100,11 +99,11 @@ def login_cmd(helper, user_id, password):
     help="")
 @optgroup.option(
     "--token", "-t", type=str, envvar='MTOKEN', show_default=True,
-    help="""Token used for Matrix authentication instead of the configured admin
-    user's token. If --token (and --prompt) option is missing, the token is read
-    from environment variable $MTOKEN instead. To make sure a user's token
-    does not show up in system logs, don't provide it on the shell directly but
-    set $MTOKEN with shell command `read MTOKEN`.""")
+    help="""Token used for Matrix authentication instead of the configured
+    admin user's token. If --token (and --prompt) option is missing, the token
+    is read from environment variable $MTOKEN instead. To make sure a user's
+    token does not show up in system logs, don't provide it on the shell
+    directly but set $MTOKEN with shell command `read MTOKEN`.""")
 @optgroup.option(
     "--prompt", "-p", is_flag=True, show_default=True,
     help="""Prompt for the token used for Matrix authentication. This option
@@ -113,9 +112,9 @@ def login_cmd(helper, user_id, password):
 def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
     """ Execute a raw request to the Matrix API.
 
-    The endpoint argument is the part of the URL _after_ the configured base URL
-    and Matrix path (see `synadm config`). A simple get request would e.g look
-    like this: `synadm matrix raw client/versions`
+    The endpoint argument is the part of the URL _after_ the configured base
+    URL and Matrix path (see `synadm config`). A simple get request would e.g
+    look like this: `synadm matrix raw client/versions`
 
     Use either --token or --prompt to provide a user's token and execute Matrix
     commands on their behalf. Respect the privacy of others! Be responsible!
@@ -145,8 +144,8 @@ def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
         helper.output(raw_request)
     else:
         if raw_request is None:
-            click.echo("The Matrix API's response was empty or JSON data could "
-                       "not be loaded.")
+            click.echo("The Matrix API's response was empty or JSON data "
+                       "could not be loaded.")
             raise SystemExit(1)
         else:
             helper.output(raw_request)

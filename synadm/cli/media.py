@@ -19,7 +19,7 @@
 """
 
 import click
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
+from click_option_group import optgroup
 from click_option_group import RequiredAnyOptionGroup, OptionGroup
 from click_option_group import RequiredMutuallyExclusiveOptionGroup
 
@@ -113,8 +113,8 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
 @click.option(
     "--server-name", "-s", type=str,
     help="""The server name of the media, mandatory when --media-id is used and
-    _remote_ media should be processed. For locally stored media this option can
-    be omitted.
+    _remote_ media should be processed. For locally stored media this option
+    can be omitted.
     """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
@@ -229,7 +229,8 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
     if not server_name:
         media_deleted = None
     elif media_id and delete_profiles:
-        click.echo("Combination of --media-id and --delete-profiles not valid.")
+        click.echo("Combination of --media-id and --delete-profiles not "
+                   "valid.")
         media_deleted = None
     elif media_id and size:
         click.echo("Combination of --media-id and --size not valid.")

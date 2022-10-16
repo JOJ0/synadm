@@ -19,8 +19,6 @@
 """
 
 import click
-from click_option_group import optgroup, MutuallyExclusiveOptionGroup
-from click_option_group import RequiredAnyOptionGroup
 
 from synadm import cli
 
@@ -131,7 +129,8 @@ def regtok_new(helper, token, length, uses_allowed, expiry_ts, expire_at):
 def regtok_update(helper, token, uses_allowed, expiry_ts, expire_at):
     """ Update a registration token
     """
-    regtok = helper.api.regtok_update(token, uses_allowed, expiry_ts, expire_at)
+    regtok = helper.api.regtok_update(token, uses_allowed,
+                                      expiry_ts, expire_at)
     if regtok is None:
         click.echo("Registration token could not be created.")
         raise SystemExit(1)
