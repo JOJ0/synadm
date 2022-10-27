@@ -93,6 +93,8 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
                 if "next_token" not in batch:
                     break
                 next_token = batch["next_token"]
+            if ctr == 0:
+                prompt = prompt + "(no recipient matched)\n"
         prompt = prompt + "\nPlaintext message:\n---\n" + plain_content\
             + "\n---\nFormatted message:\n---\n" + formatted_content\
             + "\n---\nSend now?"
