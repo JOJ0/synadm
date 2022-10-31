@@ -33,6 +33,7 @@ from http.client import HTTPConnection
 import datetime
 import json
 import urllib.parse
+import re
 
 
 class ApiRequest:
