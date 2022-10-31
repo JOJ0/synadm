@@ -1139,3 +1139,47 @@ class SynapseAdmin(ApiRequest):
         else:
             method = "post"
         return self.query(method, f"v1/users/{user_id}/shadow_ban")
+
+    def notice_send(self, receivers, content_plain, content_html, paginate, to_regex):
+        """ Send server notices.
+
+        Args:
+            receivers: Target(s) of the notice. Either localpart or regular
+                expression matching localparts.
+            content_plain: Unformatted text of the notice.
+            content_html: HTML-formatted text of the notice.
+        """
+        data = {
+            "user_id": "",
+            "content": {
+                "msgtype": "m.text",
+                "body": content_plain,
+                "format": "org.matrix.custom.html",
+                "formatted_body": content_html
+            }
+        }
+
+        # A regular expression was supplied to match receivers.
+        if to_regex:
+            outputs = []
+            response = self.user_list(0, paginate, True, False, "", "")
+            if "users" not in response:
+                return
+            while True:
+                for user in response["users"]:
+                    if re.match(receivers, user["name"]):
+                        data["user_id"] = user["name"]
+                        outputs.append(
+                            self.query(
+                                "post", f"v1/send_server_notice", data=data
+                            )
+                        )
+
+                if "next_token" not in response:
+                    return outputs
+                response = self.user_list(response["next_token"],
+                                          100, True, False, "", "")
+        # Only a single user ID was supplied as receiver
+        else:
+            data["user_id"] = generate_mxid(receivers)
+            return [self.query("post", f"v1/send_server_notice", data=data)]

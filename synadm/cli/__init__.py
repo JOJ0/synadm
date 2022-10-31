@@ -258,16 +258,24 @@ class APIHelper:
 
         Returns:
             string: the fully qualified Matrix User ID (MXID) or None if the
-                user_id parameter is None.
+                user_id parameter is None or no regex matched.
         """
         if user_id is None:
+            self.log.debug("Missing input in generate_mxid().")
             return None
-        elif re.match(r"@[-./=\w]+:[-.\w]+", user_id):
+        elif re.match(r"^@[-./=\w]+:[-\[\].:\w]+$", user_id):
+            self.log.debug("A proper MXID was passed.")
             return user_id
-        else:
+        elif re.match(r"^@?[-./=\w]+:?$", user_id):
+            self.log.debug("A proper localpart was passed, generating MXID "
+                           "for local homeserver.")
             localpart = re.sub("[@:]", "", user_id)
             mxid = "@{}:{}".format(localpart, self.retrieve_homeserver_name())
             return mxid
+        else:
+            self.log.error("Neither an MXID nor a proper localpart was "
+                           "passed.")
+            return None
 
 
 @click.group(
@@ -466,4 +474,4 @@ def version(helper):
 
 
 # Import additional commands
-from synadm.cli import room, user, media, group, history, matrix, regtok  # noqa: F401, E402, E501
+from synadm.cli import room, user, media, group, history, matrix, regtok, notice  # noqa: F401, E402, E501
