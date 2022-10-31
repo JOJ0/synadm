@@ -33,8 +33,6 @@ from http.client import HTTPConnection
 import datetime
 import json
 import urllib.parse
-import time
-import re
 
 
 class ApiRequest:
@@ -86,8 +84,8 @@ class ApiRequest:
                 requests.  Defaults to None.
             base_url_override (bool): The default setting of self.base_url set
                 on initialization can be overwritten using this argument.
-            verify(bool): Mandatory SSL verification is turned on by default and
-                can be turned off using this method.
+            verify(bool): Mandatory SSL verification is turned on by default
+                and can be turned off using this method.
 
         Returns:
             string or None: Usually a JSON string containing
@@ -344,8 +342,8 @@ class Matrix(ApiRequest):
             string: The Matrix server's homeserver name or FQDN, usually
             something like matrix.DOMAIN or DOMAIN
         """
-        resp = self.query("get", "key/v2/server",
-            base_url_override=server_server_uri
+        resp = self.query(
+            "get", "key/v2/server", base_url_override=server_server_uri
         )
         if not resp or not resp.get("server_name"):
             self.log.error("The homeserver name could not be fetched via the "
@@ -417,8 +415,8 @@ class SynapseAdmin(ApiRequest):
             user_id (string): Fully qualified Matrix user ID
             room_aliases (bool): Return human readable room aliases instead of
                 room ID's if applicable.
-            matrix_api (object): An initialized Matrix object needs to be passes
-                as we need some Matrix API functionality here.
+            matrix_api (object): An initialized Matrix object needs to be
+                passes as we need some Matrix API functionality here.
 
         Returns:
             string: JSON string containing the admin API's response or None if
@@ -626,8 +624,8 @@ class SynapseAdmin(ApiRequest):
                 break
             if device_id:
                 if device.get("device_id", None) == device_id:
-                    # Found device in question. Make last_seen_ts human readable
-                    # (if requested) and add to deletion list.
+                    # Found device in question. Make last_seen_ts human
+                    # readable (if requested) and add to deletion list.
                     if readable_seen:
                         device["last_seen_ts"] = self._datetime_from_timestamp(
                             device.get("last_seen_ts", None), as_str=True)
@@ -637,7 +635,7 @@ class SynapseAdmin(ApiRequest):
                     # Continue looking for the device in question.
                     continue
             if min_days:
-                seen = device.get("last_seen_ts", None)  # Get timestamp or None
+                seen = device.get("last_seen_ts", None)  # Get ts or None
                 # A device with "null" as last seen was either seen a very long
                 # time ago _or_ was created through the matrix API (e.g. via
                 # `synadm matrix login`).
@@ -705,7 +703,8 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", f"v1/rooms/{room_id}/state")
 
     def room_power_levels(self, from_, limit, name, order_by, reverse,
-                          room_id=None, all_details=True, output_format="json"):
+                          room_id=None, all_details=True,
+                          output_format="json"):
         """ Get a list of configured power_levels in all rooms.
 
         or a single room.
@@ -718,8 +717,8 @@ class SynapseAdmin(ApiRequest):
                 an exception occured. See Synapse admin API docs for details.
         """
         if room_id:
-            # We use the "name search" possibility of the room list API to get a
-            # single room via it's ID.
+            # We use the "name search" possibility of the room list API to get
+            # a single room via it's ID.
             rooms = self.room_list(from_, limit, room_id, order_by, reverse)
         else:
             rooms = self.room_list(from_, limit, name, order_by, reverse)
@@ -732,7 +731,7 @@ class SynapseAdmin(ApiRequest):
                 if s["type"] == "m.room.power_levels":
                     if output_format == "human":
                         levels_list = [
-                            f"{u} {l}" for u, l in s["content"]["users"].items()
+                            f"{u} {l}" for u, l in s["content"]["users"].items()  # noqa: E501
                         ]
                         rooms["rooms"][i][
                             "power_levels"
@@ -748,7 +747,7 @@ class SynapseAdmin(ApiRequest):
                                  "join_rules", "joined_local_members",
                                  "joined_members", "public", "state_events",
                                  "version"]:
-                    del(rooms["rooms"][i][del_item])
+                    del (rooms["rooms"][i][del_item])
 
         rooms["rooms_w_power_levels_curr_batch"] = rooms_w_power_count
         return rooms
