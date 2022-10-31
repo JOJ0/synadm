@@ -46,7 +46,7 @@ def notice():
     "--to-regex", "-r", default=False, show_default=True, is_flag=True,
     help="Interpret TO as regular expression.")
 @click.option(
-    "--match-list-length", "-l", type=int, default=10, show_default=True,
+    "--preview-length", "-l", type=int, default=10, show_default=True,
     metavar="LENGTH", help="""Length of the displayed list of matched
     recipients shown in the confirmation prompt. Does not impact sending
     behavior. Is ignored when global --non-interactive flag is given.""")
@@ -54,7 +54,7 @@ def notice():
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
+def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
                     to, plain, formatted):
     """Send server notices to local users.
 
@@ -77,7 +77,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
             ctr = 0
             next_token = 0
             # Outer loop: If fetching >1 pages of users is required
-            while ctr < match_list_length:
+            while ctr < preview_length:
                 batch = helper.api.user_list(
                     next_token, paginate, True, False, "", "")
                 if "users" not in batch:
@@ -86,7 +86,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
                 # Match every matrix ID of this batch
                 for mxid in batch_mxids:
                     if re.match(to, mxid):
-                        if ctr < match_list_length:
+                        if ctr < preview_length:
                             prompt = prompt + " - " + mxid + "\n"
                             ctr = ctr + 1
                         else:
