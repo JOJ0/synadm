@@ -1141,7 +1141,8 @@ class SynapseAdmin(ApiRequest):
             method = "post"
         return self.query(method, f"v1/users/{user_id}/shadow_ban")
 
-    def notice_send(self, receivers, content_plain, content_html, paginate, to_regex):
+    def notice_send(self, receivers, content_plain, content_html, paginate,
+                    to_regex):
         """ Send server notices.
 
         Args:
@@ -1172,7 +1173,7 @@ class SynapseAdmin(ApiRequest):
                         data["user_id"] = user["name"]
                         outputs.append(
                             self.query(
-                                "post", f"v1/send_server_notice", data=data
+                                "post", "v1/send_server_notice", data=data
                             )
                         )
 
@@ -1182,4 +1183,4 @@ class SynapseAdmin(ApiRequest):
                                           100, True, False, "", "")
         # Only a single user ID was supplied as receiver
         else:
-            return [self.query("post", f"v1/send_server_notice", data=data)]
+            return [self.query("post", "v1/send_server_notice", data=data)]
