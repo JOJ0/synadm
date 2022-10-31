@@ -71,11 +71,10 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
             return True
         prompt = "Recipients:\n"
         if not to_regex:
-            prompt = prompt + " - " + to + "\n"
+            prompt += " - " + to + "\n"
         else:
             # Build and print a list of receivers matching the regex
-            ctr = 0
-            next_token = 0
+            ctr, next_token = 0, 0
             # Outer loop: If fetching >1 pages of users is required
             while ctr < preview_length:
                 batch = helper.api.user_list(
@@ -87,17 +86,17 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
                 for mxid in batch_mxids:
                     if re.match(to, mxid):
                         if ctr < preview_length:
-                            prompt = prompt + " - " + mxid + "\n"
-                            ctr = ctr + 1
+                            prompt += " - " + mxid + "\n"
+                            ctr += 1
                         else:
-                            prompt = prompt + " - ...\n"
+                            prompt += " - ...\n"
                             break
                 if "next_token" not in batch:
                     break
                 next_token = batch["next_token"]
             if ctr == 0:
-                prompt = prompt + "(no recipient matched)\n"
-        prompt = prompt + "\nPlaintext message:\n---\n" + plain_content\
+                prompt += "(no recipient matched)\n"
+        prompt += "\nPlaintext message:\n---\n" + plain_content\
             + "\n---\nFormatted message:\n---\n" + formatted_content\
             + "\n---\nSend now?"
         return click.confirm(prompt)
@@ -112,10 +111,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
             formatted_content = plain_content
     else:
         plain_content = plain
-        if formatted is None:
-            formatted_content = plain
-        else:
-            formatted_content = formatted
+        formatted_content = formatted if formatted else plain_content
 
     if to_regex:
         if "users" not in helper.api.user_list(0, 100, True, False, "", ""):
