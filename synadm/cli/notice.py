@@ -34,20 +34,22 @@ def notice():
 @click.option(
     "--from-file", "-f", default=False, show_default=True, is_flag=True,
     help="""Interpret arguments as file paths instead of notice content and
-    read content from those files""")
+    read content from those files.""")
 @click.option(
-    "--paginate", "-p", type=int, default=100, show_default=True, help="""The
-    send command retrieves pages of users from the homeserver, filters them
-    and sends out the notices, before retrieving the next page. paginate sets
-    how many users are in each of these "pages". It is a performance setting
-    and may be useful for servers with a large amount of users.""")
+    "--paginate", "-p", type=int, default=100, show_default=True,
+    metavar="PAGINATE", help="""The send command retrieves "pages" of users
+    from the homeserver, filters them and sends out the notices, before
+    retrieving the next page. PAGINATE sets how many users are in each of these
+    "pages". It is a performance setting and may be useful for servers with a
+    large amount of users.""")
 @click.option(
     "--to-regex", "-r", default=False, show_default=True, is_flag=True,
-    help="Interpret TO as regular expression")
+    help="Interpret TO as regular expression.")
 @click.option(
     "--match-list-length", "-l", type=int, default=10, show_default=True,
-    help="""Length of the displayed list of matched recipients shown in the
-    confirmation prompt. Does not impact sending behavior""")
+    metavar="LENGTH", help="""Length of the displayed list of matched
+    recipients shown in the confirmation prompt. Does not impact sending
+    behavior. Is ignored when global --non-interactive flag is given.""")
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
@@ -59,9 +61,9 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, match_list_length,
     TO - localpart or full matrix ID of the notice receiver. If --to-regex is
         set this will be interpreted as regular expression.
 
-    PLAIN - plain text content of the notice
+    PLAIN - plain text content of the notice.
 
-    FORMATTED - Formatted content of the notice. If not set, PLAIN will be
+    FORMATTED - Formatted content of the notice. If omitted, PLAIN will be
         used.
     """
     def confirm_prompt():
