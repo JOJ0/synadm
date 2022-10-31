@@ -96,9 +96,9 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
                 next_token = batch["next_token"]
             if ctr == 0:
                 prompt += "(no recipient matched)\n"
-        prompt += "\nPlaintext message:\n---\n" + plain_content\
-            + "\n---\nFormatted message:\n---\n" + formatted_content\
-            + "\n---\nSend now?"
+        prompt += f"\nPlaintext message:\n---\n{plain_content}\n---"
+        prompt += f"\nFormatted message:\n---\n{formatted_content}\n---"
+        prompt += "\nSend now?"
         return click.confirm(prompt)
 
     if from_file:
