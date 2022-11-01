@@ -1194,4 +1194,5 @@ class SynapseAdmin(ApiRequest):
                                           100, True, False, "", "")
         # Only a single user ID was supplied as receiver
         else:
+            data["user_id"] = receivers
             return [self.query("post", "v1/send_server_notice", data=data)]
