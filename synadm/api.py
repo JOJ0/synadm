@@ -1146,10 +1146,21 @@ class SynapseAdmin(ApiRequest):
         """ Send server notices.
 
         Args:
-            receivers: Target(s) of the notice. Either localpart or regular
+            receivers (string): Target(s) of the notice. Either localpart or regular
                 expression matching localparts.
-            content_plain: Unformatted text of the notice.
-            content_html: HTML-formatted text of the notice.
+            content_plain (string): Unformatted text of the notice.
+            content_html (string): HTML-formatted text of the notice.
+            paginate (int): Limits to how many users the notice is sent at once.
+                Users are fetched with the user_list method and using its
+                pagination capabilities.
+            to_regex (bool): Selects whether receivers should be interpreted as
+                a regular expression or a single recipient.
+
+        Returns:
+            list: A list of dictionaries, each containing the response of
+                what a single notice admin API call returned. Usually that is
+                an event ID or an error. See Synapse admin API docs for
+                details.
         """
         data = {
             "user_id": "",
