@@ -126,5 +126,6 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
         if not confirm_prompt():
             return
 
-    helper.api.notice_send(to, plain_content, formatted_content, paginate,
-                           to_regex)
+    outputs = helper.api.notice_send(to, plain_content, formatted_content,
+                                     paginate, to_regex)
+    helper.output(outputs)
