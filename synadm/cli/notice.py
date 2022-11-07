@@ -20,6 +20,7 @@
 
 import re
 import click
+import sys
 
 from synadm import cli
 
@@ -102,13 +103,17 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
         return click.confirm(prompt)
 
     if from_file:
-        with open(plain, "r") as plain_file:
-            plain_content = plain_file.read()
-        if formatted:
-            with open(formatted, "r") as formatted_file:
-                formatted_content = formatted_file.read()
-        else:
-            formatted_content = plain_content
+        try:
+            with open(plain, "r") as plain_file:
+                plain_content = plain_file.read()
+            if formatted:
+                with open(formatted, "r") as formatted_file:
+                    formatted_content = formatted_file.read()
+            else:
+                formatted_content = plain_content
+        except Exception as error:
+            helper.log.error(error)
+            raise SystemExit(1)
     else:
         plain_content = plain
         formatted_content = formatted if formatted else plain_content
