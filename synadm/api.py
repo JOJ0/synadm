@@ -1146,13 +1146,13 @@ class SynapseAdmin(ApiRequest):
         """ Send server notices.
 
         Args:
-            receivers (string): Target(s) of the notice. Either localpart or regular
-                expression matching localparts.
+            receivers (string): Target(s) of the notice. Either localpart or
+                regular expression matching localparts.
             content_plain (string): Unformatted text of the notice.
             content_html (string): HTML-formatted text of the notice.
-            paginate (int): Limits to how many users the notice is sent at once.
-                Users are fetched with the user_list method and using its
-                pagination capabilities.
+            paginate (int): Limits to how many users the notice is sent at
+                once.  Users are fetched with the user_list method and using
+                its pagination capabilities.
             to_regex (bool): Selects whether receivers should be interpreted as
                 a regular expression or a single recipient.
 
