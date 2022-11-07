@@ -43,7 +43,7 @@ def notice():
     "pages". It is a performance setting and may be useful for servers with a
     large amount of users.""")
 @click.option(
-    "--to-regex", "-r", default=False, show_default=True, is_flag=True,
+    "--regex", "-r", default=False, show_default=True, is_flag=True,
     help="Interpret TO as regular expression.")
 @click.option(
     "--preview-length", "-l", type=int, default=10, show_default=True,
@@ -54,7 +54,7 @@ def notice():
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
+def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
                     to, plain, formatted):
     """Send server notices to local users.
 
@@ -70,7 +70,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
         if helper.batch:
             return True
         prompt = "Recipients:\n"
-        if not to_regex:
+        if not regex:
             prompt += " - " + to + "\n"
         else:
             # Build and print a list of receivers matching the regex
@@ -113,7 +113,7 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
         plain_content = plain
         formatted_content = formatted if formatted else plain_content
 
-    if to_regex:
+    if regex:
         if "users" not in helper.api.user_list(0, 100, True, False, "", ""):
             return
         if not confirm_prompt():
@@ -127,5 +127,5 @@ def notice_send_cmd(helper, from_file, paginate, to_regex, preview_length,
             return
 
     outputs = helper.api.notice_send(to, plain_content, formatted_content,
-                                     paginate, to_regex)
+                                     paginate, regex)
     helper.output(outputs)

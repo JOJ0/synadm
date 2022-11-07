@@ -1142,7 +1142,7 @@ class SynapseAdmin(ApiRequest):
         return self.query(method, f"v1/users/{user_id}/shadow_ban")
 
     def notice_send(self, receivers, content_plain, content_html, paginate,
-                    to_regex):
+                    regex):
         """ Send server notices.
 
         Args:
@@ -1173,7 +1173,7 @@ class SynapseAdmin(ApiRequest):
         }
 
         # A regular expression was supplied to match receivers.
-        if to_regex:
+        if regex:
             outputs = []
             response = self.user_list(0, paginate, True, False, "", "")
             if "users" not in response:
