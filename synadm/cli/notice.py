@@ -51,12 +51,20 @@ def notice():
     metavar="LENGTH", help="""Length of the displayed list of matched
     recipients shown in the confirmation prompt. Does not impact sending
     behavior. Is ignored when global --non-interactive flag is given.""")
+@click.option(
+    "--silent", "-s", default=False, show_default=True, is_flag=True,
+    help="""Usually synadm commands print to console what the API returned.
+    With the "Server Notices Admin API", an event ID or an error messages
+    would be printed for each message sent. Large amounts of recipients could
+    possibly lead to performance impacts, thus this option can be used to
+    disable printing of what the API responded.
+    """)
 @click.argument("to", type=str, default=None)
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
 def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
-                    to, plain, formatted):
+                    silent, to, plain, formatted):
     """Send server notices to local users.
 
     TO - localpart or full matrix ID of the notice receiver. If --to-regex is
@@ -68,9 +76,13 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
         used.
     """
     def confirm_prompt():
+        prompt=""
         if helper.batch:
             return True
-        prompt = "Recipients:\n"
+        if not silent:
+            prompt += "\nNote: When sending to a large amount of recipients, "
+            prompt += "consider using the --silent option.\n\n"
+        prompt += "Recipients:\n"
         if not regex:
             prompt += " - " + to + "\n"
         else:
