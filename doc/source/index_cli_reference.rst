@@ -14,3 +14,4 @@ Command Line Reference
    synadm.cli.group
    synadm.cli.matrix
    synadm.cli.regtok
+   synadm.cli.notice
