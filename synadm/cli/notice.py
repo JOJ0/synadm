@@ -20,7 +20,6 @@
 
 import re
 import click
-import sys
 
 from synadm import cli
 
@@ -76,7 +75,7 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
         used.
     """
     def confirm_prompt():
-        prompt=""
+        prompt = ""
         if helper.batch:
             return True
         if not silent:
