@@ -145,4 +145,5 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
 
     outputs = helper.api.notice_send(to, plain_content, formatted_content,
                                      paginate, regex)
-    helper.output(outputs)
+    if not silent:
+        helper.output(outputs)
