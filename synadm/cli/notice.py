@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""server notice-related CLI commands
+"""Server notice-related CLI commands
 """
 
 import re
@@ -26,7 +26,7 @@ from synadm import cli
 
 @cli.root.group()
 def notice():
-    """ Send server notices to local users
+    """ Send messages to users with the help of the Server Notices Admin API.
     """
 
 
@@ -64,15 +64,20 @@ def notice():
 @click.pass_obj
 def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
                     silent, to, plain, formatted):
-    """Send server notices to local users.
+    """Send server notices to users on the local homeserver.
 
-    TO - localpart or full matrix ID of the notice receiver. If --to-regex is
-        set this will be interpreted as regular expression.
+    \b
+    TO
+        Localpart or full matrix ID of the notice receiver. If --regex is set
+        this will be interpreted as a regular expression.
 
-    PLAIN - plain text content of the notice.
+    \b
+    PLAIN
+        Plain text content of the notice.
 
-    FORMATTED - Formatted content of the notice. If omitted, PLAIN will be
-        used.
+    \b
+    FORMATTED
+        Formatted content of the notice. If omitted, PLAIN will be used.
     """
     def confirm_prompt():
         prompt = ""
