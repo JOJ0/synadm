@@ -606,7 +606,7 @@ def user_shadow_ban(helper, user_id, unban):
 @user.command(name="auth-provider")
 @click.argument("external_id", type=str)
 @click.option(
-    "-p", "--provider", is_flag=False, default=None, show_default=True,
+    "-p", "--provider", is_flag=False, required=True, default=None, show_default=True,
     help="Searches the user by external ID for an auth-provider represented by ID "
          "as advertised in supported authenticated methods in `m.login.sso` api response"
 )
@@ -615,9 +615,6 @@ def auth_provider_search(helper, provider, external_id):
     """ Finds a user based on their ID (external id) in auth provider
         represented by auth provider id (provider).
     """
-    if provider is None:
-        click.echo("You must provide a value for provider using --provider")
-        raise SystemExit(1)
     user = helper.api.user_auth_provider_search(provider, external_id)
     if user is None:
         click.echo("No results found: provider={} external_id={}".format(external_id, provider))
