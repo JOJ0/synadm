@@ -667,7 +667,8 @@ class SynapseAdmin(ApiRequest):
         """ Finds a user based on their ID (external id) in auth provider
         represented by auth provider id (provider).
         """
-        return self.query("get", f"v1/auth_providers/{provider}/users/{external_id}")
+        return self.query("get",
+                          f"v1/auth_providers/{provider}/users/{external_id}")
 
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
