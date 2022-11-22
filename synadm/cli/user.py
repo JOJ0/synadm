@@ -617,10 +617,4 @@ def auth_provider_search(helper, provider, external_id):
     Finds a user based on their ID (external id) in auth provider represented
     by auth provider id (provider).
     """
-    user = helper.api.user_auth_provider_search(provider, external_id)
-    if user is None:
-        click.echo("No results found: provider={} external_id={}"
-                   .format(external_id, provider))
-        raise SystemExit(1)
-
-    helper.output(user)
+    helper.output(helper.api.user_auth_provider_search(provider, external_id))
