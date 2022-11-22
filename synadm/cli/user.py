@@ -613,8 +613,9 @@ def user_shadow_ban(helper, user_id, unban):
 )
 @click.pass_obj
 def auth_provider_search(helper, provider, external_id):
-    """ Finds a user based on their ID (external id) in auth provider
-        represented by auth provider id (provider).
+    """Find a user based on their auth-provider ID.
+    Finds a user based on their ID (external id) in auth provider represented
+    by auth provider id (provider).
     """
     user = helper.api.user_auth_provider_search(provider, external_id)
     if user is None:
