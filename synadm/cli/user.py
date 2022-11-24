@@ -604,7 +604,7 @@ def user_shadow_ban(helper, user_id, unban):
 
 
 @user.command(name="auth-provider")
-@click.argument("external_id", type=str)
+@click.argument("external_user_id", type=str)
 @click.option(
     "-p", "--provider", is_flag=False, required=True, default=None,
     show_default=True, help="""Provider ID as advertised in supported
@@ -612,9 +612,12 @@ def user_shadow_ban(helper, user_id, unban):
     'google' or 'github'"""
 )
 @click.pass_obj
-def auth_provider_search(helper, provider, external_id):
-    """Find a user based on their auth-provider ID.
-    Finds a user based on their ID (external id) in auth provider represented
-    by auth provider id (provider).
+def auth_provider_search(helper, provider, external_user_id):
+    """Find a user based on their ID in auth-provider.
+
+    Finds a user based on their external user ID in a particular auth provider
+    where provider is the auth provider ID as advertised in supported
+    authenticated methods in `m.login.sso` api response such as 'oidc' or
+    'google' or 'github'.
     """
-    helper.output(helper.api.user_auth_provider_search(provider, external_id))
+    helper.output(helper.api.user_auth_provider_search(provider, external_user_id))
