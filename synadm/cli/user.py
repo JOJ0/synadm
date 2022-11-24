@@ -431,7 +431,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 @click.argument("user_id", type=str)
 @click.pass_obj
 def whois(helper, user_id):
-    """ Return information about the active sessions for a specific user
+    """ View information about a user's active session.
     """
     mxid = helper.generate_mxid(user_id)
     user_data = helper.api.user_whois(mxid)
