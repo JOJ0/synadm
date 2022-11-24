@@ -620,4 +620,6 @@ def auth_provider_search(helper, provider, external_user_id):
     authenticated methods in `m.login.sso` api response such as 'oidc' or
     'google' or 'github'.
     """
-    helper.output(helper.api.user_auth_provider_search(provider, external_user_id))
+    helper.output(
+        helper.api.user_auth_provider_search(provider, external_user_id)
+    )
