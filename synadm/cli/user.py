@@ -623,3 +623,20 @@ def auth_provider_search(helper, provider, external_user_id):
     helper.output(
         helper.api.user_auth_provider_search(provider, external_user_id)
     )
+
+
+@user.command(name="3pid")
+@click.argument("address", type=str)
+@click.option(
+    "-m", "--medium", is_flag=False, required=True, default="email",
+    show_default=True, help="""Medium specifies what kind of Third Party ID is
+    used such as 'email' or 'msidn'"""
+)
+@click.pass_obj
+def third_party_id_search(helper, medium, address):
+    """Find a user based on their Third Party ID.
+
+    Finds a user based on their Third Party ID (3PID) where medium is the kind
+    of Third Party ID that is used such as 'email' or 'msidn'.
+    """
+    helper.output(helper.api.user_auth_provider_search(medium, address))
