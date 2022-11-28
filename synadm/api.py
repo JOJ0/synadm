@@ -670,6 +670,12 @@ class SynapseAdmin(ApiRequest):
         return self.query("get",
                           f"v1/auth_providers/{provider}/users/{external_id}")
 
+    def user_3pid_search(self, medium, address):
+        """ Finds a user based on their Third Party ID by specifying what kind
+        of 3PID it is as medium.
+        """
+        return self.query("get", f"v1/threepid/{medium}/users/{address}")
+
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
         to a room with a given room_id_or_alias
