@@ -639,4 +639,4 @@ def third_party_id_search(helper, medium, address):
     Finds a user based on their Third Party ID (3PID) where medium is the kind
     of Third Party ID that is used such as 'email' or 'msidn'.
     """
-    helper.output(helper.api.user_auth_provider_search(medium, address))
+    helper.output(helper.api.user_3pid_search(medium, address))
