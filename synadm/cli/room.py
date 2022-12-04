@@ -315,3 +315,17 @@ def make_admin(helper, room_id, user_id):
     mxid = helper.generate_mxid(user_id)
     out = helper.api.room_make_admin(room_id, mxid)
     helper.output(out)
+
+
+@room.command()
+@click.argument("room_id", type=str)
+@click.option(
+        "--block/--unblock", "-b", type=bool, default=True, show_default=True,
+        help="Specifies whether to block or unblock a room."
+)
+@click.pass_obj
+def block(helper, room_id, block):
+    """ Block or unblock a room.
+    """
+    out = helper.api.block_room(room_id, block)
+    helper.output(out)
