@@ -800,6 +800,19 @@ class SynapseAdmin(ApiRequest):
         }
         return self.query("put", f"v1/rooms/{room_id}/block", data=data)
 
+    def room_block_status(self, room_id):
+        """ Returns if the room is blocked or not, and who blocked it.
+
+        Args:
+            room_id (string): Fully qualified Matrix room ID.
+
+        Returns:
+            string: JSON string containing the admin API's response or None if
+                an exception occured. See Synapse admin API docs for details.
+        """
+        # TODO prevent usage on versions before 1.48
+        return self.query("get", f"v1/rooms/{room_id}/block")
+
     def room_make_admin(self, room_id, user_id):
         """ Grant a user room admin permission. If the user is not in the room,
         and it is not publicly joinable, then invite the user.

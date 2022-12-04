@@ -329,3 +329,13 @@ def block(helper, room_id, block):
     """
     out = helper.api.block_room(room_id, block)
     helper.output(out)
+
+
+@room.command()
+@click.argument("room_id", type=str)
+@click.pass_obj
+def block_status(helper, room_id):
+    """ Get if a room is blocked, and who blocked it.
+    """
+    out = helper.api.room_block_status(room_id)
+    helper.output(out)
