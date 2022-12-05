@@ -248,8 +248,8 @@ python3 setup.py install
     * [ ] `room count`
     * [ ] `room top-complexity`
     * [ ] `room top-members`
-    * [x] [`room block`](https://matrix-org.github.io/synapse/v1.73/admin_api/rooms.html#block-or-unblock-a-room)
-    * [x] [`room block-status`](https://matrix-org.github.io/synapse/v1.73/admin_api/rooms.html#get-block-status)
+    * [x] `room block`
+    * [x] `room block-status`
 * [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
 * [x] ~~[Shutdown Room](https://matrix-org.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
