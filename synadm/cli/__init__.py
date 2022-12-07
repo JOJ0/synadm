@@ -49,6 +49,7 @@ def humanize(data):
         return tabulate.tabulate(data.items(), tablefmt="plain")
     return str(data)
 
+
 def json_pretty(data):
     return json.dumps(data, indent=4)
 
