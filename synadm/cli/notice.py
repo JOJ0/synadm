@@ -26,7 +26,7 @@ from synadm import cli
 
 @cli.root.group()
 def notice():
-    """ Send messages to users with the help of the Server Notices Admin API.
+    """ Send messages to users.
     """
 
 

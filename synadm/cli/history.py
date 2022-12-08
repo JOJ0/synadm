@@ -26,7 +26,7 @@ from synadm import cli
 
 @cli.root.group()
 def history():
-    """ Purge historic events from Synapse database
+    """ Purge historic events from Synapse database.
     """
 
 
@@ -112,9 +112,10 @@ def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
 @click.argument("purge_id", type=str)
 @click.pass_obj
 def history_purge_status_cmd(helper, purge_id):
-    """ View status of a recent history purge. Provide purge ID as argument.
+    """ View status of a recent history purge..
 
-    The status will be one of active, complete, or failed.
+    Provide purge ID as argument. The status will be one of active, complete,
+    or failed.
     """
     purge_history_status = helper.api.purge_history_status(purge_id)
     if helper.batch:

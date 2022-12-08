@@ -34,7 +34,7 @@ def get_function(function_name):
 
 @cli.root.group()
 def user():
-    """ List, add, modify, deactivate/erase users, reset passwords
+    """ List, add, modify, deactivate/erase users, reset passwords.
     """
 
 
@@ -67,7 +67,7 @@ def user():
     (@user:server) that contain this value""")
 @click.pass_obj
 def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
-    """ List and search for users
+    """ List users, search for users.
     """
     mxid = helper.generate_mxid(user_id)
     users = helper.api.user_list(from_, limit, guests, deactivated, name,

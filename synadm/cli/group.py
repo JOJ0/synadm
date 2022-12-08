@@ -25,7 +25,7 @@ from synadm import cli
 
 @cli.root.group()
 def group():
-    """ Manage groups (communities)
+    """ Manage groups (communities).
     """
 
 
@@ -33,7 +33,7 @@ def group():
 @click.argument("group_id", type=str)
 @click.pass_obj
 def delete(helper, group_id):
-    """ Delete a local group (community)
+    """ Delete a local group (community).
     """
     sure = (
         helper.batch or

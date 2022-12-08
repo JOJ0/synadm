@@ -25,7 +25,7 @@ from synadm import cli
 
 @cli.root.group()
 def regtok():
-    """ Manage registration tokens
+    """ Manage registration tokens.
     """
 
 
@@ -65,7 +65,7 @@ def regtok_list_cmd(helper, valid, datetime):
     timestamp in milliseconds.  [default: datetime].""")
 @click.pass_obj
 def regtok_details_cmd(helper, token, datetime):
-    """ View details of the given token
+    """ View details of the given token.
     """
     regtok = helper.api.regtok_details(token, datetime)
     if regtok is None:
@@ -98,7 +98,7 @@ def regtok_details_cmd(helper, token, datetime):
     See above for available date/time formats.  [default: no expiry]""")
 @click.pass_obj
 def regtok_new(helper, token, length, uses_allowed, expiry_ts, expire_at):
-    """ Create a new registration token
+    """ Create a new registration token.
     """
     regtok = helper.api.regtok_new(
         token, length, uses_allowed, expiry_ts, expire_at
@@ -141,7 +141,7 @@ def regtok_update(helper, token, uses_allowed, expiry_ts, expire_at):
 @click.argument("token", type=str)
 @click.pass_obj
 def regtok_delete(helper, token):
-    """ Delete a registration token
+    """ Delete a registration token.
     """
     response = helper.api.regtok_delete(token)
     if response is None:

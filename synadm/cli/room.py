@@ -25,7 +25,7 @@ from synadm import cli
 
 @cli.root.group()
 def room():
-    """ Manipulate rooms and room membership
+    """ Manipulate rooms and room membership.
 
     The syntax of room IDs in synadm is as the Matrix spec defines:
     https://spec.matrix.org/latest/#room-structure.

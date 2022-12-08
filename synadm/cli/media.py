@@ -28,7 +28,7 @@ from synadm import cli
 
 @cli.root.group()
 def media():
-    """ Manage local and remote media
+    """ Manage local and remote media.
     """
 
 
@@ -75,7 +75,7 @@ def media():
 @click.pass_context
 def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
                    datetime):
-    """ List local media by room or user
+    """ List local media by room or user.
     """
     if room_id:
         media_list = helper.api.room_media_list(room_id)
@@ -118,7 +118,7 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
     """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
-    """ Quarantine media in rooms, by users or by media ID
+    """ Quarantine media in rooms, by users or by media ID.
     """
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
@@ -146,7 +146,7 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
 @click.argument("media_id", type=str)
 @click.pass_obj
 def media_protect_cmd(helper, media_id):
-    """ Protect specific media from being quarantined
+    """ Protect specific media from being quarantined.
     """
     media_protected = helper.api.media_protect(media_id)
     if media_protected is None:
