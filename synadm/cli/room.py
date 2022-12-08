@@ -39,7 +39,7 @@ def room():
 @click.argument("user_id", type=str)
 @click.pass_obj
 def join(helper, room_id_or_alias, user_id):
-    """ Join a room
+    """ Join a room.
     """
     mxid = helper.generate_mxid(user_id)
     out = helper.api.room_join(room_id_or_alias, mxid)
@@ -55,7 +55,7 @@ def join(helper, room_id_or_alias, user_id):
     """)
 @click.pass_obj
 def resolve(helper, room_id_or_alias, reverse):
-    """ Lookup room ID from alias or vice versa
+    """ Lookup room ID from alias or vice versa.
     """
     if reverse:
         out = helper.matrix_api.room_get_aliases(room_id_or_alias)
@@ -112,7 +112,7 @@ def list_room_cmd(helper, from_, limit, name, sort, reverse):
 @click.argument("room_id", type=str)
 @click.pass_obj
 def details(helper, room_id):
-    """ Get room details
+    """ Get room details.
     """
     room_details = helper.api.room_details(room_id)
     if room_details is None:
@@ -201,7 +201,7 @@ def power_levels(helper, room_id, all_details, from_, limit, name, sort,
 @click.argument("room_id", type=str)
 @click.pass_obj
 def members(helper, room_id):
-    """ List current room members
+    """ List current room members.
     """
     room_members = helper.api.room_members(room_id)
     if room_members is None:
@@ -249,7 +249,7 @@ def members(helper, room_id):
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
            no_purge):
-    """ Delete and possibly purge a room
+    """ Delete and possibly purge a room.
     """
     ctx.invoke(details, room_id=room_id)
     ctx.invoke(members, room_id=room_id)
