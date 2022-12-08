@@ -320,7 +320,7 @@ def make_admin(helper, room_id, user_id):
 @room.command()
 @click.argument("room_id", type=str)
 @click.option(
-        "--block/--unblock", "-b", type=bool, default=True, show_default=True,
+        "--block/--unblock", "-b/-u", type=bool, default=True, show_default=True,
         help="Specifies whether to block or unblock a room."
 )
 @click.pass_obj
