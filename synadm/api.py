@@ -835,6 +835,13 @@ class SynapseAdmin(ApiRequest):
             "post", f"v1/media/quarantine/{server_name}/{media_id}", data={}
         )
 
+    def media_unquarantine(self, server_name, media_id):
+        """ Removes a single piece of local or remote media from quarantine.
+        """
+        return self.query(
+            "post", f"v1/media/unquarantine/{server_name}/{media_id}", data={}
+        )
+
     def room_media_quarantine(self, room_id):
         """ Quarantine all local and remote media in a room
         """
