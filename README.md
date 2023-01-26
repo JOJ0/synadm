@@ -11,6 +11,7 @@
   - [The configurator](#the-configurator)
   - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
+  - [Advanced usage](#advanced-usage)
 - [Update](#update)
   - [Update PyPI package](#update-pypi-package)
   - [Update git installation](#update-git-installation)
@@ -182,6 +183,13 @@ synadm user details
 will show essential help for the particular subcommand right away.
 
 *Note: A complete list of currently available commands is found in in chapter [implementation status / commands list](#implementation-status--commands-list)*
+
+### Advanced usage
+
+Examples of how `synadm` can be used in shell scripts and oneliners is
+provided in the
+[Scripting Examples](https://synadm.readthedocs.io/en/latest/examples.html)
+docs chapter.
 
 ## Update
 
