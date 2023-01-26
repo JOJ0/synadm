@@ -11,6 +11,7 @@ Welcome to synadm's documentation!
    :caption: Contents:
 
    index_cli_reference
+   examples
    index_modules
 
 
