@@ -70,7 +70,8 @@ class APIHelper:
         "matrix_path": "/_matrix",
         "timeout": 30,
         "server_discovery": "well-known",
-        "homeserver": "auto-retrieval"
+        "homeserver": "auto-retrieval",
+        "ssl_verify": True
     }
 
     def __init__(self, config_path, verbose, batch, output_format_cli):
@@ -129,8 +130,8 @@ class APIHelper:
         except Exception as error:
             self.log.error("%s while reading configuration file", error)
         for key, value in self.config.items():
-            if not value:
-                self.log.error("Config entry missing: %s", key)
+            if value is None:
+                self.log.error("Config entry missing: %s, %s", key, value)
                 return False
             else:
                 if key == "token":
@@ -145,17 +146,20 @@ class APIHelper:
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["admin_path"],
-            self.config["timeout"], self.requests_debug
+            self.config["timeout"], self.requests_debug,
+            self.config["ssl_verify"]
         )
         self.matrix_api = api.Matrix(
             self.log,
             self.config["user"], self.config["token"],
             self.config["base_url"], self.config["matrix_path"],
-            self.config["timeout"], self.requests_debug
+            self.config["timeout"], self.requests_debug,
+            self.config["ssl_verify"]
         )
         self.misc_request = api.MiscRequest(
             self.log,
             self.config["timeout"], self.requests_debug,
+            self.config["ssl_verify"]
         )
         return True
 
@@ -376,10 +380,15 @@ def root(ctx, verbose, batch, output, config_file):
     default value 'auto-retrieval' will try to discover the name using the
     method set by --server-discovery."""
 )
+@click.option(
+    "--ssl_verify", "-n",  default=True,
+    help="""Verify certificate (Default True, False allow to manage \
+        selfsigned certificate)."""
+)
 @click.pass_obj
 def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
-               output, timeout, server_discovery, homeserver):
-    """ Modify synadm's configuration.
+               output, timeout, server_discovery, homeserver, ssl_verify):
+    """ Modify test synadm's configuration.
 
     Configuration details are generally always asked interactively. Command
     line options override the suggested defaults in the prompts.
@@ -396,7 +405,8 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
 
     if helper.batch:
         if not all([user, token, base_url, admin_path, matrix_path,
-                    output, timeout, server_discovery, homeserver]):
+                    output, timeout, server_discovery, homeserver,
+                    ssl_verify]):
             click.echo(
                 "Missing config options for batch configuration!"
             )
@@ -412,7 +422,8 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
                 "format": output,
                 "timeout": timeout,
                 "server_discovery": server_discovery,
-                "homeserver": homeserver
+                "homeserver": homeserver,
+                "ssl_verify": ssl_verify
             }):
                 raise SystemExit(0)
             else:
@@ -451,6 +462,11 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
             "Homeserver name (auto-retrieval or matrix.DOMAIN)",
             default=homeserver if homeserver else helper.config.get(
                 "homeserver", homeserver)),
+        "ssl_verify": click.prompt(
+            "Verify certificate (Default True, False allow to manage \
+                selfsigned certificate)",
+            default=ssl_verify if ssl_verify else helper.config.get(
+                "ssl_verify", ssl_verify)),
         "server_discovery": click.prompt(
             "Server discovery mode (used with homeserver name auto-retrieval)",
             default=server_discovery if server_discovery else helper.config.get(  # noqa: E501
