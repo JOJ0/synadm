@@ -358,10 +358,18 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     removes their active access tokens, resets their password, kicks them out
     of all rooms and deletes third-party identifiers (to prevent the user
     requesting a password reset). See also "user deactivate" command.""")
+@optgroup.option(
+    "--user-type", "user_type", type=str,
+    help="""Change the type of the user. Currently allowed values are 'bot'
+    and support.""")
+@optgroup.option(
+    "--clear-user-type", "clear_user_type", is_flag=True,
+    help="""Clear the user_type field of the user.""")
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
-           threepid, avatar_url, admin, deactivation):
+           threepid, avatar_url, admin, deactivation, user_type,
+           clear_user_type):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -372,6 +380,10 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     if deactivation == "deactivate" and (password_prompt or password):
         click.echo(
             "Deactivating a user and setting a password doesn't make sense.")
+        raise SystemExit(1)
+
+    if clear_user_type and user_type:
+        click.echo("Use either --user-type or --clear-user-type, not both.")
         raise SystemExit(1)
 
     mxid = helper.generate_mxid(user_id)
@@ -390,6 +402,9 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
                             f"{t_key} is probably not a supported medium "
                             "type. Threepid medium types according to the "
                             "current matrix spec are: email, msisdn.")
+        elif key == "clear_user_type":
+            if value:
+                click.echo("user_type: null")
         elif value not in [None, {}, []]:  # only show non-empty (aka changed)
             click.echo(f"{key}: {value}")
 
@@ -411,7 +426,8 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     if sure:
         modified = helper.api.user_modify(
             mxid, password, display_name, threepid,
-            avatar_url, admin, deactivation)
+            avatar_url, admin, deactivation,
+            None if clear_user_type else user_type)
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
