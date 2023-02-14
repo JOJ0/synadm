@@ -11,6 +11,7 @@
   - [The configurator](#the-configurator)
   - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
+  - [Command Line Reference](#command-line-reference)
   - [Advanced usage](#advanced-usage)
 - [Update](#update)
   - [Update PyPI package](#update-pypi-package)
@@ -72,7 +73,7 @@ This will install `synadm` and all dependent Python packages to your system's gl
 
 ```
 cd synadm
-sudo python3 setup.py install
+sudo pip install .
 ```
 
 *Note: If you get an import error for setuptools, make sure the package is installed. Debian based systems: `sudo apt install python3-setuptools`, RedHat based: `sudo yum install python3-setuptools`* 
@@ -154,8 +155,6 @@ Find more details about the topic [here](https://github.com/spantaleev/matrix-do
 
 ## Usage
 
-A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
-
 Use the online help of the main command:
 
 ```
@@ -182,7 +181,12 @@ synadm user details
 
 will show essential help for the particular subcommand right away.
 
-*Note: A complete list of currently available commands is found in in chapter [implementation status / commands list](#implementation-status--commands-list)*
+*Note: A list of currently available commands is found in chapter [implementation status / commands list](#implementation-status--commands-list)* as well as in the following chapter.
+
+### Command Line Reference
+
+A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
+
 
 ### Advanced usage
 
@@ -206,12 +210,12 @@ To update `synadm` to the latest development state, just update your git repo an
 ```
 cd synadm
 git pull
-python3 setup.py install
+pip install .
 ```
 
 *Note: If you installed to a Python venv, first load it as described in [install to virtual environment](#install-to-virtual-environment).*
 
-*Note: If you installed in [development mode](#install-in-development-mode) you can spare the `python3 setup.py install` command - just `git pull` any you're done.*
+*Note: If you installed in [development mode](#install-in-development-mode) you can spare the `pip install .` command - just `git pull` and you're done.*
 
 
 
@@ -301,9 +305,9 @@ If you need help with installing, usage or contribution or have anything else on
 
 * Install `synadm` and report back whether or not the installation process worked on the OS you're running.
 * Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see [implementation examples chapter](#implementation-examples), it really isn't hard, take a look!
-* If you don't code, you can still help me prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) or [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org).
+* If you don't code, you can still help us prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) or [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org).
 
-Thanks in advance for any help! I can't do this without you!
+Thanks in advance for any help! We can't do this without you!
 
 
 ### Install to virtual environment
@@ -341,7 +345,7 @@ Once your Python virtual environment is loaded and your prompt looks similar to 
 
 ```
 cd synadm
-python3 setup.py install
+pip install .
 ```
 
 *Note: Don't forget to activate the venv when coming back to using `synadm` after a fresh login: `source ~/.venvs/synadm/bin/activate`*
@@ -364,7 +368,7 @@ If you'd like to contribute to synadm's development, it's recommended to use a v
 
 ```
 cd synadm
-python3 setup.py develop
+pip install -e .
 ```
 
 *Note: When installed like this, code-changes inside the repo dir will immediately be available when executing `synadm`. This could also be used as a quick way to just stay on top of synadm's development.*
