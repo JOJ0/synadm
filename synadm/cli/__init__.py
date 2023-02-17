@@ -50,6 +50,10 @@ def humanize(data):
     return str(data)
 
 
+def json_pretty(data):
+    return json.dumps(data, indent=4)
+
+
 class APIHelper:
     """ API client enriched with CLI-level functions, used as a proxy to the
     client object.
@@ -57,7 +61,7 @@ class APIHelper:
 
     FORMATTERS = {
         "pprint": pprint.pformat,
-        "json": json.dumps,
+        "json": json_pretty,
         "yaml": yaml.dump,
         "human": humanize
     }
