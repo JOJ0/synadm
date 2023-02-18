@@ -409,6 +409,22 @@ class SynapseAdmin(ApiRequest):
             "user_id": _user_id
         })
 
+    def user_list_paginate(self, _limit, _guests, _deactivated,
+                           _name, _user_id, _from="0"):
+        """Yields API responses for all of the pagination.
+
+        Args:
+            _from (string): Opaque string
+        """
+        while _from is not None:
+            response = self.user_list(_from, _limit, _guests, _deactivated,
+                                      _name, _user_id)
+            yield response
+            if "next_token" in response.keys():
+                _from = response["next_token"]
+            else:
+                _from = None
+
     def user_membership(self, user_id, return_aliases, matrix_api):
         """Get a list of rooms the given user is member of
 
