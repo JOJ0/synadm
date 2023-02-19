@@ -18,6 +18,7 @@
 """ User-related CLI commands
 """
 
+import re
 import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 from click_option_group import RequiredAnyOptionGroup
@@ -136,6 +137,44 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
             helper.output(deactivated)
     else:
         click.echo("Abort.")
+
+
+@user.command()
+@click.argument("regex", type=str)
+@click.option(
+    "--gdpr-erase", "-e", is_flag=True, default=False,
+    help="""Marks the users as GDPR-erased. This means messages sent by the
+    users will still be visible by anyone that was in the room when these
+    messages were sent, but hidden from other users joining the room
+    afterwards.""", show_default=True)
+@click.option(
+    "--dry-run", "-n", is_flag=True, default=False,
+    help="""Do everything except deactivating users."""
+)
+@click.pass_obj
+@click.pass_context
+def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False):
+    """ Deactivate or GDPR-erase accounts based on regex.
+
+    Does everything normal deactivation does, just for multiple users. The
+    --batch argument may be helpful if you do not want to be prompted to
+    deactivate every single account, and the --dry-run argument is helpful
+    to see which accounts will be deactivated.
+
+    The regex argument takes a string and uses Python's regex matching. It
+    matches based on the full matrix ID."""
+    helper.log.debug(f"Regex: {regex}")
+    # if below fails, turn on debug mode to get the actual given regex.
+    pattern = re.compile(regex)
+    for list_user_response in helper.api.user_list_paginate(100, True, False, "", ""):
+        for user in list_user_response["users"]:
+            if pattern.search(user["name"]):
+                if dry_run:
+                    click.echo(f"Would deactivate: {user['name']}")
+                    continue
+                else:
+                    ctx.invoke(deactivate, user_id=user["name"],
+                               gdpr_erase=gdpr_erase)
 
 
 @user.command(name="prune-devices")
