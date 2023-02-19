@@ -151,9 +151,18 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     "--dry-run", "-n", is_flag=True, default=False,
     help="""Do everything except deactivating users."""
 )
+@click.option(
+    "--batch-size", type=int, default=500, show_default=True,
+    help="""How many users should be requested from the API one at a time.
+    This option has no effect on how many users will be deactivated.
+
+    Increasing this is not necessary in most cases but useful if you have a
+    lot of accounts on your homeserver."""
+)
 @click.pass_obj
 @click.pass_context
-def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False):
+def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False,
+                     batch_size=500):
     """ Deactivate or GDPR-erase accounts based on regex.
 
     Does everything normal deactivation does, just for multiple users. The
@@ -166,7 +175,9 @@ def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False):
     helper.log.debug(f"Regex: {regex}")
     # if below fails, turn on debug mode to get the actual given regex.
     pattern = re.compile(regex)
-    for list_user_response in helper.api.user_list_paginate(100, True, False, "", ""):
+    for list_user_response in helper.api.user_list_paginate(batch_size,
+                                                            True, False, "",
+                                                            ""):
         for user in list_user_response["users"]:
             if pattern.search(user["name"]):
                 if dry_run:
