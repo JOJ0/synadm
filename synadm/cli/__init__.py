@@ -35,7 +35,7 @@ from synadm import api
 
 output_format_help = """'human' gives a tabular or list view depending on the
 fetched data. This mode needs your terminal to be quite wide! 'json' returns
-formatted json, 'jsonmini' is minified json and displays exactly as the API
+formatted json, 'minified' is minified json and displays exactly as the API
 responded. 'pprint' shows a formatted output with the help of Python's built-in
 pprint module. 'yaml' is a compromise between human- and machine-readable
 output, it doesn't need as much terminal width as 'human' does and is the
@@ -71,7 +71,7 @@ class APIHelper:
     FORMATTERS = {
         "pprint": pprint.pformat,
         "json": json_pretty,
-        "jsonmini": json.dumps,
+        "minified": json.dumps,
         "yaml": yaml.dump,
         "human": humanize
     }
@@ -310,8 +310,8 @@ class APIHelper:
     """)
 @click.option(
     "--output", "-o", default="",
-    type=click.Choice(["yaml", "json", "jsonmini", "human", "pprint",
-                       "y", "j", "jm", "h", "p", ""]),
+    type=click.Choice(["yaml", "json", "minified", "human", "pprint",
+                       "y", "j", "m", "h", "p", ""]),
     show_choices=True,
     help=f"Override default output format. {output_format_help}")
 @click.option(
