@@ -165,13 +165,19 @@ def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run,
                      batch_size):
     """ Deactivate or GDPR-erase accounts based on regex.
 
-    Does everything normal deactivation does, just for multiple users. The
-    --batch argument may be helpful if you do not want to be prompted to
-    deactivate every single account, and the --dry-run argument is helpful
-    to see which accounts will be deactivated.
+    Does everything normal deactivation does, just for multiple users matching
+    the given regex.
 
-    The regex argument takes a string and uses Python's regex matching. It
-    matches based on the full matrix ID."""
+    The regex argument takes a string and uses Python's re.match (matches
+    regex starting from first character). A regex is expected to match a
+    full Matrix ID, or partially at least from the first character.
+
+    --dry-run can be used to see which accounts will be deactivated. This
+    can be useful for reviewing the accounts that will be deactivated.
+
+    Additionally, the --batch argument (given before the subcommands) will
+    not prompt for if you want to deactivate a user (very useful for many
+    users)."""
     helper.log.debug(f"Regex: {regex}")
     # if below fails, turn on debug mode to get the actual given regex.
     pattern = re.compile(regex)
