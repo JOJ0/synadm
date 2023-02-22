@@ -179,7 +179,7 @@ def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False,
                                                             True, False, "",
                                                             ""):
         for user in list_user_response["users"]:
-            if pattern.search(user["name"]):
+            if pattern.match(user["name"]):
                 if dry_run:
                     click.echo(f"Would deactivate: {user['name']}")
                     continue
