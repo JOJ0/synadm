@@ -556,7 +556,8 @@ class SynapseAdmin(ApiRequest):
             data.update({"deactivated": True})
         if deactivation == "activate":
             data.update({"deactivated": False})
-        data.update({"user_type": user_type})
+        if user_type:
+            data.update({"user_type": user_type})
         return self.query("put", f"v2/users/{user_id}", data=data)
 
     def user_whois(self, user_id):
