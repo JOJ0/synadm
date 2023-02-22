@@ -411,10 +411,22 @@ class SynapseAdmin(ApiRequest):
 
     def user_list_paginate(self, _limit, _guests, _deactivated,
                            _name, _user_id, _from="0"):
+        # documentation is mostly duplicated from user_list...
         """Yields API responses for all of the pagination.
 
         Args:
-            _from (string): Opaque string
+            _limit (int): maximum number of users returned, used for pagination
+            _guests (bool): enable/disable fetching of guest users
+            _deactivated (bool): enable/disable fetching of deactivated users
+            _name (string): user name localpart to search for, see Synapse
+                admin API docs for details
+            _user_id (string): fully qualified Matrix user ID to search for
+            _from (string): offsets user list by this number, used for
+                pagination
+
+        Yields:
+            dict: The admin API response for listing accounts.
+                https://matrix-org.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
         """
         while _from is not None:
             response = self.user_list(_from, _limit, _guests, _deactivated,
