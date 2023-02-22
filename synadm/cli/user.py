@@ -161,8 +161,8 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
 )
 @click.pass_obj
 @click.pass_context
-def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run=False,
-                     batch_size=500):
+def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run,
+                     batch_size):
     """ Deactivate or GDPR-erase accounts based on regex.
 
     Does everything normal deactivation does, just for multiple users. The
