@@ -420,10 +420,7 @@ class SynapseAdmin(ApiRequest):
             response = self.user_list(_from, _limit, _guests, _deactivated,
                                       _name, _user_id)
             yield response
-            if "next_token" in response.keys():
-                _from = response["next_token"]
-            else:
-                _from = None
+            _from = response.get("next_token", None)
 
     def user_membership(self, user_id, return_aliases, matrix_api):
         """Get a list of rooms the given user is member of
