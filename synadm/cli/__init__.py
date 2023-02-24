@@ -33,6 +33,15 @@ import re
 from synadm import api
 
 
+output_format_help = """The 'human' mode gives a tabular or list view depending
+on the fetched data, but often needs a lot of horizontal space to display
+correctly. 'json' returns formatted json. 'minified' is minified json, suitable
+for scripting purposes. 'pprint' shows a formatted output with the help of
+Python's built-in pprint module. 'yaml' is a compromise between human- and
+machine-readable output, it doesn't need as much terminal width as 'human' does
+and is the default on fresh installations."""
+
+
 def humanize(data):
     """ Try to display data in a human-readable form:
     - Lists of dicts are displayed as tables.
@@ -50,10 +59,6 @@ def humanize(data):
     return str(data)
 
 
-def json_pretty(data):
-    return json.dumps(data, indent=4)
-
-
 class APIHelper:
     """ API client enriched with CLI-level functions, used as a proxy to the
     client object.
@@ -61,7 +66,8 @@ class APIHelper:
 
     FORMATTERS = {
         "pprint": pprint.pformat,
-        "json": json_pretty,
+        "json": lambda data: json.dumps(data, indent=4),
+        "minified": lambda data: json.dumps(data, separators=(",", ":")),
         "yaml": yaml.dump,
         "human": humanize
     }
@@ -300,10 +306,10 @@ class APIHelper:
     """)
 @click.option(
     "--output", "-o", default="",
-    type=click.Choice(["yaml", "json", "human", "pprint",
-                       "y", "j", "h", "p", ""]),
+    type=click.Choice(["yaml", "json", "minified", "human", "pprint",
+                       "y", "j", "m", "h", "p", ""]),
     show_choices=True,
-    help="""Override default output format.""")
+    help=f"Override default output format. {output_format_help}")
 @click.option(
     "--config-file", "-c", type=click.Path(),
     default="~/.config/synadm.yaml",
@@ -348,14 +354,11 @@ def root(ctx, verbose, batch, output, config_file):
     help="""The time in seconds synadm should wait for responses from admin
     API's or Matrix API's. The default is 7 seconds. """)
 @click.option(
-    "--output", "-o", type=click.Choice(["yaml", "json", "human", "pprint"]),
-    help="""How synadm displays data by default. 'human' gives a tabular or
-    list view depending on the fetched data. This mode needs your terminal to
-    be quite wide! 'json' displays exactly as the API responded. 'pprint' shows
-    nicely formatted json. 'yaml' is the currently recommended output format.
-    It doesn't need as much terminal width as 'human' does. Note that the
-    default output format can always be overridden by using global switch -o
-    (eg 'synadm -o pprint user list').""")
+    "--output", "-o", type=click.Choice([
+        "yaml", "json", "minified", "human", "pprint"]),
+    help=f"""How synadm displays data by default. {output_format_help} The
+    default output format can always be overridden by using the global
+    --output/-o switch (eg 'synadm -o pprint user list').""")
 @click.option(
     "--server-discovery", "-d", type=click.Choice(["well-known", "dns"]),
     help="""The method used for discovery of "the own homeserver name". Since
@@ -446,7 +449,8 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
         "format": click.prompt(
             "Default output format",
             default=output if output else helper.config.get("format", output),
-            type=click.Choice(["yaml", "json", "human", "pprint"])),
+            type=click.Choice([
+                "yaml", "json", "minified", "human", "pprint"])),
         "timeout": click.prompt(
             "Default http timeout",
             default=timeout if timeout else helper.config.get(
