@@ -63,6 +63,10 @@ def json_pretty(data):
     return json.dumps(data, indent=4)
 
 
+def json_minify(data):
+    return json.dumps(data, separator=(",", ":"))
+
+
 class APIHelper:
     """ API client enriched with CLI-level functions, used as a proxy to the
     client object.
@@ -71,7 +75,7 @@ class APIHelper:
     FORMATTERS = {
         "pprint": pprint.pformat,
         "json": json_pretty,
-        "minified": json.dumps,
+        "minified": json_minify,
         "yaml": yaml.dump,
         "human": humanize
     }
