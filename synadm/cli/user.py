@@ -361,7 +361,7 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @optgroup.option(
     "--user-type", "user_type", type=str,
     help="""Change the type of the user. Currently allowed values are 'bot'
-    and support.""")
+    and 'support'.""")
 @optgroup.option(
     "--clear-user-type", "clear_user_type", is_flag=True,
     help="""Clear the user_type field of the user.""")
