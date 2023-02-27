@@ -22,19 +22,21 @@
 
 ## Types of Contribution
 
+We've split the list of contribution ideas in two groups, which we think are equally important.
+
 ### Non-Programming
 
-* [Install synadm link FIXME](#) report back whether or not the installation process worked on the OS you're running.
-* Help prioritize what to code next: Pick a feature from the commands list, open a github issue in this repo and tell us what it is.
-* Help keeping the [commands list](#implementation-status--commands-list) on our README page current. The Synapse project is steadily releasing new features for the admin API, we can't keep up with updating this list but still think it is a helpful overview for `synadm` users what is and what is not yet supported.
-* Help correcting the online help. `synadm`s documentation is almost entirely realised with the online help of unix commands `--help/-h`. Fortunately this can be rendered to HTML easily and can be found here online: FIXME synadm.rtd.io If you spot an typing/grammar/technical error please correct it and submit it to us.
-
-FIXME 
+* [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work exactly as described or could be improved. We don't have the resources to test on many operating systems, thus a quick GitHub issue telling us: "It even works on Fancy-OS" would help already.
+* Help keeping the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter up to date. The Synapse project is steadily releasing new features for the _Synapse Admin API_. We can't keep up with updating this list but still think it is a handy overview of what's supported and what isn't.
+* Help prioritizing what to code next: Pick a feature from the list you find in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, open a GitHub issue and tell us what it is. If you don't find the feature in the list, please add it!
+* Help correcting the online help: The end-user documentation is almost entirely realised with the typical online help of unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is ok to prioritize precision over shortness. Fortunately we have automated rendering `--help` to HTML with the _Sphinx documentation generator_, [which can be found here](https://synadm.readthedocs.io/en/dev/index_cli_reference.html).
 
 ### Programming
 
-* Pick an open issue on Github FIXME link, start implementing and submit a PR. 
-* Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see the [implementation examples chapter](#implementation-examples) for a quick primer.
+* Pick an open issue on GitHub or from the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, start implementing and submit a pull-request when you are ready to receive our feedback.
+  * If you would like "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. Ping us using @mention.
+  * It's ok to open a Draft PR even if you don't want our feedback yet but it helps you in any way. We won't bother you until you ping us.
+* Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request. Don't forget to check if the feature is listed in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter already, if not, please include the addition to the list in your PR (separate commit if possible).
 
 
 ### Submitting Your Work
