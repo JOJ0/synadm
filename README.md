@@ -7,17 +7,17 @@
   - [Install from PyPI](#install-from-pypi)
   - [Install from git](#install-from-git)
 - [Configuration](#configuration)
-  - [Getting an admin token](#getting-an-admin-token)
+  - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
   - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
   - [Command Line Reference](#command-line-reference)
-  - [Advanced usage](#advanced-usage)
+  - [Advanced Usage](#advanced-usage)
 - [Update](#update)
-  - [Update PyPI package](#update-pypi-package)
-  - [Update git installation](#update-git-installation)
-- [Implementation status / commands list](#implementation-status--commands-list)
-- [Get in touch](#get-in-touch)
+  - [Update PyPI Package](#update-pypi-package)
+  - [Update git Installation](#update-git-installation)
+- [Implementation Status / Commands List](#implementation-status--commands-list)
+- [Get in Touch](#get-in-touch)
 - [Contributing](#contributing)
 
 
@@ -50,19 +50,19 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 ### Install from git
 
 <!-- omit in toc -->
-#### 1. Check Python version
+#### 1. Check Python Version
 
 `python3 --version` should show at least v3.6.x
 
 <!-- omit in toc -->
-#### 2. Clone repo:
+#### 2. Clone Repo:
 
 ```
 git clone https://github.com/joj0/synadm
 ```
 
 <!-- omit in toc -->
-#### 3. Install package globally
+#### 3. Install Package Globally
 
 This will install `synadm` and all dependent Python packages to your system's global Python site-packages directory:
 
@@ -92,7 +92,7 @@ synadm -h
 
 ## Configuration
 
-### Getting an admin token
+### Getting an Admin Token
 
 To find out your admin user's token in Element-Web: _Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"_
 
@@ -183,7 +183,7 @@ will show essential help for the particular subcommand right away.
 A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
 
 
-### Advanced usage
+### Advanced Usage
 
 Examples of how `synadm` can be used in shell scripts and oneliners is
 provided in the
@@ -192,13 +192,13 @@ docs chapter.
 
 ## Update
 
-### Update PyPI package
+### Update PyPI Package
 
 ```
 pip3 install synadm --upgrade
 ```
 
-### Update git installation
+### Update git Installation
 
 To update `synadm` to the latest development state, just update your git repo and reinstall:
 
@@ -214,7 +214,7 @@ pip install .
 
 
 
-## Implementation status / commands list
+## Implementation Status / Commands List
 
 [Follow this link to the official Synapse Admin API docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
 
@@ -286,7 +286,7 @@ pip install .
 
 
 
-## Get in touch
+## Get in Touch
 
 If you need avice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, just join the public Matrix room [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) and get in touch. We are also hanging around in the official support room for Synapse - [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you will find `synadm` users there that might answer your questions already, if not, "keyword notify" will tell us that `synadm` is being talked about it and we'll try to get in touch.
 
