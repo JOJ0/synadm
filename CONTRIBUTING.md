@@ -4,18 +4,18 @@
 - [Types of Contribution](#types-of-contribution)
   - [Non-Programming](#non-programming)
   - [Programming](#programming)
-  - [Submitting Your Work](#submitting-your-work)
-  - [Timely expectations](#timely-expectations)
+- [Submitting Your Work](#submitting-your-work)
+- [Expectations Regarding Timelines](#expectations-regarding-timelines)
 - [Discuss \& Design First](#discuss--design-first)
-- [Getting the Source](#getting-the-source)
+- [Getting the Source \& Installing](#getting-the-source--installing)
   - [Install into a Virtual Python Environment](#install-into-a-virtual-python-environment)
   - [Install in Editable Mode](#install-in-editable-mode)
 - [Command Design](#command-design)
-- [Implementation Examples](#implementation-examples)
-- [Helpers \& Utilities](#helpers--utilities)
-- [Logging](#logging)
-- [Code Documentation](#code-documentation)
-- [Code Style](#code-style)
+  - [Implementation Examples](#implementation-examples)
+  - [Helpers \& Utilities](#helpers--utilities)
+  - [Logging](#logging)
+  - [Code Documentation](#code-documentation)
+  - [Code Style](#code-style)
 - [Maintainers Notes](#maintainers-notes)
 - [Maintainership](#maintainership)
 
@@ -39,14 +39,14 @@ We've split the list of contribution ideas in two groups, which we think are equ
 * Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request. Don't forget to check if the feature is listed in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter already, if not, please include the addition to the list in your PR (separate commit if possible).
 
 
-### Submitting Your Work
+## Submitting Your Work
 
 Several ways to submit FIXME
 
 - PR
 - Inline edit
 
-### Timely expectations
+## Expectations Regarding Timelines
 
 Spare time but dedicated.
 
@@ -62,7 +62,7 @@ It proved to be useful in the past if loose (feature) ideas would be discussed i
  and finally be implemented by a `synadm` contributor or a `synadm` maintainer.
 
 
-## Getting the Source
+## Getting the Source & Installing
 
 ### Install into a Virtual Python Environment
 
@@ -134,7 +134,7 @@ The general design of a synadm subcommand is simple. You would usually have:
 - 
 _Note: If you are not familiar with Python code, don't let yourself get distracted with the unusual @statements that define argumentes and options. They are so called decorators that "plug in" those options into your commands function. You don't need to understand why this concept of decorators is used by the Click library._
 
-## Implementation Examples
+### Implementation Examples
 
 Have a look at this method: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/cli/user.py#L185
 
@@ -147,19 +147,19 @@ And another example, this time using a POST based API endpoint. It implements co
 and again it needs a backend method in api.py:
 https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
 
-## Helpers & Utilities
+### Helpers & Utilities
 
 You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py#L125), right below the `query()` method. For example we already provide methods to translate unix timestamps to human readable formats and vice versa. 
 
 If you need to to defer code to a helper function because you require reusing it or otherwise think it's a cleaner approach put it where you need it: Either as a subfunction in your backend method in the `synadm/api` module or in the frontend function in `synadm/cmd/yourcommand`. If you think you've wrote a function that is very generic and might be useful to other `synadm/api` methods as well, put it next to _.
 
-## Logging
+### Logging
 
 Simply use `self.log.warn()` (or `.error/.debug/.info`) within the `synadm/api` module.
 
 From a command's frontend code in the `synadm/cmd` package, logging is available via the `helper` object that usually should be passed to subcommand function: `helper.log.warn()`.
 
-## Code Documentation
+### Code Documentation
 
 We provide an auto-generated [developer's documentation](https://synadm.readthedocs.io/en/latest/index_modules.html) generated with the help of the Sphinx library. This requires that code is documented by developers by a certain format in the docstrings of functions, classes and methods.
 
@@ -168,7 +168,7 @@ We use the google docstring format to achieve because we believe it provides the
 FIXME link to google docstring docs.
 
 
-## Code Style
+### Code Style
 
 We try to follow Python's PEP8 guidlines as good as possible. We have an
 automatic linter in place in our Github Actions CI workflow. You can use flake8 before submitting on CLI. FIXME
