@@ -57,7 +57,7 @@ class ApiRequest:
             timeout (int): requests module timeout used in query method
             debug (bool): enable/disable debugging in requests module
             verify(bool): SSL verification is turned on by default
-                and can be turned off using this method.
+                and can be turned off using this argument.
         """
         self.log = log
         self.user = user
@@ -389,7 +389,7 @@ class SynapseAdmin(ApiRequest):
                 method
             debug (bool): enable/disable debugging in requests module
             verify(bool): SSL verification is turned on by default
-                and can be turned off using this method.
+                and can be turned off using this argument.
         """
         super().__init__(
             log, user, token,
