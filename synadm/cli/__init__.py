@@ -130,7 +130,12 @@ class APIHelper:
         except Exception as error:
             self.log.error("%s while reading configuration file", error)
         for key, value in self.config.items():
-            if value is None:
+
+            if key == "ssl_verify" and type(value) != bool:
+                self.log.error("Config value error: %s, %s must be boolean",
+                               key, value)
+
+            if not value and type(value) != bool:
                 self.log.error("Config entry missing: %s, %s", key, value)
                 return False
             else:
@@ -381,9 +386,9 @@ def root(ctx, verbose, batch, output, config_file):
     method set by --server-discovery."""
 )
 @click.option(
-    "--ssl_verify", "-n",  default=True,
-    help="""Verify certificate (Default True, False allow to manage \
-        selfsigned certificate)."""
+    "--ssl_verify", "-n",  default=True, show_default=True,
+    help="""Whether or not SSL certificates should be verified. \
+        Set to False to allow self-signed certifcates."""
 )
 @click.pass_obj
 def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
@@ -463,8 +468,7 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
             default=homeserver if homeserver else helper.config.get(
                 "homeserver", homeserver)),
         "ssl_verify": click.prompt(
-            "Verify certificate (Default True, False allow to manage \
-                selfsigned certificate)",
+            "Verify certificate",
             default=ssl_verify if ssl_verify else helper.config.get(
                 "ssl_verify", ssl_verify)),
         "server_discovery": click.prompt(
