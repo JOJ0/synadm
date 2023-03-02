@@ -49,12 +49,13 @@ setup(
     ],
     packages=find_packages(),
     install_requires=[
-        "Click>=7.0,<8.0",
+        "Click",
         "requests",
         "tabulate",
         "PyYaml",
         "click-option-group>=0.5.2",
-        "dnspython"
+        "dnspython",
+        "wheel"
     ],
     entry_points="""
         [console_scripts]
