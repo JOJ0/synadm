@@ -210,6 +210,7 @@ Some more style and coding requirements:
 This section is a checklist for maintainers of the `synadm` project. Still there might be helpful information applying to contributors as well, thus we made it public.
 
 - We keep a branch named `dev` consistently existing that may be used for random things. If this branch is in use because a PR was openend from it, it's occupied and can't be used by others.
+- Speaking of branches, we are not required to create branches in our own forks, we can just create them directly within the `synadm` repo. Checking out branches for e.g testing a feature in development is much easier than cloning and checking out from another maintainers fork.
 - One person should be the "owner" of PR's openend by contributors and should request assitance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arrangend in the _synadm maintainers chatroom_ but usually would be the person who initially reviews the submission.
 
 
