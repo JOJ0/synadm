@@ -49,7 +49,7 @@ setup(
     ],
     packages=find_packages(),
     install_requires=[
-        "Click",
+        "Click>=7.0,<9.0",
         "requests",
         "tabulate",
         "PyYaml",
