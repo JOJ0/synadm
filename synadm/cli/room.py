@@ -251,7 +251,16 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
            no_purge):
     """ Delete and possibly purge a room.
     """
-    ctx.invoke(details, room_id=room_id)
+    room_details = helper.api.room_details(room_id)
+    if "errcode" in room_details.keys():
+        if room_details["errcode"] == "M_NOT_FOUND":
+            click.echo("Room not found.")
+            raise SystemExit(1)
+        else:
+            click.echo("Unrecognized error")
+            helper.output(room_details)
+            raise SystemExit(1)
+    helper.output(room_details)
     ctx.invoke(members, room_id=room_id)
     sure = (
         helper.batch or
