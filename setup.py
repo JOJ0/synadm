@@ -54,8 +54,7 @@ setup(
         "tabulate",
         "PyYaml",
         "click-option-group>=0.5.2",
-        "dnspython",
-        "wheel"
+        "dnspython"
     ],
     entry_points="""
         [console_scripts]
