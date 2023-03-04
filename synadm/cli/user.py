@@ -146,7 +146,8 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     help="""Marks the users as GDPR-erased. This means messages sent by the
     users will still be visible by anyone that was in the room when these
     messages were sent, but hidden from other users joining the room
-    afterwards.""", show_default=True)
+    afterwards.""", show_default=True
+)
 @click.option(
     "--dry-run", "-n", is_flag=True, default=False,
     help="""Do everything except deactivating users."""
