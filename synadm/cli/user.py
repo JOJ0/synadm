@@ -153,7 +153,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     help="""Do everything except deactivating users."""
 )
 @click.option(
-    "--batch-size", type=int, default=500, show_default=True,
+    "--paginate", type=int, default=500, show_default=True,
     help="""How many users should be requested from the API one at a time.
     This option has no effect on how many users will be deactivated.
 
