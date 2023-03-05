@@ -30,7 +30,7 @@ No matter if you're a programmer or not there are many ways to contribute to the
 * [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, thus a quick GitHub issue telling us: "It even works on Fancy-OS" would help already.
 * Help keeping the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter up to date. The Synapse project is steadily releasing new features for the _Synapse Admin API_. We can't keep up with updating this list but still think it is a handy overview of what's supported and what isn't.
 * Help prioritizing what to code next: Pick a feature from the list you find in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, open a GitHub issue and tell us what it is. If you don't find the feature in the list, please add it!
-* Improve the docs: The end-user documentation is entirely realised with the typical online help of unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is ok to prioritize precision over shortness. We have automated rendering `--help` to HTML with the _Sphinx documentation generator_, [which can be found here](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
+* Improve the docs: The end-user documentation is entirely realized with the typical online help of unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is ok to prioritize precision over shortness. We have automated rendering `--help` to HTML with the _Sphinx documentation generator_, [which can be found here](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
 
 ### Programming
 
@@ -58,7 +58,7 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 - We don't expect you to finish the PR / submit the changes we suggested "in time" but would like to ask you to **communicate your personal timeline**.
 - Usually it's not critical for a feature to be finished within a time frame. If you inform us that you will be able to finish your work within a month, but not right now, it's fine, **please just let us know**!
 - If it's a serious bug we might ask you for permission to take over your branch and continue the work ourselves.
-- Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then dissapear. Please don't do that! If you realise you won't find the time at all to continue your work, **please just let us know**. It's perfectly fine and there won't be hard feelings. If we consider your feature useful we might even take over and finish it ourselves.
+- Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then disappear. Please don't do that! If you realize you won't find the time at all to continue your work, **please just let us know**. It's perfectly fine and there won't be hard feelings. If we consider your feature useful we might even take over and finish it ourselves.
 - We try to release merged features as soon as possible. Even the tiniest feature deserves a release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please kindly remind us** and we'll try to find the time.
 
 
@@ -67,7 +67,7 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 It proved to be useful in the past if loose (feature) ideas would be discussed in #synadm:peek-a-boo.at first, which helps forming a more concrete idea that can than further be summarized into a well written github issue and finally be implemented by a `synadm` contributor or a `synadm` maintainer.
 
 - If you'd like someone else to pick up your feature idea because you are not able to code it yourself, open a detailed GitHub issue describing the feature.
-- If you'd like to code it yourself, a separate issus is not required, just describe your feature within the PR.
+- If you'd like to code it yourself, a separate issue is not required, just describe your feature within the PR.
 
 
 ## Getting the Source & Installing
@@ -140,7 +140,7 @@ The general design of a synadm subcommand is simple. You would usually have:
 - A method in the _backend module_, which is located in the file [synadm/api.py](https://github.com/JOJ0/synadm/blob/master/synadm/api.py).
 - A definition of the CLI frontend. The Python package [Click](https://click.palletsprojects.com) is the command-line library in use. It's easy to learn and usually rather self-explanatory. Just copy and paste an existing command and work from there. The frontend code is found in the directory [synadm/cli](https://github.com/JOJ0/synadm/blob/master/synadm/cli/)
 
-_Note: If you are not familiar with Python code, don't let yourself get distracted with the unusual @statements that define argumentes and options. They are so called decorators that "plug in" those options into your commands function. You don't actually need to understand why this concept of decorators is used by the Click library._
+_Note: If you are not familiar with Python code, don't let yourself get distracted with the unusual @statements that define arguments and options. They are so-called decorators that "plug in" those options into your commands function. You don't actually need to understand why the Click library, makes use of this concept._
 
 
 ### Implementation Examples
@@ -196,7 +196,7 @@ or leave out the filename to run it on all files and subdirectories.
 
 Some more style and coding requirements:
 
-- Pythonism: `synadm` is a Python project and as such tries to use some of the very handy features of the language. Some  of those might not be familiar to you since often we realise that contributors are professional programmers used to other languages or even are admins who are rather at home on the shell than in Python code. That is certainly all fine and we are trying to support you with refactoring your code to become more pythonic.
+- Pythonism: `synadm` is a Python project and as such tries to use some of the very handy features of the language. Some  of those might not be familiar to you since often we realize that contributors are professional programmers used to other languages or even are admins who are rather at home on the shell than in Python code. That is certainly all fine and we are trying to support you with refactoring your code to become more pythonic.
 - That said, we would still like `synadm` to stay approachable to Python beginners and would encourage contributors to try not to overcomplicate things.
 - We require a line length of 79 characters in Python code.
   - Some editors have handy commands to quickly reformat multi-line text (e.g help texts of options). For example in `vim`, lines can be marked using `shift+V` and then reformatted by typing `gq`
@@ -209,9 +209,9 @@ Some more style and coding requirements:
 
 This section is a checklist for maintainers of the `synadm` project. Still there might be helpful information applying to contributors as well, thus we made it public.
 
-- We keep a branch named `dev` consistently existing that may be used for random things. If this branch is in use because a PR was openend from it, it's occupied and can't be used by others.
+- We keep a branch named `dev` consistently existing that may be used for random things. If this branch is in use because a PR was opened from it, it's occupied and can't be used by others.
 - Speaking of branches, we are not required to create branches in our own forks, we can just create them directly within the `synadm` repo. Checking out branches for e.g testing a feature in development is much easier than cloning and checking out from another maintainers fork.
-- One person should be the "owner" of PR's openend by contributors and should request assitance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arrangend in the _synadm maintainers chatroom_ but usually would be the person who initially reviews the submission.
+- One person should be the "owner" of PR's opened by contributors and should request assistance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arranged in the _synadm maintainers chatroom_ but usually would be the person who initially reviews the submission.
 
 
 ### Release process
