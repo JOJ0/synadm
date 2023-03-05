@@ -27,17 +27,17 @@ No matter if you're a programmer or not there are many ways to contribute to the
 
 ### Non-Programming
 
-* [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, thus a quick GitHub issue telling us: "It even works on Fancy-OS" would help already.
+* [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
 * Help keeping the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter up to date. The Synapse project is steadily releasing new features for the _Synapse Admin API_. We can't keep up with updating this list but still think it is a handy overview of what's supported and what isn't.
 * Help prioritizing what to code next: Pick a feature from the list you find in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, open a GitHub issue and tell us what it is. If you don't find the feature in the list, please add it!
-* Improve the docs: The end-user documentation is entirely realized with the typical online help of unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is ok to prioritize precision over shortness. We have automated rendering `--help` to HTML with the _Sphinx documentation generator_, [which can be found here](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
+* Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with _Sphinx_ [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
 
 ### Programming
 
 * Pick an open issue on GitHub or an unticked feature from the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, start implementing and submit a pull-request when you are ready to receive our feedback.
-  * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. Ping us using @mention.
+  * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. You can then mention us (`@` then followed by a GitHub username).
   * It's ok to open a Draft PR even if you don't want our feedback yet but it helps you in any way. We won't bother you until you ping us.
-* Read the [Synapse Admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request. Don't forget to check if the feature is listed in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter already. if not, please include the addition to the list in your PR (separate commit if possible).
+* Read the [Synapse Admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request. Don't forget to check if the feature is listed in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter already. If not, please add the command to the list (preferably in a separate commit).
 
 
 ## Submitting Your Work
@@ -45,7 +45,7 @@ No matter if you're a programmer or not there are many ways to contribute to the
 There are several ways to submit your work.
 
 - Clone the repo, create a feature branch and submit a pull-request.
-  - Consider enabling the [Allow edits from maintainers](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork) option. We will deal with this permission responsibly. It proved to be a useful option for working together in the past and might even speed up getting a PR merged.
+  - Consider having the [Allow edits from maintainers](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork) option enabled. We will deal with this permission responsibly. It proved to be a useful option for working together in the past and might even speed up getting a PR merged.
 - If you're not familiar with using git or just want to submit a smaller change (like a correction to the docs), use the “Edit file” button in the upper-right while viewing a file directly on the GitHub web interface. You can automatically send us a pull request for your changes.
 - Next to the "Edit file" button you'll find another option called "Open with github.dev" which opens a "Visual Studio Code" editor within your browser.
 
@@ -228,4 +228,4 @@ Releasing a new version of `synadm` requires the following steps:
 
 ## Maintainership
 
-If you feel like supporting the `synadm` project on a regular basis, consider applying for maintainership. We believe in Open Source software and think no matter if you are a programmer or not, there is plenty of things to do and still a lot of room for improvement. Contact either via #synadm:peek-a-boo.at or private message to @jojo:peek-a-boo.at.
+If you feel like supporting the `synadm` project on a regular basis, consider applying for maintainership. We believe in Open Source software and think no matter if you are a programmer or not, there is plenty of things to do and still a lot of room for improvement. Contact either via [#synadm:peek-a-boo.at](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) or private message to [@jojo:peek-a-boo.at](https://matrix.to/#/@jojo:peek-a-boo.at).
