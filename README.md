@@ -300,4 +300,4 @@ If you are sure you've found a bug that was not already reported, certainly dire
 
 First of all, thanks for your interest in contributing to `synadm`! We appreciate any help, no matter if you are a programmer or a user. Both groups can do valuable things for the `synadm` project. We love providing a useful tool to fellow Synapse sysadmins but rely on contribution from the Synapse and Matrix community to keep `synadm` useful, current and stable.
 
-In any case, before you submit your feature request, your idea, your bugfix, your code, please continue to the [contributing docs](CONTRIBUTING.md). 
+Please review the [contributing docs](CONTRIBUTING.md) for further information.
