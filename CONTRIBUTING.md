@@ -46,8 +46,7 @@ There are several ways to submit your work.
 
 - Clone the repo, create a feature branch and submit a pull-request.
   - Consider having the [Allow edits from maintainers](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork) option enabled. We will deal with this permission responsibly. It proved to be a useful option for working together in the past and might even speed up getting a PR merged.
-- If you're not familiar with using git or just want to submit a smaller change (like a correction to the docs), use the “Edit file” button in the upper-right while viewing a file directly on the GitHub web interface. You can automatically send us a pull request for your changes.
-- Next to the "Edit file" button you'll find another option called "Open with github.dev" which opens a "Visual Studio Code" editor within your browser.
+- If you're not familiar with using git or just want to submit a smaller change (like a correction to the docs), you can use the “Edit file” button in the upper-right while viewing a file directly on the GitHub web interface.
 
 
 ## Expectations Regarding Timelines
@@ -58,15 +57,15 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 - We don't expect you to finish the PR / submit the changes we suggested "in time" but would like to ask you to **communicate your personal timeline**.
 - Usually it's not critical for a feature to be finished within a time frame. If you inform us that you will be able to finish your work within a month, but not right now, it's fine, **please just let us know**!
 - If it's a serious bug we might ask you for permission to take over your branch and continue the work ourselves.
-- Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then disappear. Please don't do that! If you realize you won't find the time at all to continue your work, **please just let us know**. It's perfectly fine and there won't be hard feelings. If we consider your feature useful we might even take over and finish it ourselves.
-- We try to release merged features as soon as possible. Even the tiniest feature deserves a release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please kindly remind us** and we'll try to find the time.
+- Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then disappear, so if you realize you won't find the time at all to continue your work, **please just let us know**.
+- We try to release merged features as soon as possible. Even the tiniest feature deserves a release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please let us know**.
 
 
 ## Discuss & Design First
 
 It proved to be useful in the past if loose (feature) ideas would be discussed in #synadm:peek-a-boo.at first, which helps forming a more concrete idea that can than further be summarized into a well written github issue and finally be implemented by a `synadm` contributor or a `synadm` maintainer.
 
-- If you'd like someone else to pick up your feature idea because you are not able to code it yourself, open a detailed GitHub issue describing the feature.
+- If you'd like someone else to pick up your feature idea because you are not able to code it yourself, please open a detailed GitHub issue describing the feature.
 - If you'd like to code it yourself, a separate issue is not required, just describe your feature within the PR.
 
 
@@ -115,7 +114,7 @@ pip install .
 <!-- omit in toc -->
 #### 5. Run
 
-As long as your venv is loaded `synadm` should run fine without having to add a path in front of it
+As long as your venv is loaded, `synadm` should run fine without having to add a path in front of it
 
 ```
 synadm -h
@@ -124,7 +123,7 @@ synadm -h
 
 ### Install in Editable Mode
 
-To be able to instantly be able to test the code you've been working on it makes sense to install from your git clone in _editable mode_
+To be able to instantly be able to test the code you've been working on it makes sense to install from your local clone of `synadm` in _editable mode_
 
 ```
 cd synadm
@@ -165,9 +164,9 @@ If you need to defer code to a helper function because you require reusing it or
 
 ### Logging
 
-Simply use `self.log.warn()` (or `.error/.debug/.info`) within the `synadm/api` module.
+Simply use `self.log.warn()` (or `.error`/`.debug`/`.info`) within the `synadm/api` module.
 
-From a command's frontend code in the `synadm/cmd` package, logging is available via the `helper` object that is available to every subcommand function, for example use `helper.log.warn()`.
+From a command's frontend code in the `synadm/cmd` package, logging is available via the `helper` object that is available to every subcommand function, for example: `helper.log.warn()`.
 
 ### Code Documentation
 
@@ -199,7 +198,7 @@ Some more style and coding requirements:
 - Pythonism: `synadm` is a Python project and as such tries to use some of the very handy features of the language. Some  of those might not be familiar to you since often we realize that contributors are professional programmers used to other languages or even are admins who are rather at home on the shell than in Python code. That is certainly all fine and we are trying to support you with refactoring your code to become more pythonic.
 - That said, we would still like `synadm` to stay approachable to Python beginners and would encourage contributors to try not to overcomplicate things.
 - We require a line length of 79 characters in Python code.
-  - Some editors have handy commands to quickly reformat multi-line text (e.g help texts of options). For example in `vim`, lines can be marked using `shift+V` and then reformatted by typing `gq`
+  - Some editors (e.g. [vim](https://vimhelp.org/change.txt.html#gq)) have handy commands to quickly reformat multi-line text (e.g help texts of options).
   - For code passages, staying within this boundary and at the same time keeping code well readable, this can be achieved using PEP8's many [line continuation suggestions](https://peps.python.org/pep-0008/#code-lay-out).
 - We don't require a maximum line length in Markdown files, for example _this document_ or `README.md`. Please omit line-breaks in sentences, paragraphs, and so on, when editing these docs.
 - If you'd like to tidy up your commits or reduce commit count we welcome the use of `git commit --amend` and `git rebase`. If you'd like us to test your code or work together within your feature branch, be aware of that force pushing might complicate things and should rather be omitted in that case.
@@ -207,11 +206,11 @@ Some more style and coding requirements:
 
 ## Maintainers Notes
 
-This section is a checklist for maintainers of the `synadm` project. Still there might be helpful information applying to contributors as well, thus we made it public.
+This section is a checklist for maintainers of the `synadm` project. This information may be useful for contributors, so we kept it public.
 
-- We keep a branch named `dev` consistently existing that may be used for random things. If this branch is in use because a PR was opened from it, it's occupied and can't be used by others.
-- Speaking of branches, we are not required to create branches in our own forks, we can just create them directly within the `synadm` repo. Checking out branches for e.g testing a feature in development is much easier than cloning and checking out from another maintainers fork.
-- One person should be the "owner" of PR's opened by contributors and should request assistance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arranged in the _synadm maintainers chatroom_ but usually would be the person who initially reviews the submission.
+- We keep a branch named `dev` consistently existing that may be used for random things. If a PR is opened from `dev`, it cannot be used by others.
+- Collaborators are not required to create branches in their own fork. Checking out branches already on the [JOJ0/synadm](https://github.com/JOJ0/synadm) repository is much easier than cloning and checking out from another maintainers fork.
+- One person should be the "owner" of PR's opened by contributors and should request assistance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arranged in the _synadm maintainers room_ (private) but usually would be the person who initially reviews the submission.
 
 
 ### Release process
