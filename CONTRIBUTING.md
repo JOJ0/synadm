@@ -64,10 +64,10 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 
 ## Discuss & Design First
 
-It proved to be useful in the past if loose (feature) ideas would be discussed in #synadm:peek-a-boo.at first, which helps forming a more concrete idea that can than further be summarized into a well written github issue and finally be implemented by a `synadm` contributor or a `synadm` maintainer.
+It proved to be useful in the past if loose (feature) ideas would be discussed in [#synadm:peek-a-boo.at](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) first. Collecting opinions from fellow `synadm` users might help defining a more concrete idea.
 
-- If you'd like someone else to pick up your feature idea because you are not able to code it yourself, please open a detailed GitHub issue describing the feature.
-- If you'd like to code it yourself, a separate issue is not required. Just describe your feature within the PR.
+- If you'd like **someone else** to pick up your feature idea because you are not able to code it yourself, please **open a detailed GitHub issue** describing the feature.
+- **A separate issue is not required**, if you'd like to code it **yourself**. Please include the feature description in your PR.
 
 
 ## Getting the Source & Installing
