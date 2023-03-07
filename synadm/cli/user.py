@@ -422,7 +422,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         modified = helper.api.user_modify(
             mxid, password, display_name, threepid,
             avatar_url, admin, deactivation,
-            None if user_type == 'regular' else user_type)
+            'null' if user_type == 'regular' else user_type)
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
