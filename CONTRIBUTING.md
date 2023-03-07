@@ -53,12 +53,13 @@ There are several ways to submit your work.
 
 We are maintaining `synadm` in our spare time and currently are not sponsored by a company to do that. Nevertheless we try to be responsive to contributors and try to release new features as soon as they are merged.
 
-- We try to give a first review to your submitted pull-requests **within a week**, often you'll get an answer much faster though.
-- We don't expect you to finish the PR / submit the changes we suggested "in time" but would like to ask you to **communicate your personal timeline**.
+- As a rough estimate, we try to give a first response to your submitted pull-request **within a week**. There may be circumstances where this is not possible for us.
+- The time required to respond with an actual code review depends on the size and complexity of the submission. We try to **communicate our own schedule and keep you informed**.
+- We don't expect you to submit the changes we suggested "in time" but would like to ask you to **communicate when you have time to continue your work**.
 - Usually it's not critical for a feature to be finished within a time frame. If you inform us that you will be able to finish your work within a month, but not right now, it's fine, **please just let us know**!
 - If it's a serious bug we might ask you for permission to take over your branch and continue the work ourselves.
 - Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then disappear, so if you realize you won't find the time at all to continue your work, **please just let us know**.
-- We try to release merged features as soon as possible. Even the tiniest feature deserves a release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please let us know**.
+- We believe that even the tiniest feature deserves a timely release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please let us know**.
 
 
 ## Discuss & Design First
