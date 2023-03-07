@@ -84,7 +84,7 @@ synadm -h
 
 *Note: Usually setuptools installs a command wrapper to `/usr/local/bin/synadm`, but that depends on your system.*
 
-*Note: In case you don't want `synadm` to be installed to a global system directory see chapter [install to virtual environment](#install-to-virtual-environment).*
+*Note: In case you don't want `synadm` to be installed to a global system directory, you can find an [alternative way of installing](CONTRIBUTING.md#getting-the-source--installing) in the contribution docs*.
 
 *Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
 
