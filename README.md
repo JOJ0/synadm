@@ -288,11 +288,13 @@ pip install .
 
 ## Get in Touch
 
-If you need avice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, just join the public Matrix room [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) and get in touch. We are also hanging around in the official support room for Synapse - [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you will find `synadm` users there that might answer your questions already, if not, "keyword notify" will tell us that `synadm` is being talked about it and we'll try to get in touch.
+If you need avice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
 
-Still the quickest and most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
+We are hanging around in the official support room for Synapse, [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already. If not, mentioning `synadm` will ping us with the help of Element's keyword notify feature and we'll try to get in touch.
 
-If you are sure you've found a bug that was not already reported, certainly directly opening an issue on 'synadm's Github repo is a valid option too. If unsure, ask in the said room first.
+The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
+
+If you are sure you've found a bug that was not already reported, certainly directly opening an [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
 
 
 
