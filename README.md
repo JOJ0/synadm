@@ -7,23 +7,18 @@
   - [Install from PyPI](#install-from-pypi)
   - [Install from git](#install-from-git)
 - [Configuration](#configuration)
-  - [Getting an admin token](#getting-an-admin-token)
+  - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
   - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
   - [Command Line Reference](#command-line-reference)
-  - [Advanced usage](#advanced-usage)
+  - [Advanced Usage](#advanced-usage)
 - [Update](#update)
-  - [Update PyPI package](#update-pypi-package)
-  - [Update git installation](#update-git-installation)
-- [Implementation status / commands list](#implementation-status--commands-list)
-- [Get in touch / feedback / support](#get-in-touch--feedback--support)
-- [Contribution](#contribution)
-  - [How can I help?](#how-can-i-help)
-  - [Install to virtual environment](#install-to-virtual-environment)
-  - [Install in development mode](#install-in-development-mode)
-  - [Implementation examples](#implementation-examples)
-  - [Developer's documentation](#developers-documentation)
+  - [Update PyPI Package](#update-pypi-package)
+  - [Update git Installation](#update-git-installation)
+- [Implementation Status / Commands List](#implementation-status--commands-list)
+- [Get in Touch](#get-in-touch)
+- [Contributing](#contributing)
 
 
 
@@ -55,19 +50,19 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 ### Install from git
 
 <!-- omit in toc -->
-#### 1. Check Python version
+#### 1. Check Python Version
 
 `python3 --version` should show at least v3.6.x
 
 <!-- omit in toc -->
-#### 2. Clone repo:
+#### 2. Clone Repo:
 
 ```
 git clone https://github.com/joj0/synadm
 ```
 
 <!-- omit in toc -->
-#### 3. Install package globally
+#### 3. Install Package Globally
 
 This will install `synadm` and all dependent Python packages to your system's global Python site-packages directory:
 
@@ -89,7 +84,7 @@ synadm -h
 
 *Note: Usually setuptools installs a command wrapper to `/usr/local/bin/synadm`, but that depends on your system.*
 
-*Note: In case you don't want `synadm` to be installed to a global system directory see chapter [install to virtual environment](#install-to-virtual-environment).*
+*Note: In case you don't want `synadm` to be installed to a global system directory, you can find an [alternative way of installing](CONTRIBUTING.md#getting-the-source--installing) in the contribution docs*.
 
 *Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
 
@@ -97,7 +92,7 @@ synadm -h
 
 ## Configuration
 
-### Getting an admin token
+### Getting an Admin Token
 
 To find out your admin user's token in Element-Web: _Login as this user - "Click User Avatar" - "All Settings" - "Help & About" - Scroll down - "Advanced" - "Access Token"_
 
@@ -188,7 +183,7 @@ will show essential help for the particular subcommand right away.
 A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
 
 
-### Advanced usage
+### Advanced Usage
 
 Examples of how `synadm` can be used in shell scripts and oneliners is
 provided in the
@@ -197,13 +192,13 @@ docs chapter.
 
 ## Update
 
-### Update PyPI package
+### Update PyPI Package
 
 ```
 pip3 install synadm --upgrade
 ```
 
-### Update git installation
+### Update git Installation
 
 To update `synadm` to the latest development state, just update your git repo and reinstall:
 
@@ -219,7 +214,7 @@ pip install .
 
 
 
-## Implementation status / commands list
+## Implementation Status / Commands List
 
 [Follow this link to the official Synapse Admin API docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
 
@@ -291,102 +286,20 @@ pip install .
 
 
 
+## Get in Touch
 
-## Get in touch / feedback / support
+If you need avice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
 
-If you need help with installing, usage or contribution or have anything else on your mind, just join public matrix room [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) and get in touch. I am also hanging around on [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org) and [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org) regularily. Just ask for a jojo ;-)
+We are hanging around in the official support room for Synapse, [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already. If not, mentioning `synadm` will ping us with the help of Element's keyword notify feature and we'll try to get in touch.
 
+The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
 
-
-
-## Contribution
-
-### How can I help?
-
-* Install `synadm` and report back whether or not the installation process worked on the OS you're running.
-* Read the [Synapse admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request - see [implementation examples chapter](#implementation-examples), it really isn't hard, take a look!
-* If you don't code, you can still help us prioritize what to code next: Pick a feature from the docs just mentioned, open a github issue in this repo and tell me what it is. Alternatively just catch me on [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) or [#matrix-dev:matrix.org](https://matrix.to/#/#matrix-dev:matrix.org).
-
-Thanks in advance for any help! We can't do this without you!
-
-
-### Install to virtual environment
-
-If you'd rather prefer to install `synadm` into its own private virtual Python environment or even would like to help code it, this is a much cleaner approach compared to the steps descibed in the [main installation chapter](#installation)
-
-<!-- omit in toc -->
-#### 1. Check Python version
-
-`python3 --version` should show at least v3.6.x
-
-<!-- omit in toc -->
-#### 2. Clone repo:
-
-```
-git clone https://github.com/joj0/synadm
-```
-
-<!-- omit in toc -->
-#### 3. Setup and load a new Python3 virtual environment
-
-
-Create and activate a virtual environment using the python3 venv module:
-
-```
-python3 -m venv ~/.venvs/synadm
-source ~/.venvs/synadm/bin/activate
-```
-
-Once your Python virtual environment is loaded and your prompt looks similar to `(synadm) ....  $ `, install directly into the environment:
-
-
-<!-- omit in toc -->
-#### 4. Install
-
-```
-cd synadm
-pip install .
-```
-
-*Note: Don't forget to activate the venv when coming back to using `synadm` after a fresh login: `source ~/.venvs/synadm/bin/activate`*
-
-<!-- omit in toc -->
-#### 5. Run
-
-As long as your venv is loaded `synadm` should run fine without having to add a path in front of it
-
-```
-synadm -h
-```
+If you are sure you've found a bug that was not already reported, certainly directly opening an [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
 
 
 
+## Contributing
 
-### Install in development mode
+First of all, thanks for your interest in contributing to `synadm`! We appreciate any help, no matter if you are a programmer or a user. Both groups can do valuable things for the `synadm` project. We love providing a useful tool to fellow Synapse sysadmins but rely on contribution from the Synapse and Matrix community to keep `synadm` useful, current and stable.
 
-If you'd like to contribute to synadm's development, it's recommended to use a venv as described above, and also use a slightly different installation command:
-
-```
-cd synadm
-pip install -e .
-```
-
-*Note: When installed like this, code-changes inside the repo dir will immediately be available when executing `synadm`. This could also be used as a quick way to just stay on top of synadm's development.*
-
-
-### Implementation examples
-
-Without much talk, have a look at this method: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/cli/user.py#L185
-
-and this one: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L80
-
-That's all it needs to implement command `synadm user details <user_id>`.
-
-And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/0af918fdeee40bc1d3df7b734a46e76bb31148b9/synadm/cli/user.py#L114
-
-and again it needs a backend method in api.py:
-https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
-
-### Developer's documentation
-
-Have a look at [synadm's module documentation pages on readthedocs](https://synadm.readthedocs.io/en/latest/index_modules.html)
+Please review the [contributing docs](CONTRIBUTING.md) for guidelines and help around the topic!

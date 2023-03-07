@@ -7,4 +7,5 @@ doc/build
 __pycache__
 .vscode/
 env/
+venv/
 .python-version
