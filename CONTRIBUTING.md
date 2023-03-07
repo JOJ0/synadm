@@ -66,7 +66,7 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 It proved to be useful in the past if loose (feature) ideas would be discussed in #synadm:peek-a-boo.at first, which helps forming a more concrete idea that can than further be summarized into a well written github issue and finally be implemented by a `synadm` contributor or a `synadm` maintainer.
 
 - If you'd like someone else to pick up your feature idea because you are not able to code it yourself, please open a detailed GitHub issue describing the feature.
-- If you'd like to code it yourself, a separate issue is not required, just describe your feature within the PR.
+- If you'd like to code it yourself, a separate issue is not required. Just describe your feature within the PR.
 
 
 ## Getting the Source & Installing
@@ -195,13 +195,13 @@ or leave out the filename to run it on all files and subdirectories.
 
 Some more style and coding requirements:
 
-- Pythonism: `synadm` is a Python project and as such tries to use some of the very handy features of the language. Some  of those might not be familiar to you since often we realize that contributors are professional programmers used to other languages or even are admins who are rather at home on the shell than in Python code. That is certainly all fine and we are trying to support you with refactoring your code to become more pythonic.
+- Pythonism: `synadm` is a Python project and uses some handy features of the language. They might not be familiar to you since often we realize that contributors are professional programmers used to other languages or even are admins who are rather at home on the shell than in Python code. That is certainly all fine and we will support you with refactoring your code to be more pythonic.
 - That said, we would still like `synadm` to stay approachable to Python beginners and would encourage contributors to try not to overcomplicate things.
 - We require a line length of 79 characters in Python code.
   - Some editors (e.g. [vim](https://vimhelp.org/change.txt.html#gq)) have handy commands to quickly reformat multi-line text (e.g help texts of options).
   - For code passages, staying within this boundary and at the same time keeping code well readable, this can be achieved using PEP8's many [line continuation suggestions](https://peps.python.org/pep-0008/#code-lay-out).
 - We don't require a maximum line length in Markdown files, for example _this document_ or `README.md`. Please omit line-breaks in sentences, paragraphs, and so on, when editing these docs.
-- If you'd like to tidy up your commits or reduce commit count we welcome the use of `git commit --amend` and `git rebase`. If you'd like us to test your code or work together within your feature branch, be aware of that force pushing might complicate things and should rather be omitted in that case.
+- If you'd like to tidy up your commits or reduce commit count we welcome the use of `git commit --amend` and `git rebase`. If you'd like us to test your code or work together within your feature branch, be aware of that force pushing might complicate things and should be avoided in that case.
 
 
 ## Maintainers Notes
