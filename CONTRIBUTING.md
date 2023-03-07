@@ -8,8 +8,6 @@
 - [Expectations Regarding Timelines](#expectations-regarding-timelines)
 - [Discuss \& Design First](#discuss--design-first)
 - [Getting the Source \& Installing](#getting-the-source--installing)
-  - [Install into a Virtual Python Environment](#install-into-a-virtual-python-environment)
-  - [Install in Editable Mode](#install-in-editable-mode)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
   - [Helpers \& Utilities](#helpers--utilities)
@@ -72,9 +70,7 @@ It proved to be useful in the past if loose (feature) ideas would be discussed i
 
 ## Getting the Source & Installing
 
-### Install into a Virtual Python Environment
-
-To install `synadm` into its own private virtual Python environment, FIXME
+To install `synadm` into its own private virtual Python environment follow these steps:
 
 <!-- omit in toc -->
 #### 1. Check Python Version
@@ -99,39 +95,36 @@ python3 -m venv ~/.venvs/synadm
 source ~/.venvs/synadm/bin/activate
 ```
 
+*Note: Some people prefer to host a virtual environment directory named `venv` within the project repo. In that case do `cd synadm; python3 -m venv venv`*
+
+
 Once your Python virtual environment is loaded and your prompt looks similar to `(synadm) ....  $ `, install directly into the environment:
 
 
 <!-- omit in toc -->
-#### 4. Install
+#### 4. Install in "Editable Mode"
 
-```
-cd synadm
-pip install .
-```
-
-*Note: Don't forget to activate the venv when coming back to using `synadm` after a fresh login: `source ~/.venvs/synadm/bin/activate`*
-
-<!-- omit in toc -->
-#### 5. Run
-
-As long as your venv is loaded, `synadm` should run fine without having to add a path in front of it
-
-```
-synadm -h
-```
-
-
-### Install in Editable Mode
-
-To be able to instantly be able to test the code you've been working on it makes sense to install from your local clone of `synadm` in _editable mode_
+Execute the install command from the root of the repo directory:
 
 ```
 cd synadm
 pip install -e .
 ```
 
-*Note: When installed like this, code-changes inside the repo dir will immediately be available when executing `synadm`. This could also be used as a quick way to just stay on top of synadm's development.*
+*Note: When installed like this, code-changes inside the repo directory will immediately be available when executing `synadm`.*
+
+
+<!-- omit in toc -->
+#### 5. Run
+
+As long as your venv is loaded, `synadm` should run fine without having to add a path in front of it.
+
+```
+synadm -h
+```
+
+
+
 
 ## Command Design
 
