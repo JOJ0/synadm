@@ -550,7 +550,7 @@ class SynapseAdmin(ApiRequest):
             ]})
         if avatar_url:
             data.update({"avatar_url": avatar_url})
-        if admin:
+        if admin is not None:
             data.update({"admin": admin})
         if deactivation == "deactivate":
             data.update({"deactivated": True})
