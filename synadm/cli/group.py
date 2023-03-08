@@ -36,7 +36,7 @@ def delete(helper, group_id):
     """ Delete a local group (community).
     """
     sure = (
-        helper.batch or
+        helper.no_confirm or
         click.prompt("Are you sure you want to delete this group? (y/N)",
                      type=bool, default=False, show_default=False)
     )

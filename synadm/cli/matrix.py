@@ -48,9 +48,10 @@ def login_cmd(helper, user_id, password):
     with a display name of 'synadm matrix login command'.
     """
     if not password:
-        if helper.batch:
-            helper.log.error("Password prompt not available in batch mode. "
-                             "Use -p.")
+        if helper.no_confirm:
+            helper.log.error(
+                "Password prompt not available in non-interactive mode. "
+                "Use -p.")
             raise SystemExit(1)
         else:
             password = click.prompt("Password", hide_input=True)
@@ -58,7 +59,7 @@ def login_cmd(helper, user_id, password):
     mxid = helper.generate_mxid(user_id)
     login = helper.matrix_api.user_login(mxid, password)
 
-    if helper.batch:
+    if helper.no_confirm:
         if login is None:
             raise SystemExit(1)
         helper.output(login)
@@ -138,7 +139,7 @@ def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
         raw_request = helper.matrix_api.raw_request(endpoint, method, data,
                                                     token=token)
 
-    if helper.batch:
+    if helper.no_confirm:
         if raw_request is None:
             raise SystemExit(1)
         helper.output(raw_request)

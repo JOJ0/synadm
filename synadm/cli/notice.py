@@ -81,7 +81,7 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
     """
     def confirm_prompt():
         prompt = ""
-        if helper.batch:
+        if helper.no_confirm:
             return True
         if not silent:
             prompt += "\nNote: When sending to a large amount of recipients, "

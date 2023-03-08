@@ -82,7 +82,7 @@ def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
     poll for updates on the running purge.
     """
     sure = (
-        helper.batch or
+        helper.no_confirm or
         click.prompt("Are you sure you want to purge room history? (y/N)",
                      type=bool, default=False, show_default=False)
     )
@@ -92,7 +92,7 @@ def history_purge_cmd(helper, room_id, before_event_id, before_days, before,
             delete_local
         )
 
-        if helper.batch:
+        if helper.no_confirm:
             helper.output(history_purged)
             if history_purged is None:
                 raise SystemExit(1)
@@ -118,7 +118,7 @@ def history_purge_status_cmd(helper, purge_id):
     or failed.
     """
     purge_history_status = helper.api.purge_history_status(purge_id)
-    if helper.batch:
+    if helper.no_confirm:
         if purge_history_status is None:
             raise SystemExit(1)
         helper.output(purge_history_status)
