@@ -202,9 +202,20 @@ Some more style and coding requirements:
 
 This section is a checklist for maintainers of the `synadm` project. This information may be useful for contributors, so we kept it public.
 
-- We keep a branch named `dev` consistently existing that may be used for random things. If a PR is opened from `dev`, it cannot be used by others.
-- Collaborators are not required to create branches in their own fork. Checking out branches already on the [JOJ0/synadm](https://github.com/JOJ0/synadm) repository is much easier than cloning and checking out from another maintainers fork.
-- One person should be the "owner" of PR's opened by contributors and should request assistance by other maintainers if required. The ultimate decision to merge should be with the "PR owner". Who the owner is can be arranged in the _synadm maintainers room_ (private) but usually would be the person who initially reviews the submission.
+- We keep a branch named `dev` consistently existing that may be used for random things.
+  - If a PR is opened from `dev`, it cannot be used by others.
+  - If the current "occupier" of the branch demands it though, they can invite other maintainers to submit to that branch.
+- Maintainers are not required to create branches in their own fork. Feature branches can be created directly in the [JOJ0/synadm](https://github.com/JOJ0/synadm) repository.
+- One person should be the "owner" of each PR, no matter if opened by a contributor or a maintainer. Assistance from other maintainers can be request if desired.
+  - Who the "owner" is can be arranged in the _synadm maintainers room_ (private) but usually would be the person who initially reviews the submission.
+  - The "assignee" setting available on PR's and issues should be used to mark who the "owner" is.
+  - The ultimate decision to merge should be with the "owner".
+  - Assistance from other maintainers can be requested via a "review request" _or_ via "mentioning".
+- PR's opened by maintainers (not external contributors) often require special attention about responsibilities:
+  - Basically the "author" of such a PR is the "owner" as well.
+  - The final decision to merge should still stay with the "owner". Requesting reviews from other maintainers should be the tool to responsibly decide when it is time to merge.
+  - If a "reviewer" (usually another maintainer) requested changes from the "author" (who is also the "owner"), the reviewer should wait until the "author" re-requests a review.
+  - A new commit showing up in the PR's branch might not be the indication that a new review is desired yet.
 
 
 ### Release process
