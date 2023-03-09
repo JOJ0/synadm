@@ -534,7 +534,7 @@ class SynapseAdmin(ApiRequest):
         return self.query("post", f"v1/users/{user_id}/login", data=data)
 
     def user_modify(self, user_id, password, display_name, threepid,
-                    avatar_url, admin, deactivation):
+                    avatar_url, admin, deactivation, user_type):
         """ Create or update information about a given user
 
         Threepid should be passed as a tuple in a tuple
@@ -556,6 +556,9 @@ class SynapseAdmin(ApiRequest):
             data.update({"deactivated": True})
         if deactivation == "activate":
             data.update({"deactivated": False})
+        if user_type:
+            data.update({"user_type": None if user_type == 'null' else
+                         user_type})
         return self.query("put", f"v2/users/{user_id}", data=data)
 
     def user_whois(self, user_id):

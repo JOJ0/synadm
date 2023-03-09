@@ -358,10 +358,18 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     removes their active access tokens, resets their password, kicks them out
     of all rooms and deletes third-party identifiers (to prevent the user
     requesting a password reset). See also "user deactivate" command.""")
+@optgroup.option(
+    "--user-type", type=str, default=None, show_default=True,
+    help="""Change the type of the user. Currently understood by the Admin API
+    are 'bot' and 'support'. Use 'regular' to create a regular Matrix user
+    (which effectively sets the user-type to 'null'). If the --user-type option
+    is omitted when modifying an existing user, the user-type will not be
+    manipulated. If the --user-type option is omitted when creating a new user,
+    a regular user will be created.""")
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
-           threepid, avatar_url, admin, deactivation):
+           threepid, avatar_url, admin, deactivation, user_type):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -390,6 +398,8 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
                             f"{t_key} is probably not a supported medium "
                             "type. Threepid medium types according to the "
                             "current matrix spec are: email, msisdn.")
+        elif key == "user_type" and value == 'regular':
+            click.echo("user_type: null")
         elif value not in [None, {}, []]:  # only show non-empty (aka changed)
             click.echo(f"{key}: {value}")
 
@@ -411,7 +421,8 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     if sure:
         modified = helper.api.user_modify(
             mxid, password, display_name, threepid,
-            avatar_url, admin, deactivation)
+            avatar_url, admin, deactivation,
+            'null' if user_type == 'regular' else user_type)
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
