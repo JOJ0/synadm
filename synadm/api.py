@@ -409,6 +409,33 @@ class SynapseAdmin(ApiRequest):
             "user_id": _user_id
         })
 
+    def user_list_paginate(self, _limit, _guests, _deactivated,
+                           _name, _user_id, _from="0"):
+        # documentation is mostly duplicated from user_list...
+        """Yields API responses for all of the pagination.
+
+        Args:
+            _limit (int): Maximum number of users returned, used for
+                pagination.
+            _guests (bool): Enable/disable fetching of guest users.
+            _deactivated (bool): Enable/disable fetching of deactivated
+                users.
+            _name (string): User name localpart to search for, see Synapse
+                admin API docs for details.
+            _user_id (string): Fully qualified Matrix user ID to search for.
+            _from (string): Offsets user list by this number, used for
+                pagination.
+
+        Yields:
+            dict: The admin API response for listing accounts.
+                https://matrix-org.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
+        """
+        while _from is not None:
+            response = self.user_list(_from, _limit, _guests, _deactivated,
+                                      _name, _user_id)
+            yield response
+            _from = response.get("next_token", None)
+
     def user_membership(self, user_id, return_aliases, matrix_api):
         """Get a list of rooms the given user is member of
 

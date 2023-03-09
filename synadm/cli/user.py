@@ -18,6 +18,7 @@
 """ User-related CLI commands
 """
 
+import re
 import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 from click_option_group import RequiredAnyOptionGroup
@@ -136,6 +137,62 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
             helper.output(deactivated)
     else:
         click.echo("Abort.")
+
+
+@user.command()
+@click.argument("regex", type=str)
+@click.option(
+    "--gdpr-erase", "-e", is_flag=True, default=False,
+    help="""Marks the users as GDPR-erased. This means messages sent by the
+    users will still be visible by anyone that was in the room when these
+    messages were sent, but hidden from other users joining the room
+    afterwards.""", show_default=True
+)
+@click.option(
+    "--dry-run", "-n", is_flag=True, default=False,
+    help="""Do everything except deactivating users."""
+)
+@click.option(
+    "--batch-size", "--paginate", "-p", type=int, default=500,
+    show_default=True,
+    help="""How many users should be requested from the API one at a time.
+    This option has no effect on how many users will be deactivated.
+
+    Increasing this is not necessary in most cases but useful if you have a
+    lot of accounts on your homeserver."""
+)
+@click.pass_obj
+@click.pass_context
+def deactivate_regex(ctx, helper, regex, gdpr_erase, dry_run, batch_size):
+    """ Deactivate or GDPR-erase accounts based on regex.
+
+    Does everything normal deactivation does, just for multiple users matching
+    the given regex.
+
+    The regex argument takes a string and uses Python's re.match (matches
+    regex starting from first character). A regex is expected to match a
+    full Matrix ID, or partially at least from the first character.
+
+    --dry-run can be used to see which accounts will be deactivated. This
+    can be useful for reviewing the accounts that will be deactivated.
+
+    Additionally, the --batch argument (given before the subcommands) will
+    not prompt for if you want to deactivate a user (very useful for many
+    users)."""
+    helper.log.debug(f"Regex: {regex}")
+    # if below fails, turn on debug mode to get the actual given regex.
+    pattern = re.compile(regex)
+    for list_user_response in helper.api.user_list_paginate(batch_size,
+                                                            True, False, "",
+                                                            ""):
+        for user in list_user_response["users"]:
+            if pattern.match(user["name"]):
+                if dry_run:
+                    click.echo(f"Would deactivate: {user['name']}")
+                    continue
+                else:
+                    ctx.invoke(deactivate, user_id=user["name"],
+                               gdpr_erase=gdpr_erase)
 
 
 @user.command(name="prune-devices")
