@@ -36,12 +36,12 @@ def notice():
     help="""Interpret arguments as file paths instead of notice content and
     read content from those files.""")
 @click.option(
-    "--paginate", "-p", type=int, default=100, show_default=True,
-    metavar="PAGINATE", help="""The send command retrieves "pages" of users
-    from the homeserver, filters them and sends out the notices, before
-    retrieving the next page. PAGINATE sets how many users are in each of these
-    "pages". It is a performance setting and may be useful for servers with a
-    large amount of users.""")
+    "--batch-size", "--paginate", "-p", type=int, default=100,
+    show_default=True, metavar="SIZE",
+    help="""The send command retrieves "pages" of users from the homeserver,
+    filters them and sends out the notices, before retrieving the next page.
+    SIZE sets how many users are in each of these "pages". It is a performance
+    setting and may be useful for servers with a large amount of users.""")
 @click.option(
     "--regex", "-r", default=False, show_default=True, is_flag=True,
     help="Interpret TO as regular expression.")
@@ -62,7 +62,7 @@ def notice():
 @click.argument("plain", type=str, default=None)
 @click.argument("formatted", type=str, default=None, required=False)
 @click.pass_obj
-def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
+def notice_send_cmd(helper, from_file, batch_size, regex, preview_length,
                     silent, to, plain, formatted):
     """Send server notices to users on the local homeserver.
 
@@ -95,7 +95,7 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
             # Outer loop: If fetching >1 pages of users is required
             while ctr < preview_length:
                 batch = helper.api.user_list(
-                    next_token, paginate, True, False, "", "")
+                    next_token, batch_size, True, False, "", "")
                 if "users" not in batch:
                     break
                 batch_mxids = [user['name'] for user in batch["users"]]
@@ -148,6 +148,6 @@ def notice_send_cmd(helper, from_file, paginate, regex, preview_length,
             return
 
     outputs = helper.api.notice_send(to, plain_content, formatted_content,
-                                     paginate, regex)
+                                     batch_size, regex)
     if not silent:
         helper.output(outputs)
