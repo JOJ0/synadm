@@ -83,10 +83,10 @@ class APIHelper:
         "homeserver": "auto-retrieval"
     }
 
-    def __init__(self, config_path, verbose, batch, output_format_cli):
+    def __init__(self, config_path, verbose, no_confirm, output_format_cli):
         self.config = APIHelper.CONFIG.copy()
         self.config_path = os.path.expanduser(config_path)
-        self.batch = batch
+        self.no_confirm = no_confirm
         self.api = None
         self.init_logger(verbose)
         self.requests_debug = False
@@ -211,7 +211,7 @@ class APIHelper:
             string: hostname, FQDN or DOMAIN; or None on errors.
         """
         uri = uri if uri else self.config["base_url"]
-        echo = self.log.info if self.batch else click.echo
+        echo = self.log.info if self.no_confirm else click.echo
         if self.config["homeserver"] != "auto-retrieval":
             return self.config["homeserver"]
 
@@ -295,9 +295,9 @@ class APIHelper:
     "--verbose", "-v", count=True, default=False,
     help="Enable INFO (-v) or DEBUG (-vv) logging on console.")
 @click.option(
-    "--batch", "--yes", "--non-interactive", "--scripting",
+    "--no-confirm", "--batch", "--yes", "--non-interactive", "--scripting",
     default=False, is_flag=True,
-    help="""Enable batch processing mode. Use with caution! This will:
+    help="""Enable non-interactive mode. Use with caution! This will:
 
     \b
         - Disable all interactive prompts.
@@ -315,13 +315,13 @@ class APIHelper:
     default="~/.config/synadm.yaml",
     help="Configuration file path.", show_default=True)
 @click.pass_context
-def root(ctx, verbose, batch, output, config_file):
+def root(ctx, verbose, no_confirm, output, config_file):
     """ the Matrix-Synapse admin CLI
     """
-    ctx.obj = APIHelper(config_file, verbose, batch, output)
+    ctx.obj = APIHelper(config_file, verbose, no_confirm, output)
     helper_loaded = ctx.obj.load()
     if ctx.invoked_subcommand != "config" and not helper_loaded:
-        if batch:
+        if no_confirm:
             click.echo("Please setup synadm: " + sys.argv[0] + " config.")
             raise SystemExit(2)
         else:
@@ -401,11 +401,11 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
                 redacted = "REDACTED"  # Token found in config, show [REDACTED]
         return f"Synapse admin user token [{redacted}]"
 
-    if helper.batch:
+    if helper.no_confirm:
         if not all([user, token, base_url, admin_path, matrix_path,
                     output, timeout, server_discovery, homeserver]):
             click.echo(
-                "Missing config options for batch configuration!"
+                "Missing config options for non-interactive configuration!"
             )
             raise SystemExit(3)
         else:

@@ -117,7 +117,7 @@ def deactivate(ctx, helper, user_id, gdpr_erase):
     m_erase_or_deact = "gdpr-erase" if gdpr_erase else "deactivate"
     m_erase_or_deact_p = "gdpr-erased" if gdpr_erase else "deactivated"
     sure = (
-        helper.batch or
+        helper.no_confirm or
         click.prompt("Are you sure you want to {} this user? (y/N)"
                      .format(m_erase_or_deact),
                      type=bool, default=False, show_default=False)
@@ -461,8 +461,9 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             click.echo(f"{key}: {value}")
 
     if password_prompt:
-        if helper.batch:
-            click.echo("Password prompt not available in batch mode. Use -P.")
+        if helper.no_confirm:
+            click.echo("Password prompt not available in non-interactive "
+                       "mode. Use -P.")
         else:
             password = click.prompt("Password", hide_input=True,
                                     confirmation_prompt=True)
@@ -471,7 +472,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     else:
         password = None
     sure = (
-        helper.batch or
+        helper.no_confirm or
         click.prompt("Are you sure you want to modify user? (y/N)",
                      type=bool, default=False, show_default=False)
     )
@@ -619,7 +620,7 @@ def user_login_cmd(helper, user_id, expire_days, expire, expire_ts,
         user_login = helper.api.user_login(mxid, expire_days, expire,
                                            expire_ts)
 
-    if helper.batch:
+    if helper.no_confirm:
         if user_login is None:
             raise SystemExit(1)
         helper.output(user_login)

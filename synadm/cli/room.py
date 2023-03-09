@@ -263,7 +263,7 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
     helper.output(room_details)
     ctx.invoke(members, room_id=room_id)
     sure = (
-        helper.batch or
+        helper.no_confirm or
         click.prompt("Are you sure you want to delete this room? (y/N)",
                      type=bool, default=False, show_default=False)
     )
