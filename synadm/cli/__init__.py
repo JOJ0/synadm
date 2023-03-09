@@ -295,7 +295,7 @@ class APIHelper:
     "--verbose", "-v", count=True, default=False,
     help="Enable INFO (-v) or DEBUG (-vv) logging on console.")
 @click.option(
-    "--no-confirm", "--batch", "--yes", "--non-interactive",
+    "--no-confirm", "--batch", "--yes", "--non-interactive", "--scripting",
     default=False, is_flag=True,
     help="""Enable non-interactive mode. Use with caution! This will:
 
