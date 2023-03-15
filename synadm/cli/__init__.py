@@ -387,8 +387,8 @@ def root(ctx, verbose, batch, output, config_file):
 )
 @click.option(
     "--ssl_verify", "-n",  default=True, show_default=True,
-    help="""Whether or not SSL certificates should be verified. \
-        Set to False to allow self-signed certifcates."""
+    help="""Whether or not SSL certificates should be verified. Set to False
+    to allow self-signed certifcates."""
 )
 @click.pass_obj
 def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
