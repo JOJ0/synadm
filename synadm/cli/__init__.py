@@ -469,6 +469,7 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
                 "homeserver", homeserver)),
         "ssl_verify": click.prompt(
             "Verify certificate",
+            type=bool,
             default=ssl_verify if ssl_verify else helper.config.get(
                 "ssl_verify", ssl_verify)),
         "server_discovery": click.prompt(
