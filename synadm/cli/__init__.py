@@ -386,7 +386,7 @@ def root(ctx, verbose, batch, output, config_file):
     method set by --server-discovery."""
 )
 @click.option(
-    "--ssl_verify", "-n",  default=True, show_default=True,
+    "--ssl-verify", "-i",  is_flag=True, default=True, show_default=True,
     help="""Whether or not SSL certificates should be verified. Set to False
     to allow self-signed certifcates."""
 )
