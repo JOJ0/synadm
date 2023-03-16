@@ -393,7 +393,7 @@ def root(ctx, verbose, batch, output, config_file):
 @click.pass_obj
 def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
                output, timeout, server_discovery, homeserver, ssl_verify):
-    """ Modify test synadm's configuration.
+    """ Modify synadm's configuration.
 
     Configuration details are generally always asked interactively. Command
     line options override the suggested defaults in the prompts.
