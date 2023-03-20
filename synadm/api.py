@@ -41,7 +41,8 @@ class ApiRequest:
 
     This is subclassed by SynapseAdmin and Matrix
     """
-    def __init__(self, log, user, token, base_url, path, timeout, debug):
+    def __init__(self, log, user, token, base_url, path, timeout, debug,
+                 verify=None):
         """Initialize an APIRequest object
 
         Args:
@@ -55,6 +56,8 @@ class ApiRequest:
                 base_url to form the basis for all API endpoint paths
             timeout (int): requests module timeout used in query method
             debug (bool): enable/disable debugging in requests module
+            verify(bool): SSL verification is turned on by default
+                and can be turned off using this argument.
         """
         self.log = log
         self.user = user
@@ -68,9 +71,10 @@ class ApiRequest:
         self.timeout = timeout
         if debug:
             HTTPConnection.debuglevel = 1
+        self.verify = verify
 
     def query(self, method, urlpart, params=None, data=None, token=None,
-              base_url_override=None, verify=True):
+              base_url_override=None, verify=None):
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions.
@@ -108,10 +112,14 @@ class ApiRequest:
             self.log.debug("Token override! Adjusting headers.")
             self.headers["Authorization"] = "Bearer " + token
 
+        override_verify = self.verify
+        if verify is not None:
+            override_verify = verify
+
         try:
             resp = getattr(requests, method)(
                 url, headers=self.headers, timeout=self.timeout,
-                params=params, json=data, verify=verify
+                params=params, json=data, verify=override_verify
             )
             if not resp.ok:
                 self.log.warning(f"{host_descr} returned status code "
@@ -196,7 +204,7 @@ class MiscRequest(ApiRequest):
         ApiRequest (object): parent class containing general properties and
             methods for requesting REST API's
     """
-    def __init__(self, log, timeout, debug):
+    def __init__(self, log, timeout, debug, verify=None):
         """Initialize the MiscRequest object
 
         Args:
@@ -204,11 +212,13 @@ class MiscRequest(ApiRequest):
             timeout (int): requests module timeout used in ApiRequest.query
                 method
             debug (bool): enable/disable debugging in requests module
+            verify(bool): SSL verification is turned on by default
+                and can be turned off using this method.
         """
         super().__init__(
             log, "", "",  # Set user and token to empty string
             "", "",  # Set base_url and path to empty string
-            timeout, debug
+            timeout, debug, verify
         )
 
     def federation_uri_well_known(self, base_url):
@@ -243,7 +253,7 @@ class Matrix(ApiRequest):
             methods for requesting REST API's
     """
     def __init__(self, log, user, token, base_url, matrix_path,
-                 timeout, debug):
+                 timeout, debug, verify):
         """Initialize the Matrix API object
 
         Args:
@@ -258,11 +268,13 @@ class Matrix(ApiRequest):
             timeout (int): requests module timeout used in ApiRequest.query
                 method
             debug (bool): enable/disable debugging in requests module
+            verify(bool): SSL verification is turned on by default
+                and can be turned off using this method.
         """
         super().__init__(
             log, user, token,
             base_url, matrix_path,
-            timeout, debug
+            timeout, debug, verify
         )
         self.user = user
 
@@ -360,7 +372,8 @@ class SynapseAdmin(ApiRequest):
         ApiRequest (object): parent class containing general properties and
             methods for requesting REST API's
     """
-    def __init__(self, log, user, token, base_url, admin_path, timeout, debug):
+    def __init__(self, log, user, token, base_url, admin_path, timeout, debug,
+                 verify):
         """Initialize the SynapseAdmin object
 
         Args:
@@ -375,11 +388,13 @@ class SynapseAdmin(ApiRequest):
             timeout (int): Requests module timeout used in ApiRequest.query
                 method
             debug (bool): enable/disable debugging in requests module
+            verify(bool): SSL verification is turned on by default
+                and can be turned off using this argument.
         """
         super().__init__(
             log, user, token,
             base_url, admin_path,
-            timeout, debug
+            timeout, debug, verify
         )
         self.user = user
 
