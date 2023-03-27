@@ -90,7 +90,7 @@ jobs:
           ## New
           ## Fixed
           ## Notes
-        draft: false
+        draft: true
         prerelease: false
       if: ${{ steps.check.outputs.release_existing == 'false' }}
 
