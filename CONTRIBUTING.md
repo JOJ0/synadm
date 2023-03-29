@@ -151,7 +151,7 @@ and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/
 
 ### Helpers & Utilities
 
-You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py#L125), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
+You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
 
 If you need to defer code to a helper function because you require reusing it or otherwise think it's a cleaner approach, put it where you need it: Either as a subfunction in your backend method in the `synadm/api` module or in the frontend function in `synadm/cli/yourcommand`. If you think you've wrote a function that is very generic and might be useful to other `synadm/api` methods as well, put it next to the helpers in the `ApiRequest` class and tell us about it in a PR-comment.
 
