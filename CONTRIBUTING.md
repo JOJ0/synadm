@@ -10,6 +10,7 @@
 - [Getting the Source \& Installing](#getting-the-source--installing)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
+  - [Submitting data \& URL encoding](#submitting-data--url-encoding)
   - [Helpers \& Utilities](#helpers--utilities)
   - [Logging](#logging)
   - [Code Documentation](#code-documentation)
@@ -147,6 +148,23 @@ That's all it needs to implement command `synadm user details <user_id>`.
 And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301
 
 and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529
+
+
+### Submitting data & URL encoding
+
+Since version 0.42 `synadm` encodes URL's in a central place - the `ApiRequest.query()` function in the `synadm.api` module.
+
+Variables sent as part of the URL are required to be passed to the `query()` method **unaltered**. Do not use f-strings or str.format, let the `query()` method do the sanitizing of the URL.
+
+If we take a look at the `user password` example in above's chapter, we have:
+
+```
+self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
+```
+
+- `data` is the dictionary we'd like to send in the body of the request.
+- The 'user_id` should be passed as part of the URL. We don't do any formatting or URL-encoding on our end, we hand it over as keyword argument to the `query() method` and use a replacement field surrounded by curly braces to mark its position in the URL.
+
 
 
 ### Helpers & Utilities
