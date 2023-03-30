@@ -163,7 +163,7 @@ self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
 ```
 
 - `data` is the dictionary we'd like to send in the body of the request.
-- The 'user_id` should be passed as part of the URL. We don't do any formatting or URL-encoding on our end, we hand it over as keyword argument to the `query() method` and use a replacement field surrounded by curly braces to mark its position in the URL.
+- The `user_id` should be passed as part of the URL. We don't do any formatting or URL-encoding on our end, we hand it over as keyword argument to the `query() method` and use a "replacement field" surrounded by curly braces to mark its position in the URL.
 
 
 
