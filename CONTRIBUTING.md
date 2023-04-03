@@ -150,7 +150,7 @@ And another example, this time using a POST based API endpoint. It implements co
 and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529
 
 
-### Submitting data & URL encoding
+### Sending requests & URL encoding
 
 Since version 0.42 `synadm` encodes URL's in a central place - the `ApiRequest.query()` function in the `synadm.api` module.
 
