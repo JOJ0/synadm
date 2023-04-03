@@ -10,7 +10,7 @@
 - [Getting the Source \& Installing](#getting-the-source--installing)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
-  - [Submitting data \& URL encoding](#submitting-data--url-encoding)
+  - [Sending requests \& URL encoding](#sending-requests--url-encoding)
   - [Helpers \& Utilities](#helpers--utilities)
   - [Logging](#logging)
   - [Code Documentation](#code-documentation)
@@ -152,11 +152,11 @@ and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/
 
 ### Sending requests & URL encoding
 
-Since version 0.42 `synadm` encodes URL's in a central place - the `ApiRequest.query()` function in the `synadm.api` module.
+Since version 0.42 `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
 
 Variables sent as part of the URL are required to be passed to the `query()` method **unaltered**. Do not use f-strings or str.format, let the `query()` method do the sanitizing of the URL.
 
-If we take a look at the `user password` example in above's chapter, we have:
+If we take a look at the `user_password()` example in above's chapter, we have:
 
 ```python
 self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
