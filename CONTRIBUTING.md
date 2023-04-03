@@ -158,12 +158,12 @@ Variables sent as part of the URL are required to be passed to the `query()` met
 
 If we take a look at the `user password` example in above's chapter, we have:
 
-```
+```python
 self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
 ```
 
-- `data` is the dictionary we'd like to send in the body of the request.
-- The `user_id` should be passed as part of the URL. We don't do any formatting or URL-encoding on our end, we hand it over as keyword argument to the `query() method` and use a "replacement field" surrounded by curly braces to mark its position in the URL.
+- The `data` argument is passed as the request body and expects a Python dictionary.
+- The `{user_id}` part of the URL will be replaced by the keyword argument `user_id`. The value of the keyword argument `user_id` will also be URL encoded to ensure [special cases](https://github.com/JOJ0/synadm/issues/96) don't break things.
 
 
 
