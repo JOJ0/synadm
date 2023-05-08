@@ -152,7 +152,7 @@ and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/
 
 ### Sending requests & URL encoding
 
-Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.42) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
+Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
 
 Variables sent as part of the URL are required to be passed to the `query()` method **unaltered**. Do not use f-strings or str.format, let the `query()` method do the sanitizing of the URL.
 
