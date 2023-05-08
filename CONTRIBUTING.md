@@ -10,6 +10,7 @@
 - [Getting the Source \& Installing](#getting-the-source--installing)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
+  - [Sending requests \& URL encoding](#sending-requests--url-encoding)
   - [Helpers \& Utilities](#helpers--utilities)
   - [Logging](#logging)
   - [Code Documentation](#code-documentation)
@@ -138,21 +139,37 @@ _Note: If you are not familiar with Python code, don't let yourself get distract
 
 ### Implementation Examples
 
-Have a look at this method: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/cli/user.py#L185
+Have a look at this method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369
 
-and this one: https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L80
+and this one: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545
 
 That's all it needs to implement command `synadm user details <user_id>`.
 
-And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/0af918fdeee40bc1d3df7b734a46e76bb31148b9/synadm/cli/user.py#L114
+And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301
 
-and again it needs a backend method in `api.py`:
-https://github.com/JOJ0/synadm/blob/107d34b38de71d6d21d78141e78a1b19d3dd5379/synadm/api.py#L72
+and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529
+
+
+### Sending requests & URL encoding
+
+Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
+
+Variables sent as part of the URL are required to be passed to the `query()` method **unaltered**. Do not use f-strings or str.format, let the `query()` method do the sanitizing of the URL.
+
+If we take a look at the `user_password()` example in above's chapter, we have:
+
+```python
+self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
+```
+
+- The `data` argument is passed as the request body and expects a Python dictionary.
+- The `{user_id}` part of the URL will be replaced by the keyword argument `user_id`. The value of the keyword argument `user_id` will also be URL encoded to ensure [special cases](https://github.com/JOJ0/synadm/issues/96) don't break things.
+
 
 
 ### Helpers & Utilities
 
-You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py#L125), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
+You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
 
 If you need to defer code to a helper function because you require reusing it or otherwise think it's a cleaner approach, put it where you need it: Either as a subfunction in your backend method in the `synadm/api` module or in the frontend function in `synadm/cli/yourcommand`. If you think you've wrote a function that is very generic and might be useful to other `synadm/api` methods as well, put it next to the helpers in the `ApiRequest` class and tell us about it in a PR-comment.
 
