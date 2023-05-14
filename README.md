@@ -252,9 +252,6 @@ pip install .
     * [x] `room search <search-term>` (alias of `room list -n <search-term>`)
     * [x] `room resolve <room alias>`
     * [x] `room power-levels`
-    * [ ] `room count`
-    * [ ] `room top-complexity`
-    * [ ] `room top-members`
     * [x] `room block`
     * [x] `room block-status`
 * [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
