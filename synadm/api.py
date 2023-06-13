@@ -1258,8 +1258,11 @@ class SynapseAdmin(ApiRequest):
                 an exception occured. See Synapse admin API docs for details.
 
         """
-        return self.query("delete", "v1/registration_tokens/{token}",
-                          token=token)
+        # t because query also accepts token when we want it for the
+        # request
+        # https://github.com/JOJ0/synadm/issues/110#issuecomment-1590032158
+        return self.query("delete", "v1/registration_tokens/{t}",
+                          t=token)
 
     def user_shadow_ban(self, user_id, unban):
         """ Shadow-ban or unban a user.
