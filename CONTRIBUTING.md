@@ -103,7 +103,7 @@ Once your Python virtual environment is loaded and your prompt looks similar to 
 
 
 <!-- omit in toc -->
-#### 4. Install in "Editable Mode"
+#### 4. Install in "Editable Mode" for development
 
 Execute the install command from the root of the repo directory:
 
