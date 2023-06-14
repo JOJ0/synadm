@@ -208,9 +208,9 @@ git pull
 pip install .
 ```
 
-*Note: If you installed to a Python venv, first load it as described in [install to virtual environment](#install-to-virtual-environment).*
+*Note: If you've installed to a Python venv, [activate it](CONTRIBUTING.md#3-set-up-a-python3-virtual-environment).*
 
-*Note: If you installed in [development mode](#install-in-development-mode) you can spare the `pip install .` command - just `git pull` and you're done.*
+*Note: If you've installed in [editable mode](CONTRIBUTING.md#4-install-in-editable-mode) you can spare the `pip install .` command - just `git pull` and you're done.*
 
 
 
@@ -285,7 +285,7 @@ pip install .
 
 ## Get in Touch
 
-If you need avice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
+If you need advice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
 
 We are hanging around in the official support room for Synapse, [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already. If not, mentioning `synadm` will ping us with the help of Element's keyword notify feature and we'll try to get in touch.
 
