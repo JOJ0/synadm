@@ -257,6 +257,8 @@ pip install .
 * [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
 * [x] ~~[Shutdown Room](https://matrix-org.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
+  * [ ] `synadm media user-stats`
+  * [ ] `synadm room largest`
 * [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
   * [x] `user details <user id>`
   * [x] `user modify <user id>` (also used for user creation)
