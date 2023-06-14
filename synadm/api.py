@@ -1148,8 +1148,8 @@ class SynapseAdmin(ApiRequest):
                 an exception occured. See Synapse admin API docs for details.
 
         """
-        result = self.query("get", "v1/registration_tokens/{token}",
-                            token=token)
+        result = self.query("get", "v1/registration_tokens/{t}",
+                            t=token)
 
         # Change expiry_time to a human readable format if requested
         if (
@@ -1244,8 +1244,8 @@ class SynapseAdmin(ApiRequest):
             self.log.debug(f"Received --expire-at: {expire_at}")
             data["expiry_time"] = self._timestamp_from_datetime(expire_at)
 
-        return self.query("put", "v1/registration_tokens/{token}", data=data,
-                          token=token)
+        return self.query("put", "v1/registration_tokens/{t}", data=data,
+                          t=token)
 
     def regtok_delete(self, token):
         """ Delete a registration token
@@ -1258,8 +1258,11 @@ class SynapseAdmin(ApiRequest):
                 an exception occured. See Synapse admin API docs for details.
 
         """
-        return self.query("delete", "v1/registration_tokens/{token}",
-                          token=token)
+        # t because query also accepts token when we want it for the
+        # request
+        # https://github.com/JOJ0/synadm/issues/110#issuecomment-1590032158
+        return self.query("delete", "v1/registration_tokens/{t}",
+                          t=token)
 
     def user_shadow_ban(self, user_id, unban):
         """ Shadow-ban or unban a user.
