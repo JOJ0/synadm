@@ -208,7 +208,7 @@ git pull
 pip install .
 ```
 
-*Note: If you've installed to a Python venv, [activate it](CONTRIBUTING.md#3-set-up-a-python3-virtual-environment).*
+*Note: If you installed it to a Python venv, [activate it](CONTRIBUTING.md#3-set-up-a-python3-virtual-environment).*
 
 *Note: If you've installed in [editable mode](CONTRIBUTING.md#4-install-in-editable-mode) you can spare the `pip install .` command - just `git pull` and you're done.*
 
