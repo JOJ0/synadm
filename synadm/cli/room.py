@@ -19,6 +19,7 @@
 """
 
 import click
+from click_option_group import RequiredMutuallyExclusiveOptionGroup, optgroup
 
 from synadm import cli
 
@@ -286,6 +287,36 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
         helper.output(room_del)
     else:
         click.echo("Abort.")
+
+
+@room.command(name="delete-status")
+@optgroup.group(
+        "Query type", cls=RequiredMutuallyExclusiveOptionGroup,
+        help="Query room deletion status via either Room ID or Deletion ID"
+)
+@optgroup.option(
+        "--room-id", "-r", type=str,
+        help="""The Room ID to query the deletion status for""")
+@optgroup.option(
+        "--delete-id", "-d", type=str,
+        help="""The Delete ID to query the deletion status for""")
+@click.pass_obj
+def delete_status(helper, room_id, delete_id):
+    """ Get room deletion status via either the room ID or the delete ID.
+
+    This requires the usage of the Room Delete v2 API. If you used v1 of the
+    Room Delete API, this is irrelevant.
+    """
+    output = None
+    if room_id:
+        output = helper.api.room_delete_v2_status_by_room_id(
+                room_id
+        )
+    if delete_id:
+        output = helper.api.room_delete_v2_status_by_delete_id(
+                delete_id
+        )
+    helper.output(output)
 
 
 @room.command(name="search")
