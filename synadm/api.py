@@ -871,6 +871,14 @@ class SynapseAdmin(ApiRequest):
         return self.query("delete", "v2/rooms/{room_id}", data=data,
                           room_id=room_id)
 
+    def room_delete_v2_status_by_room_id(self, room_id):
+        return self.query("get", "v2/rooms/{room_id}/delete_status",
+                          room_id=room_id)
+
+    def room_delete_v2_status_by_delete_id(self, delete_id):
+        return self.query("get", "v2/rooms/delete_status/{delete_id}",
+                          delete_id=delete_id)
+
     def block_room(self, room_id, block):
         """ Block or unblock a room.
 
