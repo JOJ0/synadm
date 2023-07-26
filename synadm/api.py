@@ -853,6 +853,24 @@ class SynapseAdmin(ApiRequest):
         return self.query("delete", "v1/rooms/{room_id}", data=data,
                           room_id=room_id)
 
+    def room_delete_v2(self, room_id, new_room_user_id, room_name, message,
+                       block, purge):
+        """ Delete a room asynchronously and purge it if requested
+        """
+        data = {
+            "block": block,  # data with proper defaults from cli
+            "purge": purge
+        }
+        # everything else is optional and shouldn't even exist in post body
+        if new_room_user_id:
+            data.update({"new_room_user_id": new_room_user_id})
+        if room_name:
+            data.update({"room_name": room_name})
+        if message:
+            data.update({"message": message})
+        return self.query("delete", "v2/rooms/{room_id}", data=data,
+                          room_id=room_id)
+
     def block_room(self, room_id, block):
         """ Block or unblock a room.
 
