@@ -245,10 +245,13 @@ def members(helper, room_id):
     "--no-purge", is_flag=True, default=False, show_default=True,
     help="""Prevent removing of all traces of the room from your
     database.""")
+@click.option(
+    "--v1", is_flag=True, default=False, show_default=True,
+    help="""Use version 1 of the room delete API instead of version 2""")
 @click.pass_obj
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
-           no_purge):
+           no_purge, v1):
     """ Delete and possibly purge a room.
     """
     room_details = helper.api.room_details(room_id)
@@ -269,9 +272,14 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
     )
     if sure:
         mxid = helper.generate_mxid(new_room_user_id)
-        room_del = helper.api.room_delete(
-            room_id, mxid, room_name,
-            message, block, no_purge)
+        if v1:
+            room_del = helper.api.room_delete(
+                room_id, mxid, room_name,
+                message, block, no_purge)
+        else:
+            room_del = helper.api.room_delete_v2(
+                room_id, mxid, room_name,
+                message, block, not bool(no_purge))
         if room_del is None:
             click.echo("Room not deleted.")
             raise SystemExit(1)
