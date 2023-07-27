@@ -19,6 +19,7 @@
 """
 
 import click
+from click_option_group import RequiredMutuallyExclusiveOptionGroup, optgroup
 
 from synadm import cli
 
@@ -245,10 +246,13 @@ def members(helper, room_id):
     "--no-purge", is_flag=True, default=False, show_default=True,
     help="""Prevent removing of all traces of the room from your
     database.""")
+@click.option(
+    "--v1", is_flag=True, default=False, show_default=True,
+    help="""Use version 1 of the room delete API instead of version 2""")
 @click.pass_obj
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
-           no_purge):
+           no_purge, v1):
     """ Delete and possibly purge a room.
     """
     room_details = helper.api.room_details(room_id)
@@ -269,15 +273,50 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
     )
     if sure:
         mxid = helper.generate_mxid(new_room_user_id)
-        room_del = helper.api.room_delete(
-            room_id, mxid, room_name,
-            message, block, no_purge)
+        if v1:
+            room_del = helper.api.room_delete(
+                room_id, mxid, room_name,
+                message, block, no_purge)
+        else:
+            room_del = helper.api.room_delete_v2(
+                room_id, mxid, room_name,
+                message, block, not bool(no_purge))
         if room_del is None:
             click.echo("Room not deleted.")
             raise SystemExit(1)
         helper.output(room_del)
     else:
         click.echo("Abort.")
+
+
+@room.command(name="delete-status")
+@optgroup.group(
+        "Query type", cls=RequiredMutuallyExclusiveOptionGroup,
+        help="Query room deletion status via either Room ID or Deletion ID"
+)
+@optgroup.option(
+        "--room-id", "-r", type=str,
+        help="""The Room ID to query the deletion status for""")
+@optgroup.option(
+        "--delete-id", "-d", type=str,
+        help="""The Delete ID to query the deletion status for""")
+@click.pass_obj
+def delete_status(helper, room_id, delete_id):
+    """ Get room deletion status via either the room ID or the delete ID.
+
+    This requires the usage of the Room Delete v2 API. If you used v1 of the
+    Room Delete API, this is irrelevant.
+    """
+    output = None
+    if room_id:
+        output = helper.api.room_delete_v2_status_by_room_id(
+                room_id
+        )
+    if delete_id:
+        output = helper.api.room_delete_v2_status_by_delete_id(
+                delete_id
+        )
+    helper.output(output)
 
 
 @room.command(name="search")
