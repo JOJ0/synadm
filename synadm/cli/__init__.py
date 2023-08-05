@@ -141,11 +141,11 @@ class APIHelper:
             self.log.error("%s while reading configuration file", error)
         for key, value in self.config.items():
 
-            if key == "ssl_verify" and type(value) != bool:
+            if key == "ssl_verify" and not isinstance(value, bool):
                 self.log.error("Config value error: %s, %s must be boolean",
                                key, value)
 
-            if not value and type(value) != bool:
+            if not value and not isinstance(value, bool):
                 self.log.error("Config entry missing: %s, %s", key, value)
                 return False
             else:
