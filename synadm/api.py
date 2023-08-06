@@ -131,8 +131,8 @@ class ApiRequest:
             override_verify = verify
 
         try:
-            resp = getattr(requests, method)(
-                url, headers=self.headers, timeout=self.timeout,
+            resp = requests.request(
+                method, url, headers=self.headers, timeout=self.timeout,
                 params=params, json=data, verify=override_verify
             )
             if not resp.ok:
