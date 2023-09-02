@@ -300,6 +300,7 @@ class APIHelper:
 @click.group(
     invoke_without_command=False,
     context_settings=dict(help_option_names=["-h", "--help"]))
+@click.version_option()
 @click.option(
     "--verbose", "-v", count=True, default=False,
     help="Enable INFO (-v) or DEBUG (-vv) logging on console.")
