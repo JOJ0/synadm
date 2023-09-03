@@ -423,10 +423,14 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     is omitted when modifying an existing user, the user-type will not be
     manipulated. If the --user-type option is omitted when creating a new user,
     a regular user will be created.""")
+@optgroup.option(
+    "--lock/--unlock", "-l/-L", default=None, show_default=False,
+    help="""Whether to lock or unlock the account, preventing or allowing
+    logins respectively.""")
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
-           threepid, avatar_url, admin, deactivation, user_type):
+           threepid, avatar_url, admin, deactivation, user_type, lock):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -480,7 +484,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         modified = helper.api.user_modify(
             mxid, password, display_name, threepid,
             avatar_url, admin, deactivation,
-            'null' if user_type == 'regular' else user_type)
+            'null' if user_type == 'regular' else user_type, lock)
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
