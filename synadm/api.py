@@ -595,7 +595,7 @@ class SynapseAdmin(ApiRequest):
                           user_id=user_id)
 
     def user_modify(self, user_id, password, display_name, threepid,
-                    avatar_url, admin, deactivation, user_type):
+                    avatar_url, admin, deactivation, user_type, lock):
         """ Create or update information about a given user
 
         Threepid should be passed as a tuple in a tuple
@@ -613,6 +613,8 @@ class SynapseAdmin(ApiRequest):
             data.update({"avatar_url": avatar_url})
         if admin is not None:
             data.update({"admin": admin})
+        if lock is not None:
+            data.update({"locked": lock})
         if deactivation == "deactivate":
             data.update({"deactivated": True})
         if deactivation == "activate":
