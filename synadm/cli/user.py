@@ -426,7 +426,7 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @optgroup.option(
     "--lock/--unlock", "-l/-L", default=None, show_default=False,
     help="""Whether to lock or unlock the account, preventing or allowing
-    logins respectively.""")
+    logins respectively. Feature first present in Synapse 1.91.0.""")
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
