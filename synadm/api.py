@@ -415,7 +415,7 @@ class SynapseAdmin(ApiRequest):
         self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
-                  _name, _user_id):
+                  _name, _user_id, _admin):
         """List and search users
 
         Args:
@@ -426,11 +426,13 @@ class SynapseAdmin(ApiRequest):
             _name (string): user name localpart to search for, see Synapse
                 admin API docs for details
             _user_id (string): fully qualified Matrix user ID to search for
+            _admin (bool or None): whether to filter for admins. a None
+                does not filter.
 
         Returns:
             string: JSON string containing the found users
         """
-        return self.query("get", "v2/users", params={
+        params = {
             "from": _from,
             "limit": _limit,
             "guests": (str(_guests).lower() if isinstance(_guests, bool)
@@ -438,7 +440,10 @@ class SynapseAdmin(ApiRequest):
             "deactivated": "true" if _deactivated else None,
             "name": _name,
             "user_id": _user_id
-        })
+        }
+        if _admin is not None:
+            params["admins"] = str(_admin).lower()
+        return self.query("get", "v2/users", params=params)
 
     def user_list_paginate(self, _limit, _guests, _deactivated,
                            _name, _user_id, _from="0"):

@@ -53,6 +53,10 @@ def user():
 @click.option(
     "--deactivated", "-d", is_flag=True, default=False,
     help="Also show deactivated/erased users", show_default=True)
+@click.option(
+    "--admins/--non-admins", "-a/-A", default=None,
+    help="""Whether to filter for admins, or non-admins. If not specified,
+    no admin filter is applied.""")
 @optgroup.group(
     "Search options",
     cls=MutuallyExclusiveOptionGroup,
@@ -67,12 +71,13 @@ def user():
     help="""Search users by ID - filters to only return users with Matrix IDs
     (@user:server) that contain this value""")
 @click.pass_obj
-def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id):
+def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id,
+                  admins):
     """ List users, search for users.
     """
     mxid = helper.generate_mxid(user_id)
     users = helper.api.user_list(from_, limit, guests, deactivated, name,
-                                 mxid)
+                                 mxid, admins)
     if users is None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)
