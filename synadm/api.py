@@ -446,7 +446,7 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", "v2/users", params=params)
 
     def user_list_paginate(self, _limit, _guests, _deactivated,
-                           _name, _user_id, _from="0"):
+                           _name, _user_id, _from="0", admin=None):
         # documentation is mostly duplicated from user_list...
         """Yields API responses for all of the pagination.
 
@@ -468,7 +468,7 @@ class SynapseAdmin(ApiRequest):
         """
         while _from is not None:
             response = self.user_list(_from, _limit, _guests, _deactivated,
-                                      _name, _user_id, None)
+                                      _name, _user_id, admin)
             yield response
             _from = response.get("next_token", None)
 
