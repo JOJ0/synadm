@@ -415,7 +415,7 @@ class SynapseAdmin(ApiRequest):
         self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
-                  _name, _user_id, _admin):
+                  _name, _user_id, _admin=None):
         """List and search users
 
         Args:
@@ -446,7 +446,7 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", "v2/users", params=params)
 
     def user_list_paginate(self, _limit, _guests, _deactivated,
-                           _name, _user_id, _from="0"):
+                           _name, _user_id, _from="0", admin=None):
         # documentation is mostly duplicated from user_list...
         """Yields API responses for all of the pagination.
 
@@ -468,7 +468,7 @@ class SynapseAdmin(ApiRequest):
         """
         while _from is not None:
             response = self.user_list(_from, _limit, _guests, _deactivated,
-                                      _name, _user_id)
+                                      _name, _user_id, admin)
             yield response
             _from = response.get("next_token", None)
 
@@ -1345,7 +1345,7 @@ class SynapseAdmin(ApiRequest):
         # A regular expression was supplied to match receivers.
         if regex:
             outputs = []
-            response = self.user_list(0, paginate, True, False, "", "")
+            response = self.user_list(0, paginate, True, False, "", "", None)
             if "users" not in response:
                 return
             while True:
@@ -1361,7 +1361,7 @@ class SynapseAdmin(ApiRequest):
                 if "next_token" not in response:
                     return outputs
                 response = self.user_list(response["next_token"],
-                                          100, True, False, "", "")
+                                          100, True, False, "", "", None)
         # Only a single user ID was supplied as receiver
         else:
             data["user_id"] = receivers

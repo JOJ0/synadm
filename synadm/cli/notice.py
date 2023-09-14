@@ -95,7 +95,7 @@ def notice_send_cmd(helper, from_file, batch_size, regex, preview_length,
             # Outer loop: If fetching >1 pages of users is required
             while ctr < preview_length:
                 batch = helper.api.user_list(
-                    next_token, batch_size, True, False, "", "")
+                    next_token, batch_size, True, False, "", "", None)
                 if "users" not in batch:
                     break
                 batch_mxids = [user['name'] for user in batch["users"]]
@@ -135,7 +135,8 @@ def notice_send_cmd(helper, from_file, batch_size, regex, preview_length,
         formatted_content = formatted if formatted else plain_content
 
     if regex:
-        if "users" not in helper.api.user_list(0, 100, True, False, "", ""):
+        if "users" not in helper.api.user_list(0, 100, True, False, "", "",
+                                               None):
             return
         if not confirm_prompt():
             return
