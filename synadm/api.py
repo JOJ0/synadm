@@ -415,7 +415,7 @@ class SynapseAdmin(ApiRequest):
         self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
-                  _name, _user_id, _admin):
+                  _name, _user_id, _admin=None):
         """List and search users
 
         Args:
