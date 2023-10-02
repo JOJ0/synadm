@@ -110,15 +110,10 @@ def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
         token = click.prompt("Matrix token", type=str)
 
     if data_file:
-        raw_request = helper.matrix_api.raw_request(
-            endpoint,
-            method,
-            data_file.read(),
-            token=token
-        )
-    else:
-        raw_request = helper.matrix_api.raw_request(endpoint, method, data,
-                                                    token=token)
+        data = data_file.read()
+
+    raw_request = helper.matrix_api.raw_request(endpoint, method, data,
+                                                token=token)
 
     if helper.no_confirm:
         if raw_request is None:
