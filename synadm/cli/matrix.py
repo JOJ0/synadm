@@ -21,6 +21,7 @@
 import click
 
 from synadm import cli
+from synadm.cli._common import common_opts_raw_command, data_opts_raw_command
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 
 
@@ -72,28 +73,8 @@ def login_cmd(helper, user_id, password):
 
 
 @matrix.command(name="raw")
-@click.argument(
-    "endpoint", type=str)
-@click.option(
-    "--method", "-m", type=click.Choice(["get", "post", "put", "delete"]),
-    help="""The HTTP method used for the request.""",
-    default="get", show_default=True)
-@optgroup.group(
-    "Data input",
-    cls=MutuallyExclusiveOptionGroup,
-    help="")
-@optgroup.option(
-    "--data", "-d", type=str, default='{}', show_default=True,
-    help="""The JSON string sent in the body of post, put and delete requests -
-    provided as a string. Make sure to escape it from shell interpretation by
-    using single quotes. E.g '{"key1": "value1", "key2": 123}'
-    """)
-@optgroup.option(
-    "--data-file", "-f", type=click.File("rt"),
-    show_default=True,
-    help="""Read JSON data from file. To read from stdin use "-" as the
-    filename argument.
-    """)
+@common_opts_raw_command
+@data_opts_raw_command
 @optgroup.group(
     "Matrix token",
     cls=MutuallyExclusiveOptionGroup,
