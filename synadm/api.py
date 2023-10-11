@@ -843,7 +843,7 @@ class SynapseAdmin(ApiRequest):
         return rooms
 
     def room_delete(self, room_id, new_room_user_id, room_name, message,
-                    block, no_purge):
+                    block, no_purge, force_purge):
         """ Delete a room and purge it if requested
         """
         data = {
@@ -857,11 +857,13 @@ class SynapseAdmin(ApiRequest):
             data.update({"room_name": room_name})
         if message:
             data.update({"message": message})
+        if force_purge:
+            data.update({"force_purge": force_purge})
         return self.query("delete", "v1/rooms/{room_id}", data=data,
                           room_id=room_id)
 
     def room_delete_v2(self, room_id, new_room_user_id, room_name, message,
-                       block, purge):
+                       block, purge, force_purge):
         """ Delete a room asynchronously and purge it if requested
         """
         data = {
@@ -875,6 +877,8 @@ class SynapseAdmin(ApiRequest):
             data.update({"room_name": room_name})
         if message:
             data.update({"message": message})
+        if force_purge:
+            data.update({"force_purge": force_purge})
         return self.query("delete", "v2/rooms/{room_id}", data=data,
                           room_id=room_id)
 

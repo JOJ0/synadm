@@ -247,14 +247,21 @@ def members(helper, room_id):
     help="""Prevent removing of all traces of the room from your
     database.""")
 @click.option(
+    "--force-purge", is_flag=True, default=False, show_default=True,
+    help="""Force a purge to go ahead even if there are local users still
+    in the room. Do not use this unless a regular purge operation fails,
+    as it could leave those users' clients in a confused state.""")
+@click.option(
     "--v1", is_flag=True, default=False, show_default=True,
     help="""Use version 1 of the room delete API instead of version 2""")
 @click.pass_obj
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
-           no_purge, v1):
+           no_purge, force_purge, v1):
     """ Delete and possibly purge a room.
     """
+    if no_purge and force_purge:
+        click.echo("--force-purge will be ignored as --no-purge is set")
     room_details = helper.api.room_details(room_id)
     if "errcode" in room_details.keys():
         if room_details["errcode"] == "M_NOT_FOUND":
@@ -276,11 +283,11 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
         if v1:
             room_del = helper.api.room_delete(
                 room_id, mxid, room_name,
-                message, block, no_purge)
+                message, block, no_purge, force_purge)
         else:
             room_del = helper.api.room_delete_v2(
                 room_id, mxid, room_name,
-                message, block, not bool(no_purge))
+                message, block, not bool(no_purge), force_purge)
         if room_del is None:
             click.echo("Room not deleted.")
             raise SystemExit(1)
