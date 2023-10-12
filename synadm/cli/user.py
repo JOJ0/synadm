@@ -507,6 +507,23 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 
 @user.command()
 @click.argument("user_id", type=str)
+@click.argument("mxc_uri", type=str)
+@click.pass_obj
+def set_profile_picture(helper, user_id, mxc_uri):
+    """
+    Set a profile picture for a user by the MXC URI.
+
+    Setting the MXC URI to an empty strings removes the profile picture.
+    """
+    modified = helper.user_set_profile_picture(user_id, mxc_uri)
+    if modified is None:
+        click.echo("Could not set profile picture.", err=True)
+        raise SystemExit(1)
+    helper.output(modified)
+
+
+@user.command()
+@click.argument("user_id", type=str)
 @click.argument("display_name", type=str)
 @click.pass_obj
 def set_display_name(helper, user_id, display_name):

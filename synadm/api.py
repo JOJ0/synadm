@@ -644,6 +644,12 @@ class SynapseAdmin(ApiRequest):
         }
         return self._user_modify_api(user_id, data)
 
+    def user_set_profile_picture(self, user_id, mxc_uri):
+        data = {
+            "avatar_url": mxc_uri
+        }
+        return self._user_modify_api(user_id, data)
+
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
         """
