@@ -749,7 +749,7 @@ class SynapseAdmin(ApiRequest):
         of 3PID it is as medium.
         """
         return self.query("get", "v1/threepid/{medium}/users/{address}",
-                          address=address)
+                          address=address, medium=medium)
 
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
