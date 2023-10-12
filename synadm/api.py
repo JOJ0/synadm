@@ -630,6 +630,15 @@ class SynapseAdmin(ApiRequest):
         return self.query("put", "v2/users/{user_id}", data=data,
                           user_id=user_id)
 
+    def _user_modify_api(self, user_id, data):
+        """
+        Wrapper for the user modify API
+
+        Passes data to synapse as is, and returns the response of the query.
+        """
+        return self.query("put", "v2/users/{user_id}", data=data,
+                          user_id=user_id)
+
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
         """
