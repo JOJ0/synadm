@@ -656,6 +656,9 @@ class SynapseAdmin(ApiRequest):
         """
         return self._user_modify_api(user_id, {"locked": locked})
 
+    def user_set_admin(self, user_id, admin):
+        return self._user_modify_api(user_id, {"admin": admin})
+
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
         """

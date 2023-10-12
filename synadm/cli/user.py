@@ -574,6 +574,22 @@ def unlock(helper, user_id):
 @user.command()
 @click.argument("user_id", type=str)
 @click.pass_obj
+def admin_grant(helper, user_id):
+    result = helper.api.user_set_admin(user_id, True)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def admin_revoke(helper, user_id):
+    result = helper.api.user_set_admin(user_id, False)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
 def whois(helper, user_id):
     """ View information about a user's active session.
     """
