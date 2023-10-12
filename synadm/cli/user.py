@@ -507,6 +507,31 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 
 @user.command()
 @click.argument("user_id", type=str)
+@click.argument("display_name", type=str)
+@click.pass_obj
+def set_display_name(helper, user_id, display_name):
+    """
+    Set the display name of a user.
+
+    Display name can be set to an empty string to remove it.
+    """
+    mxid = helper.generate_mxid(user_id)
+    modified = helper.api.user_set_display_name(mxid, display_name)
+    if modified is None:
+        click.echo("Could not set display name.", err=True)
+        raise SystemExit(1)
+    if helper.output_format == "human":
+        new_display_name = modified["displayname"]
+        if new_display_name is None:
+            click.echo(f"Removed display name for {mxid}")
+        else:
+            click.echo(f"Set display name for {mxid} to {new_display_name}")
+    else:
+        helper.output(modified)
+
+
+@user.command()
+@click.argument("user_id", type=str)
 @click.pass_obj
 def whois(helper, user_id):
     """ View information about a user's active session.

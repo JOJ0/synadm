@@ -638,6 +638,12 @@ class SynapseAdmin(ApiRequest):
         return self.query("put", "v2/users/{user_id}", data=data,
                           user_id=user_id)
 
+    def user_set_display_name(self, user_id, display_name):
+        data = {
+            "displayname": display_name
+        }
+        return self._user_modify_api(user_id, data)
+
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
         """
