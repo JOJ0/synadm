@@ -650,6 +650,12 @@ class SynapseAdmin(ApiRequest):
         }
         return self._user_modify_api(user_id, data)
 
+    def user_set_lock(self, user_id, locked):
+        """
+        Lock or unlock an account.
+        """
+        return self._user_modify_api(user_id, {"locked": locked})
+
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
         """

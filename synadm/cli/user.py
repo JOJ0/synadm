@@ -550,6 +550,30 @@ def set_display_name(helper, user_id, display_name):
 @user.command()
 @click.argument("user_id", type=str)
 @click.pass_obj
+def lock(helper, user_id):
+    """
+    Lock a user account, preventing them from logging in or using the
+    account.
+    """
+    result = helper.api.user_set_lock(user_id, True)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def unlock(helper, user_id):
+    """
+    Unlock a user account, allowing a locked account to log in and use the
+    account.
+    """
+    result = helper.api.user_set_lock(user_id, False)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
 def whois(helper, user_id):
     """ View information about a user's active session.
     """
