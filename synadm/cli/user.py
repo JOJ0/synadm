@@ -507,6 +507,22 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
 
 @user.command()
 @click.argument("user_id", type=str)
+@click.argument("user_type", type=str)
+@click.pass_obj
+def set_user_type(helper, user_id, user_type):
+    """Set a user type.
+
+    For the user_type argument, the accepted values are "null" (to
+    clear/remove the user type), or any other value that synapse accepts
+    ("bot" and "support").
+    """
+    if user_type == "null":
+        user_type = None
+    helper.output(helper.api.user_set_type(user_id, user_type))
+
+
+@user.command()
+@click.argument("user_id", type=str)
 @click.argument("mxc_uri", type=str)
 @click.pass_obj
 def set_profile_picture(helper, user_id, mxc_uri):

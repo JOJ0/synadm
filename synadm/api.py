@@ -650,6 +650,21 @@ class SynapseAdmin(ApiRequest):
         }
         return self._user_modify_api(user_id, data)
 
+    def user_set_type(self, user_id, user_type):
+        """
+        Set user type for a user.
+
+        Args:
+            user_id: A Matrix user ID.
+            user_type (str or None): A user type. Accepted value depends on
+                Synapse. A python None is the same as removing the user
+                type.
+        """
+        data = {
+            "user_type": user_type
+        }
+        return self._user_modify_api(user_id, data)
+
     def user_reactivate(self, user_id, password=None):
         """
         Args:
