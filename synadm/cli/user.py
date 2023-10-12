@@ -505,6 +505,11 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         click.echo("Abort.")
 
 
+# for these placeholders, function similarly to the modify command, but in
+# it's own command.
+# TODO: find 3pid modify command
+
+
 @user.command()
 @click.argument("user_id", type=str)
 @click.argument("user_type", type=str)

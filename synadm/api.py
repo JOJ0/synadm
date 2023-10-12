@@ -605,6 +605,7 @@ class SynapseAdmin(ApiRequest):
 
         Threepid should be passed as a tuple in a tuple
         """
+        # TODO: deprecate
         data = {}
         if password:
             data.update({"password": password})
