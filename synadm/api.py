@@ -650,6 +650,20 @@ class SynapseAdmin(ApiRequest):
         }
         return self._user_modify_api(user_id, data)
 
+    def user_reactivate(self, user_id, password=None):
+        """
+        Args:
+            user_id (str): A Matrix user ID
+            password (str or None): A password. Not set if None Required
+                under certain conditions.
+        """
+        data = {
+            "deactivated": False
+        }
+        if password is not None:
+            data["password"] = password
+        return self._user_modify_api(user_id, data)
+
     def user_set_lock(self, user_id, locked):
         """
         Lock or unlock an account.

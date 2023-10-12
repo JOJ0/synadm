@@ -549,6 +549,19 @@ def set_display_name(helper, user_id, display_name):
 
 @user.command()
 @click.argument("user_id", type=str)
+# TODO: check compatibility with --batch
+@click.password_option(
+    required=False,
+    help="""The new password to set to. This is required when reactivating a
+    user on a Synapse installation with passwords enabled.""")
+@click.pass_obj
+def reactivate(helper, user_id, password):
+    result = helper.api.user_reactivate(user_id, password)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
 @click.pass_obj
 def lock(helper, user_id):
     """
