@@ -627,8 +627,7 @@ class SynapseAdmin(ApiRequest):
         if user_type:
             data.update({"user_type": None if user_type == 'null' else
                          user_type})
-        return self.query("put", "v2/users/{user_id}", data=data,
-                          user_id=user_id)
+        return self._user_modify_api(user_id, data)
 
     def _user_modify_api(self, user_id, data):
         """
