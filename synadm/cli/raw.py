@@ -31,11 +31,11 @@ def raw_request_cmd(helper, endpoint, method, data, data_file):
     """ Issue a custom request to the Synapse Admin API.
 
     The endpoint argument is the part of the URL _after_ the configured
-    "Synapse base URL" and "Synapse Admin API path" (see `synadm config`).
+    "Synapse base URL" and "Synapse Admin API path" (see ``synadm config``).
     A get request to the "Query User Account API" would look like this:
-    `synadm raw v2/users/%40testuser%3Aexample.org`. URL encoding must be
+    ``synadm raw v2/users/%40testuser%3Aexample.org``. URL encoding must be
     handled at this point. Consider enabling debug outputs via synadm's global
-    flag `-vv`
+    flag ``-vv``
     """
     if data_file:
         data = data_file.read()
