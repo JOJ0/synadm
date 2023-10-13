@@ -82,29 +82,38 @@ def login_cmd(helper, user_id, password):
 @optgroup.option(
     "--token", "-t", type=str, envvar='MTOKEN', show_default=True,
     help="""Token used for Matrix authentication instead of the configured
-    admin user's token. If --token (and --prompt) option is missing, the token
-    is read from environment variable $MTOKEN instead. To make sure a user's
-    token does not show up in system logs, don't provide it on the shell
-    directly but set $MTOKEN with shell command `read MTOKEN`.""")
+    admin user's token. If ``--token`` (and ``--prompt``) option is missing,
+    the token is read from environment variable ``$MTOKEN`` instead. To make
+    sure a user's token does not show up in system logs, don't provide it on
+    the shell directly but set ``$MTOKEN`` with shell command ``read
+    MTOKEN``.""")
 @optgroup.option(
     "--prompt", "-p", is_flag=True, show_default=True,
     help="""Prompt for the token used for Matrix authentication. This option
     always overrides $MTOKEN.""")
 @click.pass_obj
 def raw_request_cmd(helper, endpoint, method, data, data_file, token, prompt):
-    """ Execute a raw request to the Matrix API.
+    """ Execute a custom request to the Matrix API.
 
     The endpoint argument is the part of the URL _after_ the configured base
-    URL and Matrix path (see `synadm config`). A simple get request would e.g
-    look like this: `synadm matrix raw client/versions`
+    URL (actually "Synapse base URL") and "Matrix API path" (see ``synadm
+    config``). A get request could look like this: ``synadm matrix raw
+    client/versions`` URL encoding must be handled at this point. Consider
+    enabling debug outputs via synadm's global flag ``-vv``
 
-    Use either --token or --prompt to provide a user's token and execute Matrix
-    commands on their behalf. Respect the privacy of others! Be responsible!
+    Use either ``--token`` or ``--prompt`` to provide a user's token and
+    execute Matrix commands on their behalf. Respect the privacy of others!
+    Act responsible!
 
+    \b
     The precedence rules for token reading are:
-    1. Interactive input using --prompt; 2. Set on CLI via --token string;
-    3. Read from environment variable $MTOKEN; 4. Preconfigured admin token
-    set in synadm's config file.
+    1. Interactive input using ``--prompt``;
+    2. Set on CLI via ``--token``
+    3. Read from environment variable ``$MTOKEN``;
+    4. Preconfigured admin token set via ``synadm config``.
+
+    Caution: Passing secrets as CLI arguments or via environment variables is
+    not considered secure. Know what you are doing!
     """
     if prompt:
         token = click.prompt("Matrix token", type=str)
