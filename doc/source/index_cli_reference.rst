@@ -15,3 +15,4 @@ Command Line Reference
    synadm.cli.matrix
    synadm.cli.regtok
    synadm.cli.notice
+   synadm.cli.raw

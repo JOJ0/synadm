@@ -505,4 +505,4 @@ def version(helper):
 
 
 # Import additional commands
-from synadm.cli import room, user, media, group, history, matrix, regtok, notice  # noqa: F401, E402, E501
+from synadm.cli import room, user, media, group, history, matrix, regtok, notice, raw  # noqa: F401, E402, E501
