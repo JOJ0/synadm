@@ -21,7 +21,7 @@ with open('README.md') as f:
 
 setup(
     name="synadm",
-    version="0.43.1",
+    version="0.44",
     author="Johannes Tiefenbacher",
     author_email="jt@peek-a-boo.at",
     description="Command line admin tool for Synapse (Matrix reference homeserver)",
