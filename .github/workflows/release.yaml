@@ -70,9 +70,9 @@ jobs:
       run: |
         if [[ "${{ steps.last_release.outputs.tag_name }}" == "${{ env.tag_full }}" ]];
         then
-          echo "::set-output name=release_existing::true"
+          echo "release_existing=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=release_existing::false"
+          echo "release_existing=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Create release
