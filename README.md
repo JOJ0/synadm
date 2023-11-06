@@ -27,7 +27,7 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 - an admin-enabled user on the instance
 - the admin user's access token
 
-`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
+`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default admin API endpoint address usually is `http://localhost:8008/_synapse/admin` or `https://localhost:8448/_synapse/admin`.
 
 ## Installation
 
@@ -123,74 +123,26 @@ pip3 install synadm --upgrade
 
 
 * [ ] [Account Validity](https://matrix-org.github.io/synapse/develop/admin_api/account_validity.html)
-* [x] [Delete Group](https://matrix-org.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
 * [ ] [Event Reports](https://matrix-org.github.io/synapse/develop/admin_api/event_reports.html)
-* [x] [Media Admin](https://matrix-org.github.io/synapse/develop/admin_api/media_admin_api.html)
-  * [x] `media list -r <room id>`
-  * [x] `media list -u <user id>` (alias of `user media <user id>`)
-  * [x] `media quarantine -s <server name> -i <media id>`
-  * [x] `media quarantine -r <room id>`
-  * [x] `media quarantine -u <room id>`
-  * [x] `media protect <media id>`
-  * [x] `media delete -s <server name> -i <media id>`
-  * [x] `media delete -s <server name> --before <date> --size 1024`
-  * [x] `media purge --before <date>` (purge remote media API)
-* [x] [Purge History](https://matrix-org.github.io/synapse/develop/admin_api/purge_history_api.html)
-  * [x] `history purge <room id>`
-  * [x] `history purge-status <purge id>`
-* [x] ~~[Purge Rooms](https://matrix-org.github.io/synapse/develop/admin_api/purge_room.html)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Register Users](https://matrix-org.github.io/synapse/develop/admin_api/register_api.html)
-* [x] [Manipulate Room Membership](https://matrix-org.github.io/synapse/develop/admin_api/room_membership.html)
-  * [x] `room join`
-* [x] [Rooms](https://matrix-org.github.io/synapse/develop/admin_api/rooms.html)
-  * [x] `room list`
-  * [x] `room details <room id>`
-  * [x] `room members <room id>`
-  * [x] `room delete <room id>`
-  * [x] `room make-admin <room id> <user id>`
-  * [x] `room state <room id>`
-  * [ ] Additional commands and aliases around room management
-    * [x] `room search <search-term>` (alias of `room list -n <search-term>`)
-    * [x] `room resolve <room alias>`
-    * [x] `room power-levels`
-    * [x] `room block`
-    * [x] `room block-status`
-* [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
-* [x] ~~[Shutdown Room](https://matrix-org.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
 * [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
-  * [ ] `synadm media user-stats`
-  * [ ] `synadm room largest`
-* [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
-  * [x] `user details <user id>`
-  * [x] `user modify <user id>` (also used for user creation)
-  * [x] `user list`
-  * [x] `user deactivate <user id>` (including GDPR erase)
-  * [x] `user password <user id>`
-  * [x] `user membership <user id>`
-  * [x] `user whois <user id>`
-  * [x] `user shadow-ban <user id>`
-  * [x] `user media -u <user id>` (also available as `media list -u <user id>`)
-  * [x] `user login <user id>`
-  * [ ] Additional commands and aliases around user management
-      * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
-      * [ ] `user create <user id>` (alias of `user modify ...`)
-      * [x] `user prune-devices <user id>`
-* [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
-  * [x] `version`
+* [x] [Delete Group](https://matrix-org.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
+* [x] [Manipulate Room Membership](https://matrix-org.github.io/synapse/develop/admin_api/room_membership.html)
+* [x] [Media Admin](https://matrix-org.github.io/synapse/develop/admin_api/media_admin_api.html)
+* [x] [Purge History](https://matrix-org.github.io/synapse/develop/admin_api/purge_history_api.html)
 * [x] [Registration Tokens](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
-  * [x] `regtok list`
-  * [x] `regtok details <registration token>`
-  * [x] `regtok new`
-  * [x] `regtok update <registration token>`
-  * [x] `regtok delete <registration token>`
+* [x] [Rooms](https://matrix-org.github.io/synapse/develop/admin_api/rooms.html)
+* [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
+* [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
+* [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
 
 ## Support
 
 If you need help with using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via [our Matrix room][mroom]!
 
-We are hanging around in the official support room for Synapse, [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already. If not, mentioning `synadm` will ping us with the help of Element's keyword notify feature and we'll try to get in touch.
+We are hanging around in [the official support room for Synapse](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already.
 
-The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at][mroom].
+The most direct way to reach synadm maintainers as well as seasoned `synadm` users and Synapse admins is by joining [#synadm:peek-a-boo.at][mroom].
 
 [mroom]:https://matrix.to/#/#synadm:peek-a-boo.at
 
