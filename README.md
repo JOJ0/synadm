@@ -28,11 +28,8 @@ API](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api
 - an admin-enabled user on the instance
 - the admin user's access token
 
-`synadm` is designed to run either directly on the host running the Synapse
-instance or on a remote machine able to access Synapse's API port. Synapse's
-default admin API endpoint address usually is
-`http://localhost:8008/_synapse/admin` or
-`https://localhost:8448/_synapse/admin`.
+`synadm` can run either on the Synapse host, or on a remote machine with
+access to the Synapse Admin API.
 
 ## Installation
 
@@ -41,6 +38,22 @@ To install synadm from PyPI, run the following command:
 `pip3 install synadm`
 
 ## Configuration
+
+### The configurator
+
+`synadm` asks for necessary configuration items on first launch
+automatically. Also whenever new mandatory configuration items where added
+(eg after an update), the user will be prompted for missing items
+automatically.
+
+Configuration can be changed any time by launching the configurator
+directly:
+
+```
+synadm config
+```
+
+Configuration will be saved in `~/.config/synadm.yaml`
 
 ### Getting an Admin Token
 
@@ -66,22 +79,6 @@ configurator](#the-configurator) will launch anyway.
   token which you can finally set by re-launching the configurator as
   described below.
 
-### The configurator
-
-`synadm` asks for necessary configuration items on first launch
-automatically. Also whenever new mandatory configuration items where added
-(eg after an update), the user will be prompted for missing items
-automatically.
-
-Configuration can be changed any time by launching the configurator
-directly:
-
-```
-synadm config
-```
-
-Configuration will be saved in `~/.config/synadm.yaml`
-
 ## Usage
 
 You can add `-h` or `--help` to the command to see the help for it:
@@ -97,24 +94,6 @@ synadm version -h
 synadm user -h
 synadm room -h
 ```
-
-By default, `synadm` will show some abbreviated help for the command. For
-example:
-
-```
-synadm user
-```
-or
-```
-synadm user details
-```
-
-will show essential help for the particular subcommand right away.
-
-*Note: A list of currently available commands is found in chapter
-[implementation status / commands
-list](#implementation-status--commands-list)* as well as in the following
-chapter.
 
 ### Command Line Reference
 
@@ -136,32 +115,6 @@ For updating an installation done with PyPI:
 ```
 pip3 install synadm --upgrade
 ```
-
-## Implementation Status / Commands List
-
-[Follow this link to the official Synapse Admin API
-docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html).
-Direct links to the specific API documentation pages are provided in the
-list below.
-
-*Note: Most commands have several optional arguments available. Put -h after
-any of the below listed commands to view them or have a look at the [Command
-Line
-Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
-
-* [ ] [Account Validity](https://matrix-org.github.io/synapse/develop/admin_api/account_validity.html)
-* [ ] [Event Reports](https://matrix-org.github.io/synapse/develop/admin_api/event_reports.html)
-* [ ] [Register Users](https://matrix-org.github.io/synapse/develop/admin_api/register_api.html)
-* [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
-* [x] [Delete Group](https://matrix-org.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
-* [x] [Manipulate Room Membership](https://matrix-org.github.io/synapse/develop/admin_api/room_membership.html)
-* [x] [Media Admin](https://matrix-org.github.io/synapse/develop/admin_api/media_admin_api.html)
-* [x] [Purge History](https://matrix-org.github.io/synapse/develop/admin_api/purge_history_api.html)
-* [x] [Registration Tokens](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
-* [x] [Rooms](https://matrix-org.github.io/synapse/develop/admin_api/rooms.html)
-* [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
-* [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
-* [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
 
 ## Support
 
@@ -186,10 +139,7 @@ too. If unsure, ask in
 ## Contributing
 
 First of all, thanks for your interest in contributing to `synadm`! We
-appreciate any help, no matter if you are a programmer or a user. Both
-groups can do valuable things for the `synadm` project. We love providing a
-useful tool to fellow Synapse sysadmins but rely on contribution from the
-Synapse and Matrix community to keep `synadm` useful, current and stable.
+appreciate any help, no matter if you are a programmer or a user.
 
 Please review the [contributing docs](CONTRIBUTING.md) for guidelines and
 help around the topic!
