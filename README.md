@@ -18,9 +18,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix-Synapse
-homeservers](https://github.com/matrix-org/synapse) conveniently issue
-commands available via its [admin
+A CLI tool for the [Synapse admin
 API](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
 
 ## Prerequisites
@@ -133,7 +131,7 @@ chapter.
 
 ## Update
 
-For updating an installation done with PyPI
+For updating an installation done with PyPI:
 
 ```
 pip3 install synadm --upgrade
@@ -142,8 +140,8 @@ pip3 install synadm --upgrade
 ## Implementation Status / Commands List
 
 [Follow this link to the official Synapse Admin API
-docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html)
-- direct links to the specific API documentation pages are provided in the
+docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html).
+Direct links to the specific API documentation pages are provided in the
 list below.
 
 *Note: Most commands have several optional arguments available. Put -h after
