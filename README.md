@@ -72,12 +72,12 @@ Password:
 If you issue this command in a fresh `synadm` installation, [the
 configurator](#the-configurator) will launch anyway.
 
-- Answer the questions.
-- Set token to "invalid" at first so `synadm` will run the `matrix login`
-  command (otherwise you'd get a "Configuration incomplete" error).
-- After successfully entering your admin password you will be presented a
-  token which you can finally set by re-launching the configurator as
-  described below.
+1. Answer the questions.
+2. Set token to "invalid" at first so `synadm` will run the `matrix login`
+   command (otherwise you'd get a "Configuration incomplete" error).
+3. After successfully entering your admin password you will be presented a
+   token which you can finally set by re-launching the configurator as
+   described below.
 
 ## Usage
 
