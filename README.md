@@ -7,13 +7,11 @@
 - [Configuration](#configuration)
   - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
-  - [matrix-docker-ansible-deploy](#matrix-docker-ansible-deploy)
 - [Usage](#usage)
   - [Command Line Reference](#command-line-reference)
   - [Advanced Usage](#advanced-usage)
 - [Update](#update)
-- [Implementation Status / Commands List](#implementation-status--commands-list)
-- [Get in Touch](#get-in-touch)
+- [Support](#support)
 - [Contributing](#contributing)
 
 ## About
