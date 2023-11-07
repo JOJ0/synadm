@@ -97,7 +97,7 @@ synadm room -h
 
 A detailed [Command Line
 Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html)
-can be found in `synadm`'s readthedocs documentation.
+can be found in `synadm`'s documentation.
 
 ### Advanced Usage
 
@@ -116,18 +116,13 @@ pip3 install synadm --upgrade
 
 ## Support
 
-If you need help with using synadm, have a feature idea or would like to
+If you need help with using `synadm`, have a feature idea or would like to
 discuss anything else around `synadm`, get in touch via [our Matrix
-room][mroom]!
+room](https://matrix.to/#/#synadm:peek-a-boo.at)!
 
-We are hanging around in [the official support room for
-Synapse](https://matrix.to/#/#synapse:matrix.org). Usually you'll find
-`synadm` users there that might answer your questions already.
-
-The most direct way to reach synadm maintainers as well as seasoned `synadm`
-users and Synapse admins is by joining [#synadm:peek-a-boo.at][mroom].
-
-[mroom]:https://matrix.to/#/#synadm:peek-a-boo.at
+If you have questions about Synapse (the homeserver), you should join [the
+room for Synapse](https://matrix.to/#/#synapse:matrix.org). That room should
+help you better answer Synapse questions.
 
 If you are sure you've found a bug that was not already reported, opening an
 [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option
