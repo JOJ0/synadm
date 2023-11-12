@@ -39,9 +39,7 @@ To install synadm from PyPI, run the following command:
 
 ### The configurator
 
-`synadm` asks for necessary configuration items on first launch
-automatically. Also whenever new mandatory configuration items where added
-(eg after an update), the user will be prompted for missing items
+If `synadm` hasn't been fully configured, it will run the configurator
 automatically.
 
 Configuration can be changed any time by launching the configurator
