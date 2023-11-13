@@ -456,14 +456,13 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         if key in ["user_id", "password", "password_prompt"]:  # skip these
             continue
         if key == "threepid":
-            if value != ():
-                for t_key, t_val in value:
-                    click.echo(f"{key}: {t_key} {t_val}")
-                    if t_key not in ["email", "msisdn"]:
-                        helper.log.warning(
-                            f"{t_key} is probably not a supported medium "
-                            "type. Threepid medium types according to the "
-                            "current matrix spec are: email, msisdn.")
+            for t_key, t_val in value:
+                click.echo(f"{key}: {t_key} {t_val}")
+                if t_key not in ["email", "msisdn"]:
+                    helper.log.warning(
+                        f"{t_key} is probably not a supported medium "
+                        "type. Threepid medium types according to the "
+                        "current matrix spec are: email, msisdn.")
         elif key == "user_type" and value == 'regular':
             click.echo("user_type: null")
         elif value not in [None, {}, []]:  # only show non-empty (aka changed)
