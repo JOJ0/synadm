@@ -394,14 +394,14 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     help="Set display name. defaults to the value of user_id")
 @optgroup.option(
     "--threepid", "-t", type=str, multiple=True, nargs=2,
-    help="""Add a third-party identifier. This can be an email address or a
-    phone number. Threepids are used for several things: For use when
-    logging in, as an alternative to the user id. In the case of email, as
-    an alternative contact to help with account recovery, as well as
-    to receive notifications of missed messages. Format: medium
-    value (eg. --threepid email <user@example.org>). This option can also
-    be stated multiple times, i.e. a user can have multiple threepids
-    configured.""")
+    help="""Add a third-party identifier (email address or phone number).
+    Threepids are used for several things: For use when logging in, as an
+    alternative to the user id; in the case of email, as an alternative contact
+    to help with account recovery; as well as to receive notifications of
+    missed messages. This option requires two arguments: `medium value` (eg.
+    `--threepid email <user@example.org>`). To configure multiple entries for a
+    user, this option can be passed multiple times. To clear _all_ threepids,
+    pass it _once_ while setting two empty strings: '' ''.""")
 @optgroup.option(
     "--avatar-url", "-v", type=str,
     help="""Set avatar URL. Must be a MXC URI

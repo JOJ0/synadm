@@ -612,9 +612,12 @@ class SynapseAdmin(ApiRequest):
         if display_name:
             data.update({"displayname": display_name})
         if threepid:
-            data.update({"threepids": [
-                {"medium": m, "address": a} for m, a in threepid
-            ]})
+            if threepid == (('', ''),):  # empty strings clear all threepids
+                data.update({"threepids": []})
+            else:
+                data.update({"threepids": [
+                    {"medium": m, "address": a} for m, a in threepid
+                ]})
         if avatar_url:
             data.update({"avatar_url": avatar_url})
         if admin is not None:
