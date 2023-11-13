@@ -603,7 +603,8 @@ class SynapseAdmin(ApiRequest):
                     avatar_url, admin, deactivation, user_type, lock):
         """ Create or update information about a given user
 
-        Threepid should be passed as a tuple in a tuple
+        The threepid argument must be passed as a tuple in a tuple (which is
+        what we usually get from a Click multi-arg option)
         """
         data = {}
         if password:
