@@ -612,7 +612,7 @@ class SynapseAdmin(ApiRequest):
             data.update({"displayname": display_name})
         if threepid:
             data.update({"threepids": [
-                {"medium": k, "address": i} for k, i in dict(threepid).items()
+                {"medium": m, "address": a} for m, a in threepid
             ]})
         if avatar_url:
             data.update({"avatar_url": avatar_url})
