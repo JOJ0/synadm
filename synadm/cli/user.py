@@ -404,6 +404,9 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     account recovery, as well as to receive notifications of missed
     messages.""")
 @optgroup.option(
+    "--clear-threepids", is_flag=True, default=None,
+    help="Remove all threepids of an existing user.")
+@optgroup.option(
     "--avatar-url", "-v", type=str,
     help="""Set avatar URL. Must be a MXC URI
     (https://matrix.org/docs/spec/client_server/r0.6.0#matrix-content-mxc-uris)
@@ -436,7 +439,8 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
-           threepid, avatar_url, admin, deactivation, user_type, lock):
+           threepid, clear_threepids, avatar_url, admin, deactivation,
+           user_type, lock):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -454,10 +458,12 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     ctx.invoke(user_details_cmd, user_id=mxid)
     click.echo("User account settings to be modified:")
     for key, value in ctx.params.items():
-        if key in ["user_id", "password", "password_prompt"]:  # skip these
+        # skip these, they get special treatment or can't be changed
+        if key in ["user_id", "password", "password_prompt",
+                   "clear_threepids"]:
             continue
         if key == "threepid":
-            if value == (('', ''),):
+            if value == (('', ''),) or clear_threepids:
                 click.echo("threepid: All entries will be cleared!")
                 continue
             for t_key, t_val in value:
@@ -490,9 +496,15 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     )
     if sure:
         modified = helper.api.user_modify(
-            mxid, password, display_name, threepid,
-            avatar_url, admin, deactivation,
-            'null' if user_type == 'regular' else user_type, lock)
+            mxid,
+            password,
+            display_name,
+            (('', ''),) if clear_threepids else threepid,
+            avatar_url,
+            admin,
+            deactivation,
+            'null' if user_type == 'regular' else user_type, lock
+        )
         if modified is None:
             click.echo("User could not be modified.")
             raise SystemExit(1)
