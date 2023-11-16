@@ -491,7 +491,7 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         password = None
     sure = (
         helper.no_confirm or
-        click.prompt("Are you sure you want to modify user? (y/N)",
+        click.prompt("Are you sure you want to modify/create user? (y/N)",
                      type=bool, default=False, show_default=False)
     )
     if sure:
@@ -506,12 +506,12 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             'null' if user_type == 'regular' else user_type, lock
         )
         if modified is None:
-            click.echo("User could not be modified.")
+            click.echo("User could not be modified/created.")
             raise SystemExit(1)
         if helper.output_format == "human":
             if modified != {}:
                 helper.output(modified)
-                click.echo("User successfully modified.")
+                click.echo("User successfully modified/created.")
             else:
                 click.echo("Synapse returned: {}".format(modified))
         else:
