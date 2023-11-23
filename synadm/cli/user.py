@@ -394,14 +394,18 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     help="Set display name. defaults to the value of user_id")
 @optgroup.option(
     "--threepid", "-t", type=str, multiple=True, nargs=2,
-    help="""Add a third-party identifier. This can be an email address or a
-    phone number. Threepids are used for several things: For use when
-    logging in, as an alternative to the user id. In the case of email, as
-    an alternative contact to help with account recovery, as well as
-    to receive notifications of missed messages. Format: medium
-    value (eg. --threepid email <user@example.org>). This option can also
-    be stated multiple times, i.e. a user can have multiple threepids
-    configured.""")
+    help="""Set a third-party identifier (email address or phone number). Pass
+    two arguments: `medium value` (eg. `--threepid email <user@example.org>`).
+    This option can be passed multiple times, which allows setting multiple
+    entries for a user. When modifying existing users, all threepids are
+    replaced by what's passed in all given `--threepid` options. Threepids are
+    used for several things: For use when logging in, as an alternative to the
+    user id; in the case of email, as an alternative contact to help with
+    account recovery, as well as to receive notifications of missed
+    messages.""")
+@optgroup.option(
+    "--clear-threepids", is_flag=True, default=None,
+    help="Remove all threepids of an existing user.")
 @optgroup.option(
     "--avatar-url", "-v", type=str,
     help="""Set avatar URL. Must be a MXC URI
@@ -435,7 +439,8 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @click.pass_obj
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
-           threepid, avatar_url, admin, deactivation, user_type, lock):
+           threepid, clear_threepids, avatar_url, admin, deactivation,
+           user_type, lock):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -453,17 +458,21 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
     ctx.invoke(user_details_cmd, user_id=mxid)
     click.echo("User account settings to be modified:")
     for key, value in ctx.params.items():
-        if key in ["user_id", "password", "password_prompt"]:  # skip these
+        # skip these, they get special treatment or can't be changed
+        if key in ["user_id", "password", "password_prompt",
+                   "clear_threepids"]:
             continue
         if key == "threepid":
-            if value != ():
-                for t_key, t_val in value:
-                    click.echo(f"{key}: {t_key} {t_val}")
-                    if t_key not in ["email", "msisdn"]:
-                        helper.log.warning(
-                            f"{t_key} is probably not a supported medium "
-                            "type. Threepid medium types according to the "
-                            "current matrix spec are: email, msisdn.")
+            if value == (('', ''),) or clear_threepids:
+                click.echo("threepid: All entries will be cleared!")
+                continue
+            for t_key, t_val in value:
+                click.echo(f"{key}: {t_key} {t_val}")
+                if t_key not in ["email", "msisdn"]:
+                    helper.log.warning(
+                        f"{t_key} is probably not a supported medium "
+                        "type. Threepid medium types according to the "
+                        "current matrix spec are: email, msisdn.")
         elif key == "user_type" and value == 'regular':
             click.echo("user_type: null")
         elif value not in [None, {}, []]:  # only show non-empty (aka changed)
@@ -482,21 +491,27 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         password = None
     sure = (
         helper.no_confirm or
-        click.prompt("Are you sure you want to modify user? (y/N)",
+        click.prompt("Are you sure you want to modify/create user? (y/N)",
                      type=bool, default=False, show_default=False)
     )
     if sure:
         modified = helper.api.user_modify(
-            mxid, password, display_name, threepid,
-            avatar_url, admin, deactivation,
-            'null' if user_type == 'regular' else user_type, lock)
+            mxid,
+            password,
+            display_name,
+            (('', ''),) if clear_threepids else threepid,
+            avatar_url,
+            admin,
+            deactivation,
+            'null' if user_type == 'regular' else user_type, lock
+        )
         if modified is None:
-            click.echo("User could not be modified.")
+            click.echo("User could not be modified/created.")
             raise SystemExit(1)
         if helper.output_format == "human":
             if modified != {}:
                 helper.output(modified)
-                click.echo("User successfully modified.")
+                click.echo("User successfully modified/created.")
             else:
                 click.echo("Synapse returned: {}".format(modified))
         else:
