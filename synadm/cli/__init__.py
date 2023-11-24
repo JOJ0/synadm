@@ -61,7 +61,7 @@ and is the default on fresh installations."""
 def root(ctx, verbose, no_confirm, output, config_file):
     """ the Matrix-Synapse admin CLI
     """
-    from synadm.cli.api_helper import APIHelper
+    from synadm.cli._helper import APIHelper
     ctx.obj = APIHelper(config_file, verbose, no_confirm, output)
     helper_loaded = ctx.obj.load()
     if ctx.invoked_subcommand != "config" and not helper_loaded:
