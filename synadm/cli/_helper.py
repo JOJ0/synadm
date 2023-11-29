@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" API helper, exported in its own file to allow importing it only
-when needed."""
+""" CLI helpers and utilities"""
 
 import os
 import logging

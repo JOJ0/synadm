@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-""" CLI base functions and settings
+""" CLI root-level commands; Subcommands are imported at the bottom of file
 """
 
 import sys
