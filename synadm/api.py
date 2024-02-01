@@ -606,6 +606,7 @@ class SynapseAdmin(ApiRequest):
         The threepid argument must be passed as a tuple in a tuple (which is
         what we usually get from a Click multi-arg option)
         """
+        # TODO: deprecate
         data = {}
         if password:
             data.update({"password": password})
@@ -631,8 +632,66 @@ class SynapseAdmin(ApiRequest):
         if user_type:
             data.update({"user_type": None if user_type == 'null' else
                          user_type})
+        return self._user_modify_api(user_id, data)
+
+    def _user_modify_api(self, user_id, data):
+        """
+        Wrapper for the user modify API
+
+        Passes data to synapse as is, and returns the response of the query.
+        """
         return self.query("put", "v2/users/{user_id}", data=data,
                           user_id=user_id)
+
+    def user_set_display_name(self, user_id, display_name):
+        data = {
+            "displayname": display_name
+        }
+        return self._user_modify_api(user_id, data)
+
+    def user_set_profile_picture(self, user_id, mxc_uri):
+        data = {
+            "avatar_url": mxc_uri
+        }
+        return self._user_modify_api(user_id, data)
+
+    def user_set_type(self, user_id, user_type):
+        """
+        Set user type for a user.
+
+        Args:
+            user_id: A Matrix user ID.
+            user_type (str or None): A user type. Accepted value depends on
+                Synapse. A python None is the same as removing the user
+                type.
+        """
+        data = {
+            "user_type": user_type
+        }
+        return self._user_modify_api(user_id, data)
+
+    def user_reactivate(self, user_id, password=None):
+        """
+        Args:
+            user_id (str): A Matrix user ID
+            password (str or None): A password. Not set if None Required
+                under certain conditions.
+        """
+        data = {
+            "deactivated": False
+        }
+        if password is not None:
+            data["password"] = password
+        return self._user_modify_api(user_id, data)
+
+    def user_set_lock(self, user_id, locked):
+        """
+        Lock or unlock an account.
+        """
+        return self._user_modify_api(user_id, {"locked": locked})
+
+    def user_set_admin(self, user_id, admin):
+        return self._user_modify_api(user_id, {"admin": admin})
 
     def user_whois(self, user_id):
         """ Return information about the active sessions for a specific user
