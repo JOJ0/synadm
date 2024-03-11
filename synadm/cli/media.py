@@ -260,7 +260,7 @@ def media_purge_cmd(helper, before_days, before, before_ts):
 @click.pass_obj
 def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
-    """ Delete media by ID, size or age
+    """ Delete local media by ID, size or age
     """
     server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
     if not server_name:
