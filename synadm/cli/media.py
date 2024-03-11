@@ -214,6 +214,8 @@ def media_protect_cmd(helper, media_id):
 @click.pass_obj
 def media_purge_cmd(helper, before_days, before, before_ts):
     """ Purge old cached remote media
+
+    To delete local media, use `synadm media delete`
     """
     media_purged = helper.api.purge_media_cache(before_days, before, before_ts)
     if media_purged is None:
@@ -261,6 +263,8 @@ def media_purge_cmd(helper, before_days, before, before_ts):
 def media_delete_cmd(helper, media_id, before_days, before, before_ts,
                      size, delete_profiles):
     """ Delete local media by ID, size or age
+
+    To delete cached remote media, use `synadm media purge`
     """
     server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
     if not server_name:
