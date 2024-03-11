@@ -25,7 +25,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [admin API](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
+A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
 
 
 
@@ -216,15 +216,15 @@ pip install .
 
 ## Implementation Status / Commands List
 
-[Follow this link to the official Synapse Admin API docs](https://matrix-org.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
+[Follow this link to the official Synapse Admin API docs](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
 
 *Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them or have a look at the [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
 
 
-* [ ] [Account Validity](https://matrix-org.github.io/synapse/develop/admin_api/account_validity.html)
-* [x] [Delete Group](https://matrix-org.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
-* [ ] [Event Reports](https://matrix-org.github.io/synapse/develop/admin_api/event_reports.html)
-* [x] [Media Admin](https://matrix-org.github.io/synapse/develop/admin_api/media_admin_api.html)
+* [ ] [Account Validity](https://element-hq.github.io/synapse/develop/admin_api/account_validity.html)
+* [x] [Delete Group](https://element-hq.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
+* [ ] [Event Reports](https://element-hq.github.io/synapse/develop/admin_api/event_reports.html)
+* [x] [Media Admin](https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html)
   * [x] `media list -r <room id>`
   * [x] `media list -u <user id>` (alias of `user media <user id>`)
   * [x] `media quarantine -s <server name> -i <media id>`
@@ -234,14 +234,14 @@ pip install .
   * [x] `media delete -s <server name> -i <media id>`
   * [x] `media delete -s <server name> --before <date> --size 1024`
   * [x] `media purge --before <date>` (purge remote media API)
-* [x] [Purge History](https://matrix-org.github.io/synapse/develop/admin_api/purge_history_api.html)
+* [x] [Purge History](https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html)
   * [x] `history purge <room id>`
   * [x] `history purge-status <purge id>`
-* [x] ~~[Purge Rooms](https://matrix-org.github.io/synapse/develop/admin_api/purge_room.html)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Register Users](https://matrix-org.github.io/synapse/develop/admin_api/register_api.html)
-* [x] [Manipulate Room Membership](https://matrix-org.github.io/synapse/develop/admin_api/room_membership.html)
+* [x] ~~[Purge Rooms](https://element-hq.github.io/synapse/develop/admin_api/purge_room.html)~~ (DEPRECATED, covered by `room delete`)
+* [ ] [Register Users](https://element-hq.github.io/synapse/develop/admin_api/register_api.html)
+* [x] [Manipulate Room Membership](https://element-hq.github.io/synapse/develop/admin_api/room_membership.html)
   * [x] `room join`
-* [x] [Rooms](https://matrix-org.github.io/synapse/develop/admin_api/rooms.html)
+* [x] [Rooms](https://element-hq.github.io/synapse/develop/admin_api/rooms.html)
   * [x] `room list`
   * [x] `room details <room id>`
   * [x] `room members <room id>`
@@ -254,12 +254,12 @@ pip install .
     * [x] `room power-levels`
     * [x] `room block`
     * [x] `room block-status`
-* [x] [Server Notices](https://matrix-org.github.io/synapse/develop/admin_api/server_notices.html)
-* [x] ~~[Shutdown Room](https://matrix-org.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Statistics](https://matrix-org.github.io/synapse/develop/admin_api/statistics.html)
+* [x] [Server Notices](https://element-hq.github.io/synapse/develop/admin_api/server_notices.html)
+* [x] ~~[Shutdown Room](https://element-hq.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
+* [ ] [Statistics](https://element-hq.github.io/synapse/develop/admin_api/statistics.html)
   * [ ] `synadm media user-stats`
   * [ ] `synadm room largest`
-* [x] [Users](https://matrix-org.github.io/synapse/develop/admin_api/user_admin_api.html)
+* [x] [Users](https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html)
   * [x] `user details <user id>`
   * [x] `user modify <user id>` (also used for user creation)
   * [x] `user list`
@@ -274,9 +274,9 @@ pip install .
       * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
       * [ ] `user create <user id>` (alias of `user modify ...`)
       * [x] `user prune-devices <user id>`
-* [x] [Server Version](https://matrix-org.github.io/synapse/develop/admin_api/version_api.html)
+* [x] [Server Version](https://element-hq.github.io/synapse/develop/admin_api/version_api.html)
   * [x] `version`
-* [x] [Registration Tokens](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
+* [x] [Registration Tokens](https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
   * [x] `regtok list`
   * [x] `regtok details <registration token>`
   * [x] `regtok new`

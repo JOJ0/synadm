@@ -464,7 +464,7 @@ class SynapseAdmin(ApiRequest):
 
         Yields:
             dict: The admin API response for listing accounts.
-                https://matrix-org.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
+                https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
         """
         while _from is not None:
             response = self.user_list(_from, _limit, _guests, _deactivated,
