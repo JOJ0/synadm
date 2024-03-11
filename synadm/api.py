@@ -1043,8 +1043,7 @@ class SynapseAdmin(ApiRequest):
                 "keep_profiles": "false"
             })
         return self.query(
-            "post", "v1/media/{server_name}/delete", data={}, params=params,
-            server_name=server_name
+            "post", "v1/media/delete", data={}, params=params
         )
 
     def media_protect(self, media_id):
