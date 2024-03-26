@@ -75,7 +75,7 @@ def root(ctx, verbose, no_confirm, output, config_file):
 @root.command(name="config")
 @click.option(
     "--user", "-u", "user_", type=str,
-    help="Admin user allowed to access the Synapse admin API's.")
+    help="Admin user allowed to access the Synapse Admin API's.")
 @click.option(
     "--token", "-t", type=str,
     help="The Admin user's access token.")
@@ -83,11 +83,11 @@ def root(ctx, verbose, no_confirm, output, config_file):
     "--base-url", "-b", type=str,
     help="""The base URL Synapse is running on. Typically this is
     https://localhost:8008 or https://localhost:8448. If Synapse is
-    configured to expose its admin API's to the outside world it might as
+    configured to expose its Admin API's to the outside world it might as
     well be something like this: https://example.org:8448""")
 @click.option(
     "--admin-path", "-p", type=str,
-    help="""The path Synapse provides its admin API's, usually the default fits
+    help="""The path Synapse provides its Admin API's, usually the default fits
     most installations.""")
 @click.option(
     "--matrix-path", "-m", type=str,
@@ -190,7 +190,7 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
             default=base_url if base_url else helper.config.get(
                 "base_url", base_url)),
         "admin_path": click.prompt(
-            "Synapse admin API path",
+            "Synapse Admin API path",
             default=admin_path if admin_path else helper.config.get(
                 "admin_path", admin_path)),
         "matrix_path": click.prompt(

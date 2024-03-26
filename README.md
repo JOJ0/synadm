@@ -25,7 +25,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
+A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [Admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
 
 
 
@@ -36,7 +36,7 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 - an admin-enabled user on the instance
 - the admin user's access token
 
-`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
+`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default Admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
 
 
 

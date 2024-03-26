@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Synapse admin API and regular Matrix API clients
+"""Synapse Admin API and regular Matrix API clients
 
 Most API calls defined in this module respect the API's defaults and only pass
 what's necessary in the request body.
@@ -24,7 +24,7 @@ A fully qualified Matrix user ID looks like this: @user:server, where server
 often is a domain name only, e.g @user@example.org
 
 See https://github.com/matrix-org/synapse/tree/master/docs/admin_api for
-documentation of the Synapse admin APIs and the Matrix spec at
+documentation of the Synapse Admin APIs and the Matrix spec at
 https://matrix.org/docs/spec/#matrix-apis.
 """
 
@@ -382,7 +382,7 @@ class Matrix(ApiRequest):
 
 
 class SynapseAdmin(ApiRequest):
-    """Synapse admin API client
+    """Synapse Admin API client
 
     Inheritance:
         ApiRequest (object): parent class containing general properties and
@@ -424,7 +424,7 @@ class SynapseAdmin(ApiRequest):
             _guests (bool): enable/disable fetching of guest users
             _deactivated (bool): enable/disable fetching of deactivated users
             _name (string): user name localpart to search for, see Synapse
-                admin API docs for details
+                Admin API docs for details
             _user_id (string): fully qualified Matrix user ID to search for
             _admin (bool or None): whether to filter for admins. a None
                 does not filter.
@@ -457,13 +457,13 @@ class SynapseAdmin(ApiRequest):
             _deactivated (bool): Enable/disable fetching of deactivated
                 users.
             _name (string): User name localpart to search for, see Synapse
-                admin API docs for details.
+                Admin API docs for details.
             _user_id (string): Fully qualified Matrix user ID to search for.
             _from (string): Offsets user list by this number, used for
                 pagination.
 
         Yields:
-            dict: The admin API response for listing accounts.
+            dict: The Admin API response for listing accounts.
                 https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
         """
         while _from is not None:
@@ -483,8 +483,8 @@ class SynapseAdmin(ApiRequest):
                 passes as we need some Matrix API functionality here.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
 
         rooms = self.query("get", "v1/users/{user_id}/joined_rooms",
@@ -503,11 +503,11 @@ class SynapseAdmin(ApiRequest):
         Args:
             user_id (string): fully qualified Matrix user ID
             gdpr_erase (bool): enable/disable gdpr-erasing the user, see
-                Synapse admin API docs for details.
+                Synapse Admin API docs for details.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
         return self.query("post", "v1/deactivate/{user_id}", data={
             "erase": gdpr_erase
@@ -520,12 +520,12 @@ class SynapseAdmin(ApiRequest):
             user_id (string): fully qualified Matrix user ID
             password (string): new password that should be set
             no_logout (bool): the API defaults to logging out the user after
-                password reset via the admin API, this option can be used to
+                password reset via the Admin API, this option can be used to
                 disable this behaviour.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-            an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+            an exception occured. See Synapse Admin API docs for details.
         """
         data = {"new_password": password}
         if no_logout:
@@ -536,15 +536,15 @@ class SynapseAdmin(ApiRequest):
     def user_details(self, user_id):
         """Get information about a given user
 
-        Note that the admin API docs describe this function as "Query User
+        Note that the Admin API docs describe this function as "Query User
         Account".
 
         Args:
             user_id (string): fully qualified Matrix user ID
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         return self.query("get", "v2/users/{user_id}", user_id=user_id)
@@ -569,8 +569,8 @@ class SynapseAdmin(ApiRequest):
             _expire_ts (int):  token should expire after this date/time - a
                 unix timestamp in ms.
         Returns:
-            string: JSON string containing the admin API's response or None if
-            an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+            an exception occured. See Synapse Admin API docs for details.
         """
         expire_ts = None
         if expire_days:
@@ -646,8 +646,8 @@ class SynapseAdmin(ApiRequest):
             user_id (string): Fully qualified Matrix user ID.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
         return self.query("get", "v2/users/{user_id}/devices",
                           user_id=user_id)
@@ -791,8 +791,8 @@ class SynapseAdmin(ApiRequest):
             room_id (string)
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
         return self.query("get", "v1/rooms/{room_id}/state", room_id=room_id)
 
@@ -807,8 +807,8 @@ class SynapseAdmin(ApiRequest):
             room_id (string): If left out, all rooms are fetched.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
         if room_id:
             # We use the "name search" possibility of the room list API to get
@@ -902,8 +902,8 @@ class SynapseAdmin(ApiRequest):
             block (boolean): Whether to block or unblock a room.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occurred. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occurred. See Synapse Admin API docs for details.
         """
         # TODO prevent usage on versions before 1.48
         data = {
@@ -919,8 +919,8 @@ class SynapseAdmin(ApiRequest):
             room_id (string): Fully qualified Matrix room ID.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
         """
         # TODO prevent usage on versions before 1.48
         return self.query("get", "v1/rooms/{room_id}/block", room_id=room_id)
@@ -1151,8 +1151,8 @@ class SynapseAdmin(ApiRequest):
                 timestamp.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         result = self.query("get", "v1/registration_tokens", params={
@@ -1184,8 +1184,8 @@ class SynapseAdmin(ApiRequest):
                 timestamp.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         result = self.query("get", "v1/registration_tokens/{t}",
@@ -1220,8 +1220,8 @@ class SynapseAdmin(ApiRequest):
                 is valid.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         data = {
@@ -1258,8 +1258,8 @@ class SynapseAdmin(ApiRequest):
                 is valid.
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         # If uses_allowed or expiry time were not provided by the user,
@@ -1294,8 +1294,8 @@ class SynapseAdmin(ApiRequest):
             token (string): The registration token to delete
 
         Returns:
-            string: JSON string containing the admin API's response or None if
-                an exception occured. See Synapse admin API docs for details.
+            string: JSON string containing the Admin API's response or None if
+                an exception occured. See Synapse Admin API docs for details.
 
         """
         # t because query also accepts token when we want it for the
@@ -1335,8 +1335,8 @@ class SynapseAdmin(ApiRequest):
 
         Returns:
             list: A list of dictionaries, each containing the response of
-                what a single notice admin API call returned. Usually that is
-                an event ID or an error. See Synapse admin API docs for
+                what a single notice Admin API call returned. Usually that is
+                an event ID or an error. See Synapse Admin API docs for
                 details.
         """
         data = {
