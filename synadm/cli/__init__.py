@@ -207,7 +207,8 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
             default=timeout if timeout else helper.config.get(
                 "timeout", timeout)),
         "homeserver": click.prompt(
-            "Homeserver name (auto-retrieval or matrix.DOMAIN)",
+            "Homeserver name (\"auto-retrieval\" or the domain part in your "
+            "MXID)",
             default=homeserver if homeserver else helper.config.get(
                 "homeserver", homeserver)),
         "ssl_verify": click.prompt(
