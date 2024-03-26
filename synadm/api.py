@@ -1003,8 +1003,8 @@ class SynapseAdmin(ApiRequest):
             server_name=server_name, media_id=media_id
         )
 
-    def media_delete_by_date_or_size(self, server_name, before_days, before,
-                                     _before_ts, _size_gt, delete_profiles):
+    def media_delete_by_date_or_size(self, before_days, before, _before_ts,
+                                     _size_gt, delete_profiles):
         """ Delete local media by date and/or size FIXME and/or?
         """
         if before_days:
@@ -1025,7 +1025,6 @@ class SynapseAdmin(ApiRequest):
         self.log.info("which is the date: %s",
                       self._datetime_from_timestamp(before_ts))
         params = {
-            "server_name": server_name,
         }
         if before_ts is not None:
             params.update({

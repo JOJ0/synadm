@@ -280,7 +280,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
         media_deleted = helper.api.media_delete(server_name, media_id)
     else:
         media_deleted = helper.api.media_delete_by_date_or_size(
-            server_name, before_days, before, before_ts, size, delete_profiles
+            before_days, before, before_ts, size, delete_profiles
         )
 
     if media_deleted is None:
