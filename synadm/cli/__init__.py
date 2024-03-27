@@ -184,7 +184,7 @@ def config_cmd(helper, user_, token, base_url, admin_path, matrix_path,
         "token": click.prompt(
             get_redacted_token_prompt(token),
             default=token if token else helper.config.get("token", token),
-            show_default=False,),
+            show_default=False, hide_input=True),
         "base_url": click.prompt(
             "Synapse base URL",
             default=base_url if base_url else helper.config.get(
