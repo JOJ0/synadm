@@ -774,6 +774,34 @@ class SynapseAdmin(ApiRequest):
             "dir": "b" if reverse else None
         })
 
+    def room_list_paginate(self, limit, name, order_by, reverse, _from=0):
+        """ Yields API responses for room listing.
+
+        Args:
+            limit (int): Maximum number of rooms returned per pagination.
+            name (string or None): Search for a room by name. Passed as
+                `search_term` in the room list API. Use Python None to avoid
+                searching.
+            order_by (string): Synapse Room list API specific argument.
+            reverse (bool): Whether the results should be
+            _from (int): Initial offset in pagination.
+
+        Yields:
+            dict: The Admin API response for listing accounts.
+                https://element-hq.github.io/synapse/latest/admin_api/rooms.html#list-room-api
+        """
+        while _from is not None:
+            response = self.query("get", "v1/rooms", params={
+                "from": _from,
+                "limit": limit,
+                "search_term": name,
+                "order_by": order_by,
+                "dir": "b" if reverse else None
+            })
+            yield response
+            _from = response.get("next_batch", None)
+            self.log.debug(f"room_list_paginate: next from value = {_from}")
+
     def room_details(self, room_id):
         """ Get details about a room
         """
