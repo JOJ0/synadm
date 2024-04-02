@@ -296,6 +296,101 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
         click.echo("Abort.")
 
 
+@room.command(name="purge-empty")
+@click.option(
+    "--no-purge", is_flag=True, default=False, show_default=True,
+    help="""Prevent removing of all traces of the room from your
+    database.""")
+@click.option(
+    "--force-purge", is_flag=True, default=False, show_default=True,
+    help="""Force a purge to go ahead even if there are local users still
+    in the room. Do not use this unless a regular purge operation fails,
+    as it could leave those users' clients in a confused state.""")
+@click.option(
+    "--v1", is_flag=True, default=False, show_default=True,
+    help="""Use version 1 of the room delete API instead of version 2""")
+@click.option(
+    "--dry-run", is_flag=True, default=False,
+    help="""Only show the rooms IDs that will be deleted""")
+@click.option(
+    "--batch-size", "--paginate", "-p", type=int, default=100,
+    show_default=True,
+    help="""How many rooms should be requested from the API one at a time.
+    This option has no effect on how many empty rooms will be deleted.
+
+    Increasing this is not necessary in most cases but useful if you have a
+    lot of rooms on your homeserver.""")
+@click.pass_obj
+def purge_empty(helper, no_purge, force_purge, v1, dry_run, batch_size):
+    """ Delete empty rooms (where 0 local members are currently in a room).
+    """
+    if no_purge and force_purge:
+        click.echo("--force-purge will be ignored as --no-purge is set")
+
+    empty_rooms_ids = []
+    for room_list_response in helper.api.room_list_paginate(
+            batch_size, None, "joined_local_members", True):
+        found_empty_rooms = False
+
+        if "rooms" not in room_list_response.keys():
+            helper.log.warn("\"rooms\" key is missing from room list"
+                            "response.")
+
+        for room in room_list_response["rooms"]:
+            room_id = room["room_id"]
+            joined_local_members = room["joined_local_members"]
+            if joined_local_members == 0:
+                helper.log.debug(f"Added {room_id} to delete "
+                                 f"(joined local members is "
+                                 f"{joined_local_members})")
+                empty_rooms_ids.append(room_id)
+                found_empty_rooms = True
+            else:
+                helper.log.debug(f"Skipping {room_id} (joined local "
+                                 f"members is {joined_local_members}, "
+                                 f"not 0)")
+                # very early cut off, hopefully always works and is never
+                # wrong
+                found_empty_rooms = False
+                break
+
+        # list is sorted by joined_local_members from smallest to biggest,
+        # if there's no more where joined_local_members == 0 then just stop
+        # early
+        if not found_empty_rooms:
+            helper.log.debug("No more empty rooms, stopping room list "
+                             "fetching early.")
+            break
+
+    helper.output(empty_rooms_ids)
+    if dry_run:
+        click.echo("Empty room purge dry run. Rooms will not be deleted "
+                   "is listed.", err=True)
+        return
+
+    sure = (
+        helper.no_confirm or
+        click.prompt("Are you sure you want to delete the listed empty "
+                     "rooms? (y/N)", type=bool, default=False,
+                     show_default=False)
+    )
+    if not sure:
+        click.echo("Abort.", err=True)
+        raise SystemExit(1)
+
+    for room_id in empty_rooms_ids:
+        if v1:
+            result = helper.api.room_delete(
+                    room_id, None, None, None, False, not no_purge,
+                    force_purge)
+            helper.output(result)
+        else:
+            result = helper.api.room_delete_v2(
+                    room_id, None, None, None, False, not no_purge,
+                    force_purge)
+            helper.output(result)
+
+
 @room.command(name="delete-status")
 @optgroup.group(
         "Query type", cls=RequiredMutuallyExclusiveOptionGroup,
