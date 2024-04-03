@@ -266,10 +266,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
 
     To delete cached remote media, use `synadm media purge`
     """
-    server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
-    if not server_name:
-        media_deleted = None
-    elif media_id and delete_profiles:
+    if media_id and delete_profiles:
         click.echo("Combination of --media-id and --delete-profiles not "
                    "valid.")
         media_deleted = None
@@ -277,6 +274,7 @@ def media_delete_cmd(helper, media_id, before_days, before, before_ts,
         click.echo("Combination of --media-id and --size not valid.")
         media_deleted = None
     elif media_id:
+        server_name = helper.retrieve_homeserver_name(helper.config["base_url"])
         media_deleted = helper.api.media_delete(server_name, media_id)
     else:
         media_deleted = helper.api.media_delete_by_date_or_size(
