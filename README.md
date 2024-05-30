@@ -35,6 +35,8 @@ To install synadm from PyPI, run the following command:
 
 `pip3 install synadm`
 
+Other installation methods: [Install via git](TODO)
+
 ## Update
 
 If you already have synadm installed from the PyPI, run this to upgrade synadm to a new release:
