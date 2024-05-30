@@ -5,6 +5,7 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Install from PyPI](#install-from-pypi)
+- [Update](#update)
 - [Configuration](#configuration)
   - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
@@ -12,8 +13,6 @@
 - [Usage](#usage)
   - [Command Line Reference](#command-line-reference)
   - [Advanced Usage](#advanced-usage)
-- [Update](#update)
-  - [Update PyPI Package](#update-pypi-package)
 - [Implementation Status / Commands List](#implementation-status--commands-list)
 - [Get in Touch](#get-in-touch)
 - [Contributing](#contributing)
@@ -36,6 +35,14 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 ### Install from PyPI
 
 `pip3 install synadm`
+
+## Update
+
+If you already have synadm installed from the PyPI, run this to upgrade synadm to a new release:
+
+```
+pip3 install synadm --upgrade
+```
 
 ## Configuration
 
@@ -134,14 +141,6 @@ Examples of how `synadm` can be used in shell scripts and oneliners is
 provided in the
 [Scripting Examples](https://synadm.readthedocs.io/en/latest/examples.html)
 docs chapter.
-
-## Update
-
-### Update PyPI Package
-
-```
-pip3 install synadm --upgrade
-```
 
 ## Implementation Status / Commands List
 
