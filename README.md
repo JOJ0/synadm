@@ -4,7 +4,6 @@
 - [About](#about)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Install from PyPI](#install-from-pypi)
 - [Update](#update)
 - [Configuration](#configuration)
   - [The configurator](#the-configurator)
@@ -32,7 +31,7 @@ A CLI tool for the [Synapse Admin API](https://element-hq.github.io/synapse/deve
 
 ## Installation
 
-### Install from PyPI
+To install synadm from PyPI, run the following command:
 
 `pip3 install synadm`
 
