@@ -13,7 +13,7 @@
   - [Command Line Reference](#command-line-reference)
   - [Advanced Usage](#advanced-usage)
 - [Implementation Status / Commands List](#implementation-status--commands-list)
-- [Get in Touch](#get-in-touch)
+- [Support](#support)
 - [Contributing](#contributing)
 
 ## About
@@ -209,7 +209,7 @@ docs chapter.
   * [x] `regtok update <registration token>`
   * [x] `regtok delete <registration token>`
 
-## Get in Touch
+## Support
 
 If you need help with using `synadm`, have a feature idea or would like to discuss anything else around `synadm`, get in touch via [our Matrix room][synadmroom]!
 
