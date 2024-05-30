@@ -20,14 +20,9 @@
 - [Get in Touch](#get-in-touch)
 - [Contributing](#contributing)
 
-
-
-
 ## About
 
 A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [Admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
-
-
 
 ## Prerequisites
 
@@ -37,9 +32,6 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 - the admin user's access token
 
 `synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default Admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
-
-
-
 
 ## Installation
 
@@ -88,8 +80,6 @@ synadm -h
 
 *Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
 
-
-
 ## Configuration
 
 ### Getting an Admin Token
@@ -120,7 +110,6 @@ synadm config
 ```
 
 Configuration will be saved in `~/.config/synadm.yaml`
-
 
 *Note: Be aware that once you configured `synadm`, your admin user's token is saved in the configuration file. On Posix compatible systems permissions are set to mode 0600, on other OS's it is your responsibilty to change permissions accordingly.*
 
@@ -182,7 +171,6 @@ will show essential help for the particular subcommand right away.
 
 A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
 
-
 ### Advanced Usage
 
 Examples of how `synadm` can be used in shell scripts and oneliners is
@@ -212,14 +200,11 @@ pip install .
 
 *Note: If you installed it in [editable mode](CONTRIBUTING.md#4-install-in-editable-mode) (or for development), you can spare the `pip install .` command - just `git pull` and you're done.*
 
-
-
 ## Implementation Status / Commands List
 
 [Follow this link to the official Synapse Admin API docs](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
 
 *Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them or have a look at the [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
-
 
 * [ ] [Account Validity](https://element-hq.github.io/synapse/develop/admin_api/account_validity.html)
 * [x] [Delete Group](https://element-hq.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
@@ -283,8 +268,6 @@ pip install .
   * [x] `regtok update <registration token>`
   * [x] `regtok delete <registration token>`
 
-
-
 ## Get in Touch
 
 If you need advice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
@@ -294,8 +277,6 @@ We are hanging around in the official support room for Synapse, [#synapse:matrix
 The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
 
 If you are sure you've found a bug that was not already reported, certainly directly opening an [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
-
-
 
 ## Contributing
 
