@@ -19,7 +19,7 @@
 
 ## About
 
-A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [Admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
+A CLI tool for the [Synapse Admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 - an admin-enabled user on the instance
 - the admin user's access token
 
-`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default Admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
+`synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default Admin API endpoint address usually is `http://localhost:8008/_synapse/admin` or `https://localhost:8448/_synapse/admin`.
 
 ## Installation
 
@@ -103,13 +103,13 @@ Find more details about the topic [here](https://github.com/spantaleev/matrix-do
 
 ## Usage
 
-Use the online help of the main command:
+Get help information for the top level commands by running:
 
 ```
 synadm -h
 ```
 
-and of the available subcommands:
+Similar to subcommands:
 
 ```
 synadm version -h
@@ -117,8 +117,8 @@ synadm user -h
 synadm room -h
 ```
 
-You even can spare the `-h` option, `synadm` will show some abbreviated help for the executed subcommand anyway. For example:
-
+For commands with subcommands, help will be shown by default when running
+something like:
 ```
 synadm user
 ```
@@ -126,8 +126,6 @@ or
 ```
 synadm user details
 ```
-
-will show essential help for the particular subcommand right away.
 
 *Note: A list of currently available commands is found in chapter [implementation status / commands list](#implementation-status--commands-list)* as well as in the following chapter.
 
@@ -212,16 +210,16 @@ docs chapter.
 
 ## Get in Touch
 
-If you need advice on using synadm, have a feature idea or would like to discuss anything else around `synadm`, get in touch via Matrix!
+If you need help with using `synadm`, have a feature idea or would like to discuss anything else around `synadm`, get in touch via [our Matrix room][synadmroom]!
 
-We are hanging around in the official support room for Synapse, [#synapse:matrix.org](https://matrix.to/#/#synapse:matrix.org). Usually you'll find `synadm` users there that might answer your questions already. If not, mentioning `synadm` will ping us with the help of Element's keyword notify feature and we'll try to get in touch.
+If you have questions about Synapse (the homeserver), you should join [the room for Synapse](https://matrix.to/#/#synapse:matrix.org). That room should help you better answer Synapse questions.
 
-The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
+If you are sure you've found a bug that was not already reported, opening an [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at][synadmroom] first.
 
-If you are sure you've found a bug that was not already reported, certainly directly opening an [issue on GitHub](https://github.com/JOJ0/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
+[synadmroom]:https://matrix.to/#/#synadm:peek-a-boo.at
 
 ## Contributing
 
-First of all, thanks for your interest in contributing to `synadm`! We appreciate any help, no matter if you are a programmer or a user. Both groups can do valuable things for the `synadm` project. We love providing a useful tool to fellow Synapse sysadmins but rely on contribution from the Synapse and Matrix community to keep `synadm` useful, current and stable.
+First of all, thanks for your interest in contributing to `synadm`! We appreciate any help, no matter if you are a programmer or a user.
 
 Please review the [contributing docs](CONTRIBUTING.md) for guidelines and help around the topic!
