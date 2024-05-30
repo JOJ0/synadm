@@ -5,7 +5,6 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
   - [Install from PyPI](#install-from-pypi)
-  - [Install from git](#install-from-git)
 - [Configuration](#configuration)
   - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
@@ -15,7 +14,6 @@
   - [Advanced Usage](#advanced-usage)
 - [Update](#update)
   - [Update PyPI Package](#update-pypi-package)
-  - [Update git Installation](#update-git-installation)
 - [Implementation Status / Commands List](#implementation-status--commands-list)
 - [Get in Touch](#get-in-touch)
 - [Contributing](#contributing)
@@ -38,47 +36,6 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 ### Install from PyPI
 
 `pip3 install synadm`
-
-### Install from git
-
-<!-- omit in toc -->
-#### 1. Check Python Version
-
-`python3 --version` should show at least v3.6.x
-
-<!-- omit in toc -->
-#### 2. Clone Repo:
-
-```
-git clone https://github.com/joj0/synadm
-```
-
-<!-- omit in toc -->
-#### 3. Install Package Globally
-
-This will install `synadm` and all dependent Python packages to your system's global Python site-packages directory:
-
-```
-cd synadm
-sudo pip install .
-```
-
-*Note: If you get an import error for setuptools, make sure the package is installed. Debian based systems: `sudo apt install python3-setuptools`, RedHat based: `sudo yum install python3-setuptools`* 
-
-<!-- omit in toc -->
-#### 4. Run
-
-`synadm` should now run fine without having to add a path in front of it:
-
-```
-synadm -h
-```
-
-*Note: Usually setuptools installs a command wrapper to `/usr/local/bin/synadm`, but that depends on your system.*
-
-*Note: In case you don't want `synadm` to be installed to a global system directory, you can find an [alternative way of installing](CONTRIBUTING.md#getting-the-source--installing) in the contribution docs*.
-
-*Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
 
 ## Configuration
 
@@ -185,20 +142,6 @@ docs chapter.
 ```
 pip3 install synadm --upgrade
 ```
-
-### Update git Installation
-
-To update `synadm` to the latest development state, just update your git repo and reinstall:
-
-```
-cd synadm
-git pull
-pip install .
-```
-
-*Note: If you installed it to a Python venv, [activate it](CONTRIBUTING.md#3-set-up-a-python3-virtual-environment).*
-
-*Note: If you installed it in [editable mode](CONTRIBUTING.md#4-install-in-editable-mode) (or for development), you can spare the `pip install .` command - just `git pull` and you're done.*
 
 ## Implementation Status / Commands List
 
