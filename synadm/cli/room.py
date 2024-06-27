@@ -253,12 +253,18 @@ def members(helper, room_id):
     as it could leave those users' clients in a confused state.""")
 @click.option(
     "--v1", is_flag=True, default=False, show_default=True,
-    help="""Use version 1 of the room delete API instead of version 2""")
+    help="""Use version 1 of the room delete API instead of version 2, which
+    will wait until the room deletion is complete.""")
 @click.pass_obj
 @click.pass_context
 def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
            no_purge, force_purge, v1):
     """ Delete and possibly purge a room.
+
+    By default, the v2 API is used, which will return a delete_id and delete
+    the room asynchronously instead of waiting for a room to be deleted (the
+    v1 API will wait for the room to be deleted). You can check the status
+    of the room deletion with synadm room delete-status.
     """
     if no_purge and force_purge:
         click.echo("--force-purge will be ignored as --no-purge is set")
