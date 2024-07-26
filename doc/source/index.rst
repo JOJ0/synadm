@@ -8,7 +8,6 @@ Welcome to synadm's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    index_cli_reference
    examples
