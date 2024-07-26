@@ -15,7 +15,7 @@ package that is worth mentioning and generating documentation for, is the
 backend code in :mod:`synadm.api`:
 
 
-.. automodule:: synadm.cli
+.. automodule:: synadm.cli._helper
    :members: APIHelper
    :undoc-members:
    :show-inheritance:
