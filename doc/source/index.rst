@@ -10,6 +10,7 @@ Welcome to synadm's documentation!
    :maxdepth: 2
 
    index_cli_reference
+   features
    examples
    index_modules
 
