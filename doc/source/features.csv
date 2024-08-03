@@ -4,6 +4,7 @@ Synapse API,synadm command group(s)
 `Event Reports <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html>`_,
 `Media <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_,"`synadm media <https://synadm.readthedocs.io/en/latest/synadm.cli.media.html>`_
 `synadm user <https://synadm.readthedocs.io/en/latest/synadm.cli.user.html>`_"
+`List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_,:doc:`synadm.cli.media`
 `Purge History <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_,`synadm history <https://synadm.readthedocs.io/en/latest/synadm.cli.history.html>`_
 `Purge Room <https://element-hq.github.io/synapse/develop/admin_api/purge_room.html>`_,`synadm room <https://synadm.readthedocs.io/en/latest/synadm.cli.room.html>`_
 `Register <https://element-hq.github.io/synapse/develop/admin_api/register_api.html>`_,
