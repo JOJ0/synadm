@@ -15,7 +15,7 @@ Synapse API,synadm command group(s)
 `Version <https://element-hq.github.io/synapse/develop/admin_api/version_api.html>`_,`synadm version <https://synadm.readthedocs.io/en/latest/synadm.cli.version.html>`_
 `Registration Tokens <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html>`_,`synadm regtok <https://synadm.readthedocs.io/en/latest/synadm.cli.regtok.html>`_
 `Background Update <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_,
-`Èxperimental Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html>`_,
+`Experimental Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html>`_,
 `Federation <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html>`_,
 ,`synadm config <https://synadm.readthedocs.io/en/latest/synadm.cli.config.html>`_
 ,`synadm raw <https://synadm.readthedocs.io/en/latest/synadm.cli.raw.html>`_
