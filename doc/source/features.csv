@@ -8,6 +8,8 @@ Synapse Admin API,synadm command group / synadm command
 "  `Show details of a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
 "  `Delete a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#delete-a-specific-event-report>`_",
 "`Experimental Features API <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html>`_",
+"  `Enabling/Disabling Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html#enablingdisabling-features>`_",
+"  `Listing Enabled Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html#listing-enabled-features>`_",
 "`Media API <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_",":doc:`synadm.cli.media`, :doc:`synadm.cli.user`"
 "  `Querying media <https://element-hq.github.io/synapse/develop/admin_api/media_#querying-media>`_","---"
 "    -- `List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
