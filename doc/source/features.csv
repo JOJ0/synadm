@@ -3,7 +3,10 @@ Synapse Admin API,synadm command group / synadm command
 "  `Renew account <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#renew-account>`_",
 "`Delete Group API [Synapse 1.6.1] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_",:doc:`synadm.cli.group`
 "  `Delete a local group <https://element-hq.github.io/synapse/develop/admin_api/delete_group.html.html#delete-a-local-group>`_",:option:`synadm group delete -h`
-"`Background Update API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_",
+"`Background Updates API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_",
+"  `Status <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#status>`_",
+"  `Enabled <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#enabled>`_",
+"  `Run <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#run>`_",
 "`Event Reports API <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html>`_",
 "  `Show reported events <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-reported-events>`_",
 "  `Show details of a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
