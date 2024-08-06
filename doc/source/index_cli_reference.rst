@@ -2,8 +2,7 @@ Command Line Reference
 ======================
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Contents:
+   :maxdepth: 3
 
    synadm.cli.root
    synadm.cli.config
