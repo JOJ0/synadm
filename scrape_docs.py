@@ -3,14 +3,14 @@
 import click
 from bs4 import BeautifulSoup
 import requests
-import re
-import pprint as p
+
 
 @click.command()
 @click.option(
-    '--output', '-o', default='default', type=click.Choice(['default', 'rst', 'csv']),
-    show_choices=True, help=f'''Output format "default" prints human readable
-    on shell, "csv" is a two-column comma separated value format.''')
+    '--output', '-o', default='default',
+    type=click.Choice(['default', 'rst', 'csv']), show_choices=True,
+    help='''Output format "default" prints human readable on shell, "csv" is a
+    two-column comma separated value format.''')
 @click.argument('URL')
 def scrape(output, url):
     '''Scrape one chapter of Admin API docs and spit out in various formats.
@@ -25,7 +25,6 @@ def scrape(output, url):
             ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'],
     )
 
-    #p.pprint(elements)
     for e in elements:
         if e.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
             if output in ['default', 'rst']:
@@ -49,7 +48,7 @@ def scrape(output, url):
             if output in ['default', 'rst']:
                 print()
 
-#print(soup.prettify())
+# print(soup.prettify())
 
 
 if __name__ == '__main__':
