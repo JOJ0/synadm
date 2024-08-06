@@ -80,7 +80,7 @@ Synapse Admin API,synadm command group / synadm command
 "    -- `List media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_#list-media-uploaded-by-a-user>`_",
 "    -- `Delete media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_#delete-media-uploaded-by-a-user>`_",
 "  `Login as a user <https://element-hq.github.io/synapse/develop/admin_api/user_#login-as-a-user>`_",
-"  `Allow replacing master cross-signing key without User-Interactive Auth <https://element-hq.github.io/synapse/develop/admin_api/user_#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
+"  `Allow replacing master cross-signing key without... <https://element-hq.github.io/synapse/develop/admin_api/user_#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
 "  `User devices <https://element-hq.github.io/synapse/develop/admin_api/user_#user-devices>`_",
 "    -- `List all devices <https://element-hq.github.io/synapse/develop/admin_api/user_#list-all-devices>`_",
 "    -- `Create a device <https://element-hq.github.io/synapse/develop/admin_api/user_#create-a-device>`_",
@@ -96,7 +96,7 @@ Synapse Admin API,synadm command group / synadm command
 "    -- `Delete ratelimit <https://element-hq.github.io/synapse/develop/admin_api/user_#delete-ratelimit>`_",
 "  `Check username availability <https://element-hq.github.io/synapse/develop/admin_api/user_#check-username-availability>`_",
 "  `Find a user based on their ID in an auth provider <https://element-hq.github.io/synapse/develop/admin_api/user_#find-a-user-based-on-their-id-in-an-auth-provider>`_",
-"  `Find a user based on their Third Party ID (ThreePID or 3PID) <https://element-hq.github.io/synapse/develop/admin_api/user_#find-a-user-based-on-their-third-party-id-threepid-or-3pid>`_"
+"  `Find a user based on their Third Party ID <https://element-hq.github.io/synapse/develop/admin_api/user_#find-a-user-based-on-their-third-party-id-threepid-or-3pid>`_"
 "`Version API <https://element-hq.github.io/synapse/develop/admin_api/version_api.html>`_",:option:`synadm --version`
 "`Federation API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html>`_",
 "  `List of destinations <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#list-of-destinations>`_",
