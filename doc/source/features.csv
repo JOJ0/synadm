@@ -11,7 +11,7 @@ Synapse Admin API,synadm command group / synadm command
 "`Media API <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_",":doc:`synadm.cli.media` :doc:`synadm.cli.user`"
 "  `Querying media <https://element-hq.github.io/synapse/develop/admin_api/media_#querying-media>`_","---"
 "    -- `List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
-"    -- `List all media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",":option:`synadm media list -u` :option:`synadm user media -f`"
+"    -- `List all media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",":option:`synadm media list -u` :option:`synadm user media -f`"
 "  `Quarantine media <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantine-media>`_","---"
 "    -- `Quarantining media by ID <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantining-media-by-id>`_",
 "    -- `Remove media from quarantine by ID <https://element-hq.github.io/synapse/develop/admin_api/media_#remove-media-from-quarantine-by-id>`_",
