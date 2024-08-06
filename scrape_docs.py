@@ -8,7 +8,7 @@ import pprint as p
 
 @click.command()
 @click.option(
-    '--output', '-o', default='default', type=click.Choice(['default', 'csv']),
+    '--output', '-o', default='default', type=click.Choice(['default', 'rst', 'csv']),
     show_choices=True, help=f'''Output format "default" prints human readable
     on shell, "csv" is a two-column comma separated value format.''')
 @click.argument('URL')
@@ -28,11 +28,17 @@ def scrape(output, url):
     #p.pprint(elements)
     for e in elements:
         if e.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-            print(f'HEADLINE {e.name}: {e.text}')
+            if output in ['default', 'rst']:
+                print(f'{e.name}: {e.text}')
         if e.name == 'a':
             if e.parent.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
                 link = e['href']
-                print(f'{e.text} {link}')
+                if output == 'default':
+                    print(f'{e.text} {link}')
+                if output == 'rst':
+                    parts = chapter.split('admin_api')
+                    fulllink = f'{parts[0]}admin_api{parts[1]}{link}'
+                    print(f'`{e.text} <{fulllink}>`')
                 print()
 
     print()
