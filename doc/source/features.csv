@@ -1,36 +1,58 @@
 Synapse Admin API,synadm command group / synadm command
 `Acount Validity APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html>`_,
-- `Renew account <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#renew-account>`_,
-`Delete Group API [Synapse 1.6.1] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_,- :doc:`synadm.cli.group`
+"  `Renew account <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#renew-account>`_",
+`Delete Group API [Synapse 1.6.1] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_,:doc:`synadm.cli.group`
 `Background Update APIs Overview <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_,
-- `Event Reports APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html>`_,
-- `Show reported events <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-reported-events>`_,
-- `Show details of a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_,
-- `Delete a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#delete-a-specific-event-report>`_,
+`Event Reports APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html>`_,
+"  `Show reported events <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-reported-events>`_",
+"  `Show details of a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
+"  `Delete a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#delete-a-specific-event-report>`_",
 `Experimental Features APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html>`_,
-`Media APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_,"- :doc:`synadm.cli.media`
-- :doc:`synadm.cli.user`"
-- `List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_,- :option:`synadm media list -r`
-- `List all media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_,"- :option:`synadm media list -u`
-- :option:`synadm user media -f`"
-`Purge History APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_,- :doc:`synadm.cli.history`
-- `Purge history <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_,- :option:`synadm history purge -i`
-- `Purge status query <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html#purge-status-query>`_,- :option:`synadm history purge-status PURGE_ID`
+`Media APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_,":doc:`synadm.cli.media`
+:doc:`synadm.cli.user`"
+"  `List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
+"  `List all media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",":option:`synadm media list -u`
+:option:`synadm user media -f`"
+`Purge History APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_,:doc:`synadm.cli.history`
+"  `Purge history <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_",:option:`synadm history purge -i`
+"  `Purge status query <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html#purge-status-query>`_",:option:`synadm history purge-status PURGE_ID`
 `Register Users APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/register_api.html>`_,
-- `Shared-Secret Registration <https://element-hq.github.io/synapse/develop/admin_api/register_api.html#shared-secret-registration>`_,
-`Registration Tokens APIs Overview <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html>`_,- :doc:`synadm.cli.regtok`
-`Manipulate Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html>`_,- :doc:`synadm.cli.room`
-- `Edit Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html#edit-room-membership-api>`_,- :option:`synadm room join ROOM_ID_OR_ALIAS`
-`Rooms APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/rooms.html>`_,- :doc:`synadm.cli.room`
-- `List Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#list-room-api>`_,- :option:`synadm room list -f`
-- `Room Details API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-details-api>`_,- :option:`synadm room details ROOM_ID`
-- `Room Members API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-members-api>`_,- :option:`synadm room members ROOM_ID`
+"  `Shared-Secret Registration <https://element-hq.github.io/synapse/develop/admin_api/register_api.html#shared-secret-registration>`_",
+`Registration Tokens APIs Overview <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html>`_,:doc:`synadm.cli.regtok`
+`Manipulate Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html>`_,:doc:`synadm.cli.room`
+"  `Edit Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html#edit-room-membership-api>`_",:option:`synadm room join ROOM_ID_OR_ALIAS`
+`Rooms APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/rooms.html>`_,:doc:`synadm.cli.room`
+"  `List Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#list-room-api>`_",:option:`synadm room list -f`
+"  `Room Details API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-details-api>`_",:option:`synadm room details ROOM_ID`
+"  `Room Members API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-members-api>`_",:option:`synadm room members ROOM_ID`
 ...and so on....we have a lot of Room APIs....,...and synadm room commands.....
-`Server Notices APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/server_notices.html>`_,- :doc:`synadm.cli.notice`
+`Server Notices APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/server_notices.html>`_,:doc:`synadm.cli.notice`
 `Statistics APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/statistics.html>`_,
-`User Admin APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html>`_,- :doc:`synadm.cli.user`
-`Server Version API <https://element-hq.github.io/synapse/develop/admin_api/version_api.html>`_,- :option:`synadm --version`
+`User Admin APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html>`_,:doc:`synadm.cli.user`
+`Server Version API <https://element-hq.github.io/synapse/develop/admin_api/version_api.html>`_,:option:`synadm --version`
 `Federation APIs Overview <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html>`_,
-,- :doc:`synadm.cli.config`
-,- :doc:`synadm.cli.raw`
-,- :doc:`synadm.cli.matrix`
+,:doc:`synadm.cli.config`
+,:doc:`synadm.cli.raw`
+,:doc:`synadm.cli.matrix`
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+,
+"  `Check for forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#check-for-forward-extremities>`_",
+"  `Deleting forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#deleting-forward-extremities>`_",
+"  `Event Context API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#event-context-api>`_",
