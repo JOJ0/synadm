@@ -1,5 +1,5 @@
-Regtok
-======
+Regtok Commands
+===============
 
 .. click:: synadm.cli.regtok:regtok
    :prog: synadm regtok

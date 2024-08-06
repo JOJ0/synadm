@@ -1,5 +1,5 @@
-Config
-======
+Config Command
+==============
 
 .. click:: synadm.cli:config_cmd
    :prog: synadm config

@@ -1,5 +1,5 @@
-User
-====
+User Commands
+=============
 
 .. click:: synadm.cli.user:user
    :prog: synadm user
