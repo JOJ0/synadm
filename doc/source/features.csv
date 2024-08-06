@@ -111,6 +111,8 @@ Synapse Admin API,synadm command group / synadm command
 "  `Destination rooms <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#destination-rooms>`_",
 "  `Reset connection timeout <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#reset-connection-timeout>`_",
 "---",:doc:`synadm.cli.config`
-"---",:doc:`synadm.cli.raw`
-"---",:doc:`synadm.cli.matrix`
+"Any Synapse Admin API",:doc:`synadm.cli.raw`
+"Native Matrix API Helpers",:doc:`synadm.cli.matrix`
+"  Matrix User Login",:option:`synadm matrix login USER_ID`
+"  Any Matrix API",:option:`synadm matrix raw ENDPOINT`
 
