@@ -25,7 +25,24 @@ Synapse Admin API,synadm command group / synadm command
 "  `List Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#list-room-api>`_",:option:`synadm room list -f`
 "  `Room Details API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-details-api>`_",:option:`synadm room details ROOM_ID`
 "  `Room Members API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-members-api>`_",:option:`synadm room members ROOM_ID`
-...and so on....we have a lot of Room APIs....,...and synadm room commands.....
+"  `Room State API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-state-api>`_",
+"  `Room Messages API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-messages-api>`_",
+"  `Room Timestamp to Event API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-timestamp-to-event-api>`_",
+"  `Block Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#block-room-api>`_",
+"  `Block or unblock a room <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#block-or-unblock-a-room>`_",
+"  `Get block status <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#get-block-status>`_",
+"  `Delete Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#delete-room-api>`_",
+"  `Version 1 (old version) <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#version-1-old-version>`_",
+"  `Version 2 (new version) <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#version-2-new-version>`_",
+"  `Status of deleting rooms <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#status-of-deleting-rooms>`_",
+"  `Query by room_id <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#query-by-room_id>`_",
+"  `Query by delete_id <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#query-by-delete_id>`_",
+"  `Response <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#response>`_",
+"  `Undoing room deletions <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#undoing-room-deletions>`_",
+"  `Make Room Admin API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#make-room-admin-api>`_",
+"  `Check for forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#check-for-forward-extremities>`_",
+"  `Deleting forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#deleting-forward-extremities>`_",
+"  `Event Context API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#event-context-api>`_",
 `Server Notices APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/server_notices.html>`_,:doc:`synadm.cli.notice`
 `Statistics APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/statistics.html>`_,
 `User Admin APIs Overview <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html>`_,:doc:`synadm.cli.user`
@@ -34,25 +51,4 @@ Synapse Admin API,synadm command group / synadm command
 ,:doc:`synadm.cli.config`
 ,:doc:`synadm.cli.raw`
 ,:doc:`synadm.cli.matrix`
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-,
-"  `Check for forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#check-for-forward-extremities>`_",
-"  `Deleting forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#deleting-forward-extremities>`_",
-"  `Event Context API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#event-context-api>`_",
+
