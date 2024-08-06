@@ -43,7 +43,7 @@ def scrape(output, url):
                         print(rst)
                     # csv format also adds some spacing in front of links
                     if output == 'csv':
-                        left_col = f'  `{e.text} <{fulllink}>`_'
+                        left_col = f'"  `{e.text} <{fulllink}>`_"'
                         print(f'{left_col},')
             # Final spacing only with these formats
             if output in ['default', 'rst']:
