@@ -35,15 +35,20 @@ def scrape(output, url):
                 link = e['href']
                 if output == 'default':
                     print(f'{e.text} {link}')
-                if output == 'rst':
+                if output in ['rst', 'csv']:
                     parts = chapter.split('admin_api')
                     fulllink = f'{parts[0]}admin_api{parts[1]}{link}'
-                    print(f'`{e.text} <{fulllink}>`')
+                    if output == 'rst':
+                        rst = f'`{e.text} <{fulllink}>`_'
+                        print(rst)
+                    # csv format also adds some spacing in front of links
+                    if output == 'csv':
+                        left_col = f'  `{e.text} <{fulllink}>`_'
+                        print(f'{left_col},')
+            # Final spacing only with these formats
+            if output in ['default', 'rst']:
                 print()
 
-    print()
-    print()
-    print()
 #print(soup.prettify())
 
 
