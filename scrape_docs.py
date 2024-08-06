@@ -1,31 +1,45 @@
 #!/usr/bin/env python
 
+import click
 from bs4 import BeautifulSoup
 import requests
 import re
 import pprint as p
 
+@click.command()
+@click.option(
+    '--output', '-o', default='default', type=click.Choice(['default', 'csv']),
+    show_choices=True, help=f'''Output format "default" prints human readable
+    on shell, "csv" is a two-column comma separated value format.''')
+@click.argument('URL')
+def scrape(output, url):
+    '''Scrape one chapter of Admin API docs and spit out in various formats.
 
-chapter = 'https://element-hq.github.io/synapse/develop/admin_api/rooms.html'
-apidoc = requests.get(chapter).text
-soup = BeautifulSoup(apidoc, 'html.parser')
+    URL is the address of the Synapse Admin API docs chapter. For example:
+    https://element-hq.github.io/synapse/develop/admin_api/rooms.html'''
+    chapter = url
+    apidoc = requests.get(chapter).text
+    soup = BeautifulSoup(apidoc, 'html.parser')
 
-elements = soup.find_all(
-        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'],
-)
+    elements = soup.find_all(
+            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'],
+    )
 
-#p.pprint(elements)
-for e in elements:
-    if e.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-        print(f'HEADLINE {e.name}: {e.text}')
-    if e.name == 'a':
-        if e.parent.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-            link = e['href']
-            print(f'{e.text} {link}')
-            print()
+    #p.pprint(elements)
+    for e in elements:
+        if e.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            print(f'HEADLINE {e.name}: {e.text}')
+        if e.name == 'a':
+            if e.parent.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+                link = e['href']
+                print(f'{e.text} {link}')
+                print()
 
-print()
-print()
-print()
-
+    print()
+    print()
+    print()
 #print(soup.prettify())
+
+
+if __name__ == '__main__':
+    scrape()
