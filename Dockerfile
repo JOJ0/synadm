@@ -11,14 +11,10 @@ RUN \
     chown -R synapseadmin:synapseadmin /home/synapseadmin && \
     chmod -R 755 /home/synapseadmin
 # User home on volume (will be prepoluated on first init)
-VOLUME /home/synapseadmin
+# VOLUME /home/synapseadmin
+# Install synadm from pypi to /usr/bin/synadm
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir --root-user-action ignore synadm
+
 # Run as non-root user from here
 USER synapseadmin
-# Add user bin to path
-ENV PATH="/home/synapseadmin/.local/bin:$PATH"
-# Install synadm from pypi
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir synadm && \
-    chown -R synapseadmin:synapseadmin /home/synapseadmin && \
-    chmod -R 755 /home/synapseadmin
-

@@ -3,7 +3,12 @@ services:
     build: .
     container_name: synadm
     image: synadm_image
-    #volumes:
-    #  - ./home/synapseadmin:/home/synapseadmin
+    volumes:
+      - adminhome:/home/synapseadmin
     stdin_open: true
     tty: true
+
+# home directory volume to host default volumes location
+volumes:
+  adminhome:
+
