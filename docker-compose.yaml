@@ -1,0 +1,9 @@
+services:
+  synadm_app:
+    build: .
+    container_name: synadm
+    image: synadm_image
+    #volumes:
+    #  - ./home/synapseadmin:/home/synapseadmin
+    stdin_open: true
+    tty: true
