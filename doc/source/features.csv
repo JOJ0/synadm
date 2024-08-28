@@ -1,7 +1,7 @@
 Synapse Admin API,synadm command group / synadm command
 "`Account validity API <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#account-validity-api>`_",
 "  `Renew account <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#renew-account>`_",
-"`Delete Group API [Synapse 1.6.1] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_",:doc:`synadm.cli.group`
+"`Delete Group API [Synapse 1.61] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_",:doc:`synadm.cli.group`
 "  `Delete a local group <https://element-hq.github.io/synapse/develop/admin_api/delete_group.html.html#delete-a-local-group>`_",:option:`synadm group delete -h`
 "`Background Updates API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_",
 "  `Status <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#status>`_",
