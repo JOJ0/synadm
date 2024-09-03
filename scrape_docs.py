@@ -35,8 +35,8 @@ def scrape(output, url):
                 if output == 'default':
                     print(f'{e.text} {link}')
                 if output in ['rst', 'csv']:
-                    parts = chapter.split('admin_api')
-                    fulllink = f'{parts[0]}admin_api{parts[1]}{link}'
+                    parts = chapter.split('/admin_api/')
+                    fulllink = f'{parts[0]}/admin_api/{parts[1]}{link}'
                     if output == 'rst':
                         rst = f'`{e.text} <{fulllink}>`_'
                         print(rst)
