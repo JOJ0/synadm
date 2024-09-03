@@ -1,115 +1,115 @@
 Synapse Admin API,synadm command group / synadm command
-"`Account validity API <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#account-validity-api>`_",
-"  `Renew account <https://element-hq.github.io/synapse/develop/admin_api/account_validity.html#renew-account>`_",
+"`Account validity API <https://element-hq.github.io/synapse/latest/admin_api/account_validity.html#account-validity-api>`_",
+"  `Renew account <https://element-hq.github.io/synapse/latest/admin_api/account_validity.html#renew-account>`_",
 "`Delete Group API [Synapse 1.61] <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html>`_",:doc:`synadm.cli.group`
-"  `Delete a local group <https://element-hq.github.io/synapse/develop/admin_api/delete_group.html.html#delete-a-local-group>`_",:option:`synadm group delete -h`
-"`Background Updates API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html>`_",
-"  `Status <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#status>`_",
-"  `Enabled <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#enabled>`_",
-"  `Run <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/background_updates.html#run>`_",
-"`Event Reports API <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html>`_",
-"  `Show reported events <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-reported-events>`_",
-"  `Show details of a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
-"  `Delete a specific event report <https://element-hq.github.io/synapse/develop/admin_api/event_reports.html#delete-a-specific-event-report>`_",
-"`Experimental Features API <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html>`_",
-"  `Enabling/Disabling Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html#enablingdisabling-features>`_",
-"  `Listing Enabled Features <https://element-hq.github.io/synapse/develop/admin_api/experimental_features.html#listing-enabled-features>`_",
-"`Media API <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html>`_",":doc:`synadm.cli.media`, :doc:`synadm.cli.user`"
-"  `Querying media <https://element-hq.github.io/synapse/develop/admin_api/media_#querying-media>`_","---"
-"    -- `List all media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
-"    -- `List all media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm media list -u` :option:`synadm user media -f`
-"  `Quarantine media <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantine-media>`_","---"
-"    -- `Quarantining media by ID <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantining-media-by-id>`_",:option:`synadm media quarantine -i`
-"    -- `Remove media from quarantine by ID <https://element-hq.github.io/synapse/develop/admin_api/media_#remove-media-from-quarantine-by-id>`_",:option:`synadm media unquarantine -i`
-"    -- `Quarantining media in a room <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantining-media-in-a-room>`_",:option:`synadm media quarantine -r`
-"    -- `Quarantining all media of a user <https://element-hq.github.io/synapse/develop/admin_api/media_#quarantining-all-media-of-a-user>`_",:option:`synadm media quarantine -u`
-"    -- `Protecting media from being quarantined <https://element-hq.github.io/synapse/develop/admin_api/media_#protecting-media-from-being-quarantined>`_",:option:`synadm media protect MEDIA_ID`
-"    -- `Unprotecting media from being quarantined <https://element-hq.github.io/synapse/develop/admin_api/media_#unprotecting-media-from-being-quarantined>`_",
-"  `Delete local media <https://element-hq.github.io/synapse/develop/admin_api/media_#delete-local-media>`_","---"
-"    -- `Delete a specific local media <https://element-hq.github.io/synapse/develop/admin_api/media_#delete-a-specific-local-media>`_",:option:`synadm media delete -i`
-"    -- `Delete local media by date or size <https://element-hq.github.io/synapse/develop/admin_api/media_#delete-local-media-by-date-or-size>`_",:option:`synadm media delete -d` :option:`synadm media delete --size`
-"    -- `Delete media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/media_#delete-media-uploaded-by-a-user>`_",
-"  `Purge Remote Media API <https://element-hq.github.io/synapse/develop/admin_api/media_#purge-remote-media-api>`_",:option:`synadm media purge -d`
-"`Purge History API <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_",:doc:`synadm.cli.history`
-"  `Purge history <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html>`_",:option:`synadm history purge -i`
-"  `Purge status query <https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html#purge-status-query>`_",:option:`synadm history purge-status PURGE_ID`
-"`Register Users API <https://element-hq.github.io/synapse/develop/admin_api/register_api.html>`_",
-"  `Shared-Secret Registration <https://element-hq.github.io/synapse/develop/admin_api/register_api.html#shared-secret-registration>`_",
-"`Registration Tokens API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html>`_",:doc:`synadm.cli.regtok`
-"  `Registration token objects <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#registration-token-objects>`_","---"
-"  `List all tokens <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#list-all-tokens>`_",:option:`synadm regtok list -v`
-"  `Get one token <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#get-one-token>`_",:option:`synadm regtok details TOKEN`
-"  `Create token <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#create-token>`_",:option:`synadm regtok new -n`
-"  `Update token <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#update-token>`_",:option:`synadm regtok update TOKEN`
-"  `Delete token <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/registration_tokens.html#delete-token>`_",:option:`synadm regtok delete TOKEN`
-"`Manipulate Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html>`_",:doc:`synadm.cli.room`
-"  `Edit Room Membership API <https://element-hq.github.io/synapse/develop/admin_api/room_membership.html#edit-room-membership-api>`_",:option:`synadm room join ROOM_ID_OR_ALIAS`
-"`Rooms API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html>`_",:doc:`synadm.cli.room`
-"  `List Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#list-room-api>`_",:option:`synadm room list -f`
-"  `Room Details API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-details-api>`_",:option:`synadm room details ROOM_ID`
-"  `Room Members API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-members-api>`_",:option:`synadm room members ROOM_ID`
-"  `Room State API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-state-api>`_",:option:`synadm room state ROOM_ID`
-"  `Room Messages API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-messages-api>`_",
-"  `Room Timestamp to Event API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#room-timestamp-to-event-api>`_",
-"  `Block Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#block-room-api>`_","---"
-"    -- `Block or unblock a room <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#block-or-unblock-a-room>`_",:option:`synadm room block -b` :option:`synadm room block -u`
-"  `Get block status <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#get-block-status>`_",:option:`synadm room block-status ROOM_ID`
-"  `Delete Room API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#delete-room-api>`_","---"
-"    -- `Version 1 (old version) <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#version-1-old-version>`_",:option:`synadm room delete --v1`
-"    -- `Version 2 (new version) <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#version-2-new-version>`_",:option:`synadm room delete ROOM_ID`
-"    -- `Status of deleting rooms <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#status-of-deleting-rooms>`_","---"
-"    -- `Query by room_id <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#query-by-room_id>`_",:option:`synadm room delete-status -r`
-"    -- `Query by delete_id <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#query-by-delete_id>`_",:option:`synadm room delete-status -d`
-"    -- `Undoing room deletions <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#undoing-room-deletions>`_",
-"  `Make Room Admin API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#make-room-admin-api>`_",:option:`synadm room make-admin -u`
-"  `Check for forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#check-for-forward-extremities>`_",
-"  `Deleting forward extremities <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#deleting-forward-extremities>`_",
-"  `Event Context API <https://element-hq.github.io/synapse/develop/admin_api/rooms.html#event-context-api>`_",
-"`Server Notices <https://element-hq.github.io/synapse/develop/admin_api/server_notices.html>`_",:doc:`synadm.cli.notice`
-"  `Server Notices <https://element-hq.github.io/synapse/develop/admin_api/server_notices.html>`_",:option:`synadm notice send TO`
-"`Statistics API <https://element-hq.github.io/synapse/develop/admin_api/statistics.html>`_",
-"  `Users' media usage statistics <https://element-hq.github.io/synapse/develop/admin_api/statistics.html#users-media-usage-statistics>`_",
-"  `Get largest rooms by size in database <https://element-hq.github.io/synapse/develop/admin_api/statistics.html#get-largest-rooms-by-size-in-database>`_",
-"`User Admin API <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html>`_",:doc:`synadm.cli.user`
-"  `Query User Account <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#query-user-account>`_",:option:`synadm user details USER_ID`
-"  `Create or modify account <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#create-or-modify-account>`_",:option:`synadm user modify USER_ID`
-"  `List Accounts <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-accounts>`_","---"
-"    -- `List Accounts (V2) <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-accounts-v2>`_",:option:`synadm user list -f`
-"    -- `List Accounts (V3) <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-accounts-v3>`_",
-"  `Query current sessions for a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#query-current-sessions-for-a-user>`_",:option:`synadm user whois USER_ID`
-"  `Deactivate Account <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#deactivate-account>`_",:option:`synadm user deactivate USER_ID`
-"  `Reset password <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#reset-password>`_",:option:`synadm user password USER_ID`
-"  `Get whether a user is a server administrator or not <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#get-whether-a-user-is-a-server-administrator-or-not>`_",
-"  `Change whether a user is a server administrator or not <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#change-whether-a-user-is-a-server-administrator-or-not>`_",
-"  `List room memberships of a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-room-memberships-of-a-user>`_",:option:`synadm user membership USER_ID`
-"  `Account Data <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#account-data>`_",
-"  `User media <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#user-media>`_","---"
-"    -- `List media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",
-"    -- `Delete media uploaded by a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm user media -f` :option:`synadm media list -u`
-"  `Login as a user <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#login-as-a-user>`_",:option:`synadm user login USER_ID`
-"  `Allow replacing master cross-signing key without... <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
-"  `User devices <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#user-devices>`_","---"
-"    -- `List all devices <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-all-devices>`_",:option:`synadm user prune-devices --list-only`
-"    -- `Create a device <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#create-a-device>`_",
-"    -- `Delete multiple devices <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#delete-multiple-devices>`_",:option:`synadm user prune-devices -d` :option:`synadm user prune-devices -s`
-"    -- `Show a device <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#show-a-device>`_",:option:`synadm user prune-devices --list-only` (-i)
-"    -- `Update a device <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#update-a-device>`_",
-"    -- `Delete a device <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#delete-a-device>`_",:option:`synadm user prune-devices -i`
-"  `List all pushers <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#list-all-pushers>`_",
-"  `Controlling whether a user is shadow-banned <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#controlling-whether-a-user-is-shadow-banned>`_",:option:`synadm user shadow-ban USER_ID` :option:`synadm user shadow-ban --unban`
-"  `Override ratelimiting for users <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#override-ratelimiting-for-users>`_","---"
-"    -- `Get status of ratelimit <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#get-status-of-ratelimit>`_",
-"    -- `Set ratelimit <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#set-ratelimit>`_",
-"    -- `Delete ratelimit <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#delete-ratelimit>`_",
-"  `Check username availability <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#check-username-availability>`_",
-"  `Find a user based on their ID in an auth provider <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#find-a-user-based-on-their-id-in-an-auth-provider>`_",:option:`synadm user 3pid ADDRESS`
-"  `Find a user based on their Third Party ID <https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html#find-a-user-based-on-their-third-party-id-threepid-or-3pid>`_",:option:`synadm user auth-provider EXTERNAL_USER_ID`
-"`Version API <https://element-hq.github.io/synapse/develop/admin_api/version_api.html>`_",:option:`synadm --version`
-"`Federation API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html>`_",
-"  `List of destinations <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#list-of-destinations>`_",
-"  `Destination Details API <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#destination-details-api>`_",
-"  `Destination rooms <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#destination-rooms>`_",
-"  `Reset connection timeout <https://element-hq.github.io/synapse/develop/usage/administration/admin_api/federation.html#reset-connection-timeout>`_",
+"  `Delete a local group <https://element-hq.github.io/synapse/v1.61/admin_api/delete_group.html#delete-a-local-group>`_",:option:`synadm group delete -h`
+"`Background Updates API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/background_updates.html>`_",
+"  `Status <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/background_updates.html#status>`_",
+"  `Enabled <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/background_updates.html#enabled>`_",
+"  `Run <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/background_updates.html#run>`_",
+"`Event Reports API <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html>`_",
+"  `Show reported events <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-reported-events>`_",
+"  `Show details of a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
+"  `Delete a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#delete-a-specific-event-report>`_",
+"`Experimental Features API <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html>`_",
+"  `Enabling/Disabling Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#enablingdisabling-features>`_",
+"  `Listing Enabled Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#listing-enabled-features>`_",
+"`Media API <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html>`_",":doc:`synadm.cli.media`, :doc:`synadm.cli.user`"
+"  `Querying media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#querying-media>`_","---"
+"    -- `List all media in a room <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
+"    -- `List all media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm media list -u` :option:`synadm user media -f`
+"  `Quarantine media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantine-media>`_","---"
+"    -- `Quarantining media by ID <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-media-by-id>`_",:option:`synadm media quarantine -i`
+"    -- `Remove media from quarantine by ID <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#remove-media-from-quarantine-by-id>`_",:option:`synadm media unquarantine -i`
+"    -- `Quarantining media in a room <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-media-in-a-room>`_",:option:`synadm media quarantine -r`
+"    -- `Quarantining all media of a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-all-media-of-a-user>`_",:option:`synadm media quarantine -u`
+"    -- `Protecting media from being quarantined <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#protecting-media-from-being-quarantined>`_",:option:`synadm media protect MEDIA_ID`
+"    -- `Unprotecting media from being quarantined <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#unprotecting-media-from-being-quarantined>`_",
+"  `Delete local media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media>`_","---"
+"    -- `Delete a specific local media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-a-specific-local-media>`_",:option:`synadm media delete -i`
+"    -- `Delete local media by date or size <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media-by-date-or-size>`_",:option:`synadm media delete -d` :option:`synadm media delete --size`
+"    -- `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",
+"  `Purge Remote Media API <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#purge-remote-media-api>`_",:option:`synadm media purge -d`
+"`Purge History API <https://element-hq.github.io/synapse/latest/admin_api/purge_history_api.html>`_",:doc:`synadm.cli.history`
+"  `Purge history <https://element-hq.github.io/synapse/latest/admin_api/purge_history_api.html>`_",:option:`synadm history purge -i`
+"  `Purge status query <https://element-hq.github.io/synapse/latest/admin_api/purge_history_api.html#purge-status-query>`_",:option:`synadm history purge-status PURGE_ID`
+"`Register Users API <https://element-hq.github.io/synapse/latest/admin_api/register_api.html>`_",
+"  `Shared-Secret Registration <https://element-hq.github.io/synapse/latest/admin_api/register_api.html#shared-secret-registration>`_",
+"`Registration Tokens API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html>`_",:doc:`synadm.cli.regtok`
+"  `Registration token objects <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#registration-token-objects>`_","---"
+"  `List all tokens <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#list-all-tokens>`_",:option:`synadm regtok list -v`
+"  `Get one token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#get-one-token>`_",:option:`synadm regtok details TOKEN`
+"  `Create token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#create-token>`_",:option:`synadm regtok new -n`
+"  `Update token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#update-token>`_",:option:`synadm regtok update TOKEN`
+"  `Delete token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#delete-token>`_",:option:`synadm regtok delete TOKEN`
+"`Manipulate Room Membership API <https://element-hq.github.io/synapse/latest/admin_api/room_membership.html>`_",:doc:`synadm.cli.room`
+"  `Edit Room Membership API <https://element-hq.github.io/synapse/latest/admin_api/room_membership.html#edit-room-membership-api>`_",:option:`synadm room join ROOM_ID_OR_ALIAS`
+"`Rooms API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html>`_",:doc:`synadm.cli.room`
+"  `List Room API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#list-room-api>`_",:option:`synadm room list -f`
+"  `Room Details API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#room-details-api>`_",:option:`synadm room details ROOM_ID`
+"  `Room Members API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#room-members-api>`_",:option:`synadm room members ROOM_ID`
+"  `Room State API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#room-state-api>`_",:option:`synadm room state ROOM_ID`
+"  `Room Messages API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#room-messages-api>`_",
+"  `Room Timestamp to Event API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#room-timestamp-to-event-api>`_",
+"  `Block Room API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#block-room-api>`_","---"
+"    -- `Block or unblock a room <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#block-or-unblock-a-room>`_",:option:`synadm room block -b` :option:`synadm room block -u`
+"  `Get block status <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#get-block-status>`_",:option:`synadm room block-status ROOM_ID`
+"  `Delete Room API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#delete-room-api>`_","---"
+"    -- `Version 1 (old version) <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#version-1-old-version>`_",:option:`synadm room delete --v1`
+"    -- `Version 2 (new version) <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#version-2-new-version>`_",:option:`synadm room delete ROOM_ID`
+"    -- `Status of deleting rooms <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#status-of-deleting-rooms>`_","---"
+"    -- `Query by room_id <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#query-by-room_id>`_",:option:`synadm room delete-status -r`
+"    -- `Query by delete_id <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#query-by-delete_id>`_",:option:`synadm room delete-status -d`
+"    -- `Undoing room deletions <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#undoing-room-deletions>`_",
+"  `Make Room Admin API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#make-room-admin-api>`_",:option:`synadm room make-admin -u`
+"  `Check for forward extremities <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#check-for-forward-extremities>`_",
+"  `Deleting forward extremities <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#deleting-forward-extremities>`_",
+"  `Event Context API <https://element-hq.github.io/synapse/latest/admin_api/rooms.html#event-context-api>`_",
+"`Server Notices <https://element-hq.github.io/synapse/latest/admin_api/server_notices.html>`_",:doc:`synadm.cli.notice`
+"  `Server Notices <https://element-hq.github.io/synapse/latest/admin_api/server_notices.html>`_",:option:`synadm notice send TO`
+"`Statistics API <https://element-hq.github.io/synapse/latest/admin_api/statistics.html>`_",
+"  `Users' media usage statistics <https://element-hq.github.io/synapse/latest/admin_api/statistics.html#users-media-usage-statistics>`_",
+"  `Get largest rooms by size in database <https://element-hq.github.io/synapse/latest/admin_api/statistics.html#get-largest-rooms-by-size-in-database>`_",
+"`User Admin API <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html>`_",:doc:`synadm.cli.user`
+"  `Query User Account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#query-user-account>`_",:option:`synadm user details USER_ID`
+"  `Create or modify account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#create-or-modify-account>`_",:option:`synadm user modify USER_ID`
+"  `List Accounts <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts>`_","---"
+"    -- `List Accounts (V2) <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts-v2>`_",:option:`synadm user list -f`
+"    -- `List Accounts (V3) <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts-v3>`_",
+"  `Query current sessions for a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#query-current-sessions-for-a-user>`_",:option:`synadm user whois USER_ID`
+"  `Deactivate Account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#deactivate-account>`_",:option:`synadm user deactivate USER_ID`
+"  `Reset password <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#reset-password>`_",:option:`synadm user password USER_ID`
+"  `Get whether a user is a server administrator or not <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#get-whether-a-user-is-a-server-administrator-or-not>`_",
+"  `Change whether a user is a server administrator or not <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#change-whether-a-user-is-a-server-administrator-or-not>`_",
+"  `List room memberships of a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-room-memberships-of-a-user>`_",:option:`synadm user membership USER_ID`
+"  `Account Data <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#account-data>`_",
+"  `User media <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-media>`_","---"
+"    -- `List media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",
+"    -- `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm user media -f` :option:`synadm media list -u`
+"  `Login as a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#login-as-a-user>`_",:option:`synadm user login USER_ID`
+"  `Allow replacing master cross-signing key without... <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
+"  `User devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-devices>`_","---"
+"    -- `List all devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-all-devices>`_",:option:`synadm user prune-devices --list-only`
+"    -- `Create a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#create-a-device>`_",
+"    -- `Delete multiple devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-multiple-devices>`_",:option:`synadm user prune-devices -d` :option:`synadm user prune-devices -s`
+"    -- `Show a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#show-a-device>`_",:option:`synadm user prune-devices --list-only` (-i)
+"    -- `Update a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#update-a-device>`_",
+"    -- `Delete a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-a-device>`_",:option:`synadm user prune-devices -i`
+"  `List all pushers <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-all-pushers>`_",
+"  `Controlling whether a user is shadow-banned <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#controlling-whether-a-user-is-shadow-banned>`_",:option:`synadm user shadow-ban USER_ID` :option:`synadm user shadow-ban --unban`
+"  `Override ratelimiting for users <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#override-ratelimiting-for-users>`_","---"
+"    -- `Get status of ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#get-status-of-ratelimit>`_",
+"    -- `Set ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#set-ratelimit>`_",
+"    -- `Delete ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-ratelimit>`_",
+"  `Check username availability <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#check-username-availability>`_",
+"  `Find a user based on their ID in an auth provider <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#find-a-user-based-on-their-id-in-an-auth-provider>`_",:option:`synadm user 3pid ADDRESS`
+"  `Find a user based on their Third Party ID <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#find-a-user-based-on-their-third-party-id-threepid-or-3pid>`_",:option:`synadm user auth-provider EXTERNAL_USER_ID`
+"`Version API <https://element-hq.github.io/synapse/latest/admin_api/version_api.html>`_",:option:`synadm --version`
+"`Federation API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html>`_",
+"  `List of destinations <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#list-of-destinations>`_",
+"  `Destination Details API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-details-api>`_",
+"  `Destination rooms <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-rooms>`_",
+"  `Reset connection timeout <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#reset-connection-timeout>`_",
 "---",:doc:`synadm.cli.config`
 "Any Synapse Admin API",:doc:`synadm.cli.raw`
 "Native Matrix API Helpers",:doc:`synadm.cli.matrix`
