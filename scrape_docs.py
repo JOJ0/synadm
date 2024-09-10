@@ -8,8 +8,8 @@ import requests
 
 @click.command()
 @click.option(
-    '--output', '-o', default='default',
-    type=click.Choice(['default', 'rst', 'csv']), show_choices=True,
+    '--output', '-o', default='csv',
+    type=click.Choice(['debug', 'rst', 'csv']), show_choices=True,
     help='''Output format "default" prints human readable on shell, "csv" is a
     two-column comma separated value format.''')
 @click.argument('URL')
@@ -26,13 +26,13 @@ def scrape(output, url):
     elements = soup.find_all([*any_heading_tag, 'a'],)
 
     for e in elements:
-        if e.name in any_heading_tag and output == 'default':
+        if e.name in any_heading_tag and output == 'debug':
             print(f'{e.name}: {e.text}')
         if e.name == 'a':
             if e.parent.name in any_heading_tag:
                 link = e['href']
-                if output == 'default':
-                    print(f'{e.text} {link}')
+                if output == 'debug':
+                    print(f'Element text:\t{e.text}\nLink/Anchor:\t{link}')
                 if output in ['rst', 'csv']:
                     parts = chapter.split('/admin_api/')
                     fulllink = f'{parts[0]}/admin_api/{parts[1]}{link}'
@@ -50,7 +50,7 @@ def scrape(output, url):
                         print(f'{left_col},')
                     elif output == 'rst':
                         print(rst)
-            if output == 'default':  # Final spacing only with default format
+            if output == 'debug':  # Final spacing only with debug format
                 print()
 
 # print(soup.prettify())
