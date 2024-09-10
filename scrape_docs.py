@@ -45,14 +45,12 @@ def scrape(output, url):
                             for val in range(0, spacing_count * 2):
                                 spacing += ' '
                     rst = f'{spacing}`{e.text} <{fulllink}>`_'
-                    # csv format also adds some spacing in front of links
                     if output == 'csv':
                         left_col = f'"{rst}"'
                         print(f'{left_col},')
                     elif output == 'rst':
                         print(rst)
-            # Final spacing only with these formats
-            if output in ['default']:
+            if output == 'default':  # Final spacing only with default format
                 print()
 
 # print(soup.prettify())
