@@ -12,12 +12,12 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: '3.10'
 
     - name: Install & Upgrade Pip
       run: |
@@ -50,7 +50,7 @@ jobs:
 
     - name: "Get latest release"
       id: last_release
-      uses: InsonusK/get-latest-release@v1.0.1
+      uses: InsonusK/get-latest-release@v1.1.0
       with:
         myToken: ${{ secrets.GITHUB_TOKEN }}
         exclude_types: ""
@@ -70,9 +70,9 @@ jobs:
       run: |
         if [[ "${{ steps.last_release.outputs.tag_name }}" == "${{ env.tag_full }}" ]];
         then
-          echo "::set-output name=release_existing::true"
+          echo "release_existing=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=release_existing::false"
+          echo "release_existing=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Create release
