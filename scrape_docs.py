@@ -10,14 +10,22 @@ import requests
 @click.option(
     '--output', '-o', default='csv',
     type=click.Choice(['debug', 'rst', 'csv']), show_choices=True,
-    help='''Output format "default" prints human readable on shell, "csv" is a
-    two-column comma separated value format.''')
+    help='''Output format "debug" prints headline level, headline text and the
+    scraped link/anchor; "rst" gives a restructuredText formatted hyperlink
+    including space-indentation according to headline levels; "csv" is a
+    two-column comma separated value format that includes the results of "rst"
+    as the left column's contents. Additionally "csv" adds a restructuredText
+    formatted headline above the table''')
 @click.argument('URL')
 def scrape(output, url):
     '''Scrape one chapter of Admin API docs and spit out in various formats.
 
     URL is the address of the Synapse Admin API docs chapter. For example:
-    https://element-hq.github.io/synapse/develop/admin_api/rooms.html'''
+    https://element-hq.github.io/synapse/latest/admin_api/rooms.html
+
+    The default output format is "csv", which gives a two column CSV table
+    containing restructuredText formatted hyperlinks and a headline.
+    '''
     chapter = url
     apidoc = requests.get(chapter).text
     soup = BeautifulSoup(apidoc, 'html.parser')
