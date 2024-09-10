@@ -37,21 +37,21 @@ def scrape(output, url):
                 if output in ['rst', 'csv']:
                     parts = chapter.split('/admin_api/')
                     fulllink = f'{parts[0]}/admin_api/{parts[1]}{link}'
-                    if output == 'rst':
-                        spacing = ''
-                        for h in any_heading_tag:
-                            if e.parent.name == h:
-                                # h1 is no spacing (decrease by 1),
-                                # h2 is 2 spaces, h3 is 4....
-                                spacing_count = int(e.parent.name[-1]) - 1
-                                for val in range(0, spacing_count * 2):
-                                    spacing += ' '
-                        rst = f'`{spacing}{e.text} <{fulllink}>`_'
-                        print(rst)
+                    spacing = ''
+                    for h in any_heading_tag:
+                        if e.parent.name == h:
+                            # h1 is no spacing (decrease by 1),
+                            # h2 is 2 spaces, h3 is 4....
+                            spacing_count = int(e.parent.name[-1]) - 1
+                            for val in range(0, spacing_count * 2):
+                                spacing += ' '
+                    rst = f'{spacing}`{e.text} <{fulllink}>`_'
                     # csv format also adds some spacing in front of links
                     if output == 'csv':
-                        left_col = f'"  `{e.text} <{fulllink}>`_"'
+                        left_col = f'"{rst}"'
                         print(f'{left_col},')
+                    elif output == 'rst':
+                        print(rst)
             # Final spacing only with these formats
             if output in ['default']:
                 print()
