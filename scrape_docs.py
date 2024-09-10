@@ -33,6 +33,10 @@ def scrape(output, url):
     any_heading_tag = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
     elements = soup.find_all([*any_heading_tag, 'a'],)
 
+    if output == 'csv':
+        print('Change this headline as required')
+        print('================================\n')
+
     for e in elements:
         if e.name in any_heading_tag and output == 'debug':
             print(f'{e.name}: {e.text}')
