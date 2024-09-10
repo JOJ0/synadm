@@ -26,9 +26,8 @@ def scrape(output, url):
     elements = soup.find_all([*any_heading_tag, 'a'],)
 
     for e in elements:
-        if e.name in any_heading_tag:
-            if output in ['default']:
-                print(f'{e.name}: {e.text}')
+        if e.name in any_heading_tag and output == 'default':
+            print(f'{e.name}: {e.text}')
         if e.name == 'a':
             if e.parent.name in any_heading_tag:
                 link = e['href']
