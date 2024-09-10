@@ -36,6 +36,7 @@ def scrape(output, url):
     if output == 'csv':
         print('Change this headline as required')
         print('================================\n')
+        print('"Synapse Admin API","synadm command(s)"')
 
     for e in elements:
         if e.name in any_heading_tag and output == 'debug':
