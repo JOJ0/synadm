@@ -22,16 +22,15 @@ def scrape(output, url):
     apidoc = requests.get(chapter).text
     soup = BeautifulSoup(apidoc, 'html.parser')
 
-    elements = soup.find_all(
-            ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'a'],
-    )
+    any_heading_tag = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    elements = soup.find_all([*any_heading_tag, 'a'],)
 
     for e in elements:
-        if e.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
-            if output in ['default', 'rst']:
+        if e.name in any_heading_tag:
+            if output in ['default']:
                 print(f'{e.name}: {e.text}')
         if e.name == 'a':
-            if e.parent.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+            if e.parent.name in any_heading_tag:
                 link = e['href']
                 if output == 'default':
                     print(f'{e.text} {link}')
