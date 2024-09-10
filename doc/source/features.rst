@@ -7,11 +7,24 @@ Below table shows which Synapse Admin APIs are used by their corresponding
 in ``synadm`` for an API that is already tracked here, file a `feature request
 issue`_ or even better, a `pull request`_ implementing the feature.
 
+Account Validity API
+--------------------
+
 .. csv-table:: Admin API vs Command Overview
-   :file: features.csv
+   :file: features_account_validity.csv
    :header-rows: 1
    :class: longtable
    :widths: 1 1
+
+Delete Group API
+----------------
+
+.. csv-table:: Admin API vs Command Overview
+   :file: features_delete_group.csv
+   :header-rows: 1
+   :class: longtable
+   :widths: 1 1
+
 
 .. _features.csv:
    https://github.com/JOJ0/synadm/tree/master/doc/source/features.csv
