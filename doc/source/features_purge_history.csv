@@ -1,0 +1,2 @@
+"`Purge history <https://element-hq.github.io/synapse/latest/admin_api/purge_history_api.html>`_",:option:`synadm history purge -i`
+"`Purge status query <https://element-hq.github.io/synapse/latest/admin_api/purge_history_api.html#purge-status-query>`_",:option:`synadm history purge-status PURGE_ID`

@@ -7,22 +7,132 @@ Below table shows which Synapse Admin APIs are used by their corresponding
 in ``synadm`` for an API that is already tracked here, file a `feature request
 issue`_ or even better, a `pull request`_ implementing the feature.
 
-Account Validity API
---------------------
-
-.. csv-table:: Admin API vs Command Overview
-   :file: features_account_validity.csv
-   :header-rows: 1
-   :class: longtable
-   :widths: 1 1
-
-Delete Group API
+Account Validity
 ----------------
 
-.. csv-table:: Admin API vs Command Overview
+.. csv-table::
+   :file: features_account_validity.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Background Updates
+------------------
+
+.. csv-table::
+   :file: features_background_updates.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Delete Group
+------------
+
+.. csv-table::
    :file: features_delete_group.csv
-   :header-rows: 1
-   :class: longtable
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Event Reports
+-------------
+
+.. csv-table::
+   :file: features_event_reports.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Experimental Features
+---------------------
+
+.. csv-table::
+   :file: features_experimental_features.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Media
+-----
+
+.. csv-table::
+   :file: features_media.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Purge History
+-------------
+
+.. csv-table::
+   :file: features_purge_history.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Register Users
+--------------
+
+.. csv-table::
+   :file: features_register_users.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Registration Tokens
+-------------------
+
+.. csv-table::
+   :file: features_registration_tokens.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Manipulate Room Membership
+--------------------------
+
+.. csv-table::
+   :file: features_manipulate_room_membership.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Rooms
+-----
+
+.. csv-table::
+   :file: features_rooms.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Server Notices
+--------------
+
+.. csv-table::
+   :file: features_server_notices.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Statistics
+----------
+
+.. csv-table::
+   :file: features_statistics.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Users
+-----
+
+.. csv-table::
+   :file: features_users.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Server Version
+--------------
+
+.. csv-table::
+   :file: features_server_version.csv
+   :header: "Synapse Admin API","synadm command(s)"
+   :widths: 1 1
+
+Federation
+----------
+
+.. csv-table::
+   :file: features_federation.csv
+   :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
 
