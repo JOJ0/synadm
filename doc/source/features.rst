@@ -52,6 +52,7 @@ Media
    :file: features_media.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
+   :keepspace:
 
 Purge History
 -------------
