@@ -21,12 +21,15 @@ Background Updates API
 Event Reports API
 =================
 "Synapse Admin API","synadm command(s)"
-"  `Show reported events <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-reported-events>`_",
-"  `Show details of a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
-"  `Delete a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#delete-a-specific-event-report>`_",
-"`Experimental Features API <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html>`_",
-"  `Enabling/Disabling Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#enablingdisabling-features>`_",
-"  `Listing Enabled Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#listing-enabled-features>`_",
+"`Show reported events <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-reported-events>`_",
+"`Show details of a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#show-details-of-a-specific-event-report>`_",
+"`Delete a specific event report <https://element-hq.github.io/synapse/latest/admin_api/event_reports.html#delete-a-specific-event-report>`_",
+
+
+Experimental Features API
+=========================
+"`Enabling/Disabling Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#enablingdisabling-features>`_",
+"`Listing Enabled Features <https://element-hq.github.io/synapse/latest/admin_api/experimental_features.html#listing-enabled-features>`_",
 
 
 Media API
@@ -162,17 +165,16 @@ Version API
 Federation API
 ==============
 "Synapse Admin API","synadm command(s)"
-"`Federation API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html>`_",
-"  `List of destinations <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#list-of-destinations>`_",
-"  `Destination Details API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-details-api>`_",
-"  `Destination rooms <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-rooms>`_",
-"  `Reset connection timeout <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#reset-connection-timeout>`_",
-"---",:doc:`synadm.cli.config`
+"`List of destinations <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#list-of-destinations>`_",
+"`Destination Details API <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-details-api>`_",
+"`Destination rooms <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#destination-rooms>`_",
+"`Reset connection timeout <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/federation.html#reset-connection-timeout>`_",
 
 
 Miscellaneous
 =============
 "Synapse Admin API","synadm command(s)"
+"---",:doc:`synadm.cli.config`
 "Any Synapse Admin API",:doc:`synadm.cli.raw`
 "Native Matrix API Helpers",:doc:`synadm.cli.matrix`
 "  Matrix User Login",:option:`synadm matrix login USER_ID`
