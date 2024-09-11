@@ -1,11 +1,9 @@
 Synapse Admin API Coverage
 ==========================
 
-Below table shows which Synapse Admin APIs are used by their corresponding
-``synadm`` commands. To add a newly released or otherwise missing API, edit
-`features.csv`_ and submit a `pull request`_. If you happen to miss a feature
-in ``synadm`` for an API that is already tracked here, file a `feature request
-issue`_ or even better, a `pull request`_ implementing the feature.
+The tables below show which Synapse Admin APIs are used by their corresponding ``synadm`` commands.
+The left column's entries link to the official Synapse Admin API documentation, the right column's entries point to the ``synadm`` CLI reference.
+To add missing entries to a table edit one of the CSV files in our `documentation source directory`_ and submit a `pull request`_.
 
 Account Validity
 ----------------
@@ -136,7 +134,7 @@ Federation
    :widths: 1 1
 
 
-.. _features.csv:
+.. _documentation source directory:
    https://github.com/JOJ0/synadm/tree/master/doc/source/features.csv
 .. _feature request issue:
    https://github.com/JOJ0/synadm/issues/new
