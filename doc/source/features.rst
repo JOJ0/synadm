@@ -141,3 +141,4 @@ Federation
    https://github.com/JOJ0/synadm/issues/new
 .. _pull request:
    https://github.com/JOJ0/synadm/blob/dev/CONTRIBUTING.md#submitting-your-work
+.. |nbindent| unicode:: U+00A0 U+00A0 .. non-breaking two-space indentation
