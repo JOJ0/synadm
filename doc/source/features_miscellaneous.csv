@@ -1,0 +1,5 @@
+"The Configurator",:option:`synadm config -u`
+"Any Synapse Admin API",:option:`synadm raw ENDPOINT`
+"Native Matrix API Helpers","---"
+"|indent| Matrix User Login",:option:`synadm matrix login USER_ID`
+"|indent| Any Matrix API",:option:`synadm matrix raw ENDPOINT`

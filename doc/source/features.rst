@@ -134,6 +134,14 @@ Federation
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
+Miscellaneous
+-------------
+
+.. csv-table::
+   :file: features_miscellaneous.csv
+   :header: "Description","synadm command(s)"
+   :widths: 1 1
+
 
 .. _documentation source directory:
    https://github.com/JOJ0/synadm/tree/master/doc/source/features.csv
