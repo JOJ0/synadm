@@ -9,7 +9,7 @@ Account Validity
 ----------------
 
 .. csv-table::
-   :file: features_account_validity.csv
+   :file: features/account_validity.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -17,7 +17,7 @@ Background Updates
 ------------------
 
 .. csv-table::
-   :file: features_background_updates.csv
+   :file: features/background_updates.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -25,7 +25,7 @@ Delete Group
 ------------
 
 .. csv-table::
-   :file: features_delete_group.csv
+   :file: features/delete_group.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -33,7 +33,7 @@ Event Reports
 -------------
 
 .. csv-table::
-   :file: features_event_reports.csv
+   :file: features/event_reports.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -41,7 +41,7 @@ Experimental Features
 ---------------------
 
 .. csv-table::
-   :file: features_experimental_features.csv
+   :file: features/experimental_features.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -49,7 +49,7 @@ Media
 -----
 
 .. csv-table::
-   :file: features_media.csv
+   :file: features/media.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
    :keepspace:
@@ -58,7 +58,7 @@ Purge History
 -------------
 
 .. csv-table::
-   :file: features_purge_history.csv
+   :file: features/purge_history.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -66,7 +66,7 @@ Register Users
 --------------
 
 .. csv-table::
-   :file: features_register_users.csv
+   :file: features/register_users.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -74,7 +74,7 @@ Registration Tokens
 -------------------
 
 .. csv-table::
-   :file: features_registration_tokens.csv
+   :file: features/registration_tokens.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -82,7 +82,7 @@ Manipulate Room Membership
 --------------------------
 
 .. csv-table::
-   :file: features_manipulate_room_membership.csv
+   :file: features/manipulate_room_membership.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -90,7 +90,7 @@ Rooms
 -----
 
 .. csv-table::
-   :file: features_rooms.csv
+   :file: features/rooms.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -98,7 +98,7 @@ Server Notices
 --------------
 
 .. csv-table::
-   :file: features_server_notices.csv
+   :file: features/server_notices.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -106,7 +106,7 @@ Statistics
 ----------
 
 .. csv-table::
-   :file: features_statistics.csv
+   :file: features/statistics.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -114,7 +114,7 @@ Users
 -----
 
 .. csv-table::
-   :file: features_users.csv
+   :file: features/users.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -122,7 +122,7 @@ Server Version
 --------------
 
 .. csv-table::
-   :file: features_server_version.csv
+   :file: features/server_version.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -130,7 +130,7 @@ Federation
 ----------
 
 .. csv-table::
-   :file: features_federation.csv
+   :file: features/federation.csv
    :header: "Synapse Admin API","synadm command(s)"
    :widths: 1 1
 
@@ -138,13 +138,13 @@ Miscellaneous
 -------------
 
 .. csv-table::
-   :file: features_miscellaneous.csv
+   :file: features/miscellaneous.csv
    :header: "Description","synadm command(s)"
    :widths: 1 1
 
 
 .. _documentation source directory:
-   https://github.com/JOJ0/synadm/tree/master/doc/source/features.csv
+   https://github.com/JOJ0/synadm/tree/master/doc/source/features/
 .. _feature request issue:
    https://github.com/JOJ0/synadm/issues/new
 .. _pull request:
