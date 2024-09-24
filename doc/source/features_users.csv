@@ -11,8 +11,8 @@
 "`List room memberships of a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-room-memberships-of-a-user>`_",:option:`synadm user membership USER_ID`
 "`Account Data <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#account-data>`_",
 "`User media <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-media>`_","---"
-"|indent| `List media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",
-"|indent| `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm user media -f` :option:`synadm media list -u`
+"|indent| `List media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",:option:`synadm user media -f` :option:`synadm media list -u`
+"|indent| `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-media-uploaded-by-a-user>`_",
 "`Login as a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#login-as-a-user>`_",:option:`synadm user login USER_ID`
 "`Allow replacing master cross-signing key without... <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
 "`User devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-devices>`_","---"
