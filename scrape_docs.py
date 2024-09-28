@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # Prerequisites: pip install -e '.[scrape_docs]'
+# Usage: scrape_docs.py --help
 
 import click
 from bs4 import BeautifulSoup
