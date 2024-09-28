@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Prerequisites: pip install -e .[scrape_docs]
+# Prerequisites: pip install -e '.[scrape_docs]'
 
 import click
 from bs4 import BeautifulSoup
