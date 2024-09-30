@@ -1,4 +1,4 @@
-Synapse Admin API Coverage
+API to CLI Mapping
 ==========================
 
 The tables below show which Synapse Admin APIs are used by their corresponding ``synadm`` commands.
