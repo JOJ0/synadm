@@ -55,9 +55,10 @@ def scrape(output, url):
                         if e.parent.name == h:
                             # h1 is no spacing (decrease by 1),
                             # h2 is 2 spaces, h3 is 4....
+                            # two literal spaces are replaced by '|indent| '
                             spacing_count = int(e.parent.name[-1]) - 1
                             for val in range(0, spacing_count * 2):
-                                spacing += ' '
+                                spacing += '|indent| '
                     rst = f'{spacing}`{e.text} <{fulllink}>`_'
                     if output == 'csv':
                         left_col = f'"{rst}"'
