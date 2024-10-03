@@ -70,9 +70,21 @@ In our documentation source, the page is defined by [features.rst](https://githu
 ./scrape_docs.py -o csv https://element-hq.github.io/synapse/latest/admin_api/rooms.html
 ```
 
-which prints a two-column CSV table containing restructuredText formatted hyperlinks in the left column. A corresponding `synadm` command is supposed to be added to the right column manually.
+which prints a two-column CSV table containing restructuredText formatted hyperlinks in the left column. A corresponding `synadm` command is supposed to be added to the right hand side column manually. For example, you could add the following:
 
-For more information see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
+```
+:option:`synadm user details USER_ID`
+```
+
+This would directly link to the `USER_ID` argument's documentation of that command.
+Linking to an option is also possible:
+
+```
+:option:`synadm media list -r`
+```
+
+Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
+
 
 ## Discuss & Design First
 
