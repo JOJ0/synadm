@@ -13,10 +13,11 @@ import requests
     type=click.Choice(['debug', 'rst', 'csv']), show_choices=True,
     help='''Output format "debug" prints headline level, headline text and the
     scraped link/anchor; "rst" gives a restructuredText formatted hyperlink
-    including space-indentation according to headline levels; "csv" is a
-    two-column comma separated value format that includes the results of "rst"
-    as the left column's contents. Additionally "csv" adds a restructuredText
-    formatted headline above the table''')
+    including indentation according to headline levels. Spaces at the beginning
+    of lines have a special meaning in rst documents, thus the hardcoded
+    replacement marker "|indent|" is used; "csv" is a two-column comma
+    separated value format that includes the results of "rst" as the left
+    column's contents.''')
 @click.argument('URL')
 def scrape(output, url):
     '''Scrape one chapter of Admin API docs and spit out in various formats.
