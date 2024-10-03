@@ -35,8 +35,6 @@ def scrape(output, url):
     elements = soup.find_all([*any_heading_tag, 'a'],)
 
     if output == 'csv':
-        print('Change this headline as required')
-        print('================================\n')
         print('"Synapse Admin API","synadm command(s)"')
 
     for e in elements:
