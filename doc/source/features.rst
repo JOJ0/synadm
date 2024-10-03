@@ -3,7 +3,7 @@ API to CLI Mapping
 
 The tables below show which Synapse Admin APIs are used by their corresponding ``synadm`` commands.
 The left column's entries link to the official Synapse Admin API documentation, the right column's entries point to the ``synadm`` CLI reference.
-To add missing entries to a table edit one of the CSV files in our `documentation source directory`_ and submit a `pull request`_. For more details on adding to the CSV tables, see `feature coverage documentation`_
+To add missing entries to a table edit one of the CSV files in our `documentation source directory`_ and submit a `pull request`_ - see `feature coverage documentation`_ for details.
 
 
 Account Validity
