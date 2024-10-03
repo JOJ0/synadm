@@ -1,5 +1,5 @@
-Media
-=====
+Media Commands
+==============
 
 .. click:: synadm.cli.media:media
    :prog: synadm media

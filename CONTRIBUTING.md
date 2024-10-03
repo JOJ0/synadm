@@ -6,6 +6,7 @@
   - [Programming](#programming)
 - [Submitting Your Work](#submitting-your-work)
 - [Expectations Regarding Timelines](#expectations-regarding-timelines)
+- [Feature Coverage Documentation](#feature-coverage-documentation)
 - [Discuss \& Design First](#discuss--design-first)
 - [Getting the Source \& Installing](#getting-the-source--installing)
 - [Command Design](#command-design)
@@ -27,16 +28,15 @@ No matter if you're a programmer or not there are many ways to contribute to the
 ### Non-Programming
 
 * [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
-* Help keeping the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter up to date. The Synapse project is steadily releasing new features for the _Synapse Admin API_. We can't keep up with updating this list but still think it is a handy overview of what's supported and what isn't.
-* Help prioritizing what to code next: Pick a feature from the list you find in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, open a GitHub issue and tell us what it is. If you don't find the feature in the list, please add it!
+* Help keep the features list on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) up to date.
 * Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with _Sphinx_ [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
 
 ### Programming
 
-* Pick an open issue on GitHub or an unticked feature from the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter, start implementing and submit a pull-request when you are ready to receive our feedback.
+* Pick an [open issue on GitHub](https://github.com/JOJ0/synadm/issues) or a not yet implemented [Synapse Admin API](https://synadm.readthedocs.io/en/latest/features.html) (see [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html)) and start implementing it, then submit a pull-request when you are ready.
   * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. You can then mention us (`@` then followed by a GitHub username).
   * It's ok to open a Draft PR even if you don't want our feedback yet but it helps you in any way. We won't bother you until you ping us.
-* Read the [Synapse Admin API docs](https://github.com/matrix-org/synapse/tree/master/docs/admin_api), pick a feature, implement it and send a pull-request. Don't forget to check if the feature is listed in the [Implementation Status / Commands List](README.md#implementation-status--commands-list) chapter already. If not, please add the command to the list (preferably in a separate commit).
+* Don't forget to check if the feature you are submitting is listed on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) already. If not, please add it to the corresponding table (preferably in a separate commit).
 
 
 ## Submitting Your Work
@@ -59,6 +59,31 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 - If it's a serious bug we might ask you for permission to take over your branch and continue the work ourselves.
 - Unfortunately we often see contributors submitting PR's, correcting a few of our suggested changes but then disappear, so if you realize you won't find the time at all to continue your work, **please just let us know**.
 - We believe that even the tiniest feature deserves a timely release. Sometimes we just can't make it soon enough because we don't find the time or we wait for something else because it makes sense to be released together. If a feature you submitted is merged and you'd need it urgently to be available on PyPi, **please let us know**.
+
+## Feature Coverage Documentation
+
+We keep track of which Synapse Admin API's `synadm` supports in a set of tables on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html). The structure of this page follows the layout of the official [Synapse Admin API documentation](https://element-hq.github.io/synapse/latest/usage/administration/admin_api/index.html). Each table represents one main chapter of the Synapse documentation.
+
+In our documentation source, the page is defined by [features.rst](https://github.com/JOJ0/synadm/blob/master/doc/source/features.rst), which contains multiple CSV files, each representing a table. To assist with maintaining this page, we offer a [web scraper tool](https://github.com/JOJ0/synadm/blob/master/scrape_docs.py) that pulls data from the Synapse Admin API docs and creates an initial version of such a CSV table. A basic usage example is
+
+```
+./scrape_docs.py -o csv https://element-hq.github.io/synapse/latest/admin_api/rooms.html
+```
+
+which prints a two-column CSV table containing restructuredText formatted hyperlinks in the left column. A corresponding `synadm` command is supposed to be added to the right hand side column manually. For example, you could add the following:
+
+```
+:option:`synadm user details USER_ID`
+```
+
+This would directly link to the `USER_ID` argument's documentation of that command.
+Linking to an option is also possible:
+
+```
+:option:`synadm media list -r`
+```
+
+Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
 
 
 ## Discuss & Design First

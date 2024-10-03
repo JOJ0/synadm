@@ -1,0 +1,15 @@
+"`Querying media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#querying-media>`_","---"
+"|indent| `List all media in a room <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#list-all-media-in-a-room>`_",:option:`synadm media list -r`
+"|indent| `List all media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",:option:`synadm media list -u` :option:`synadm user media -f`
+"`Quarantine media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantine-media>`_","---"
+"|indent| `Quarantining media by ID <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-media-by-id>`_",:option:`synadm media quarantine -i`
+"|indent| `Remove media from quarantine by ID <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#remove-media-from-quarantine-by-id>`_",:option:`synadm media unquarantine -i`
+"|indent| `Quarantining media in a room <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-media-in-a-room>`_",:option:`synadm media quarantine -r`
+"|indent| `Quarantining all media of a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#quarantining-all-media-of-a-user>`_",:option:`synadm media quarantine -u`
+"|indent| `Protecting media from being quarantined <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#protecting-media-from-being-quarantined>`_",:option:`synadm media protect MEDIA_ID`
+"|indent| `Unprotecting media from being quarantined <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#unprotecting-media-from-being-quarantined>`_",
+"`Delete local media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media>`_","---"
+"|indent| `Delete a specific local media <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-a-specific-local-media>`_",:option:`synadm media delete -i`
+"|indent| `Delete local media by date or size <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media-by-date-or-size>`_",:option:`synadm media delete -d` :option:`synadm media delete --size`
+"|indent| `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-media-uploaded-by-a-user>`_",
+"`Purge Remote Media API <https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#purge-remote-media-api>`_",:option:`synadm media purge -d`

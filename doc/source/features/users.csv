@@ -1,0 +1,33 @@
+"`Query User Account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#query-user-account>`_",:option:`synadm user details USER_ID`
+"`Create or modify account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#create-or-modify-account>`_",:option:`synadm user modify USER_ID`
+"`List Accounts <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts>`_","---"
+"|indent| `List Accounts (V2) <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts-v2>`_",:option:`synadm user list -f`
+"|indent| `List Accounts (V3) <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts-v3>`_",
+"`Query current sessions for a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#query-current-sessions-for-a-user>`_",:option:`synadm user whois USER_ID`
+"`Deactivate Account <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#deactivate-account>`_",:option:`synadm user deactivate USER_ID`
+"`Reset password <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#reset-password>`_",:option:`synadm user password USER_ID`
+"`Get whether a user is a server administrator or not <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#get-whether-a-user-is-a-server-administrator-or-not>`_",
+"`Change whether a user is a server administrator or not <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#change-whether-a-user-is-a-server-administrator-or-not>`_",
+"`List room memberships of a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-room-memberships-of-a-user>`_",:option:`synadm user membership USER_ID`
+"`Account Data <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#account-data>`_",
+"`User media <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-media>`_","---"
+"|indent| `List media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-media-uploaded-by-a-user>`_",:option:`synadm user media -f` :option:`synadm media list -u`
+"|indent| `Delete media uploaded by a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-media-uploaded-by-a-user>`_",
+"`Login as a user <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#login-as-a-user>`_",:option:`synadm user login USER_ID`
+"`Allow replacing master cross-signing key without... <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#allow-replacing-master-cross-signing-key-without-user-interactive-auth>`_",
+"`User devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#user-devices>`_","---"
+"|indent| `List all devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-all-devices>`_",:option:`synadm user prune-devices --list-only`
+"|indent| `Create a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#create-a-device>`_",
+"|indent| `Delete multiple devices <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-multiple-devices>`_",:option:`synadm user prune-devices -d` :option:`synadm user prune-devices -s`
+"|indent| `Show a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#show-a-device>`_",:option:`synadm user prune-devices --list-only` (-i)
+"|indent| `Update a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#update-a-device>`_",
+"|indent| `Delete a device <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-a-device>`_",:option:`synadm user prune-devices -i`
+"`List all pushers <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-all-pushers>`_",
+"`Controlling whether a user is shadow-banned <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#controlling-whether-a-user-is-shadow-banned>`_",:option:`synadm user shadow-ban USER_ID` :option:`synadm user shadow-ban --unban`
+"`Override ratelimiting for users <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#override-ratelimiting-for-users>`_","---"
+"|indent| `Get status of ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#get-status-of-ratelimit>`_",
+"|indent| `Set ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#set-ratelimit>`_",
+"|indent| `Delete ratelimit <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#delete-ratelimit>`_",
+"`Check username availability <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#check-username-availability>`_",
+"`Find a user based on their ID in an auth provider <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#find-a-user-based-on-their-id-in-an-auth-provider>`_",:option:`synadm user 3pid ADDRESS`
+"`Find a user based on their Third Party ID <https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#find-a-user-based-on-their-third-party-id-threepid-or-3pid>`_",:option:`synadm user auth-provider EXTERNAL_USER_ID`

@@ -56,6 +56,11 @@ setup(
         "click-option-group>=0.5.2",
         "dnspython"
     ],
+    extras_require={
+        "scrape_docs": [
+            "beautifulsoup4"
+        ],
+    },
     entry_points="""
         [console_scripts]
         synadm=synadm.cli:root

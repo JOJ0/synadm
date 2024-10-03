@@ -1,0 +1,6 @@
+"`Registration token objects <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#registration-token-objects>`_","---"
+"`List all tokens <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#list-all-tokens>`_",:option:`synadm regtok list -v`
+"`Get one token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#get-one-token>`_",:option:`synadm regtok details TOKEN`
+"`Create token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#create-token>`_",:option:`synadm regtok new -n`
+"`Update token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#update-token>`_",:option:`synadm regtok update TOKEN`
+"`Delete token <https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html#delete-token>`_",:option:`synadm regtok delete TOKEN`
