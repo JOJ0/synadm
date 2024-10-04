@@ -61,6 +61,10 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = "sphinx_book_theme"
+#html_theme = "pydata_sphinx_theme"
+#html_theme = "furo"
+#html_theme = "press"
+#html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -68,11 +72,16 @@ html_theme = "sphinx_book_theme"
 # html_static_path = ['_static']
 
 html_theme_options = {
-    'collapse_navigation': True,
-    'navigation_depth': 8,
-    'sticky_navigation': False,
-    'prev_next_buttons_location': 'bottom'
+    "collapse_navigation": True,
+    "logo": {
+        "text": "synadm - The Synapse Admin CLI",
+    },
+    "pygment_light_style": "bw",
 }
+html_title = "synadm"
+#html_logo = "_static/beets_logo_nobg.png"
+html_static_path = ["_static"]
+html_css_files = ["synadm.css"]
 
 
 # -- Extension configuration -------------------------------------------------
