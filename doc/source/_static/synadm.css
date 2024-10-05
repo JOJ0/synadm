@@ -5,10 +5,16 @@ html[data-theme="light"] {
 html[data-theme="light"] {
     --pst-color-inline-code: #a23632;
 }
-*/
 table tr:hover td {
     background-color: var(--bs-gray-300);
 }
+table {
+    display: table;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+table,thead,tbody {width:98%}
+*/
 
 /* pydata teal (primary): #126A7E */
 /* pydata violet (secondary): #7D0E70 */

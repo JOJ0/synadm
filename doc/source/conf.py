@@ -60,11 +60,11 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_book_theme"
-#html_theme = "pydata_sphinx_theme"
-#html_theme = "furo"
-#html_theme = "press"
-#html_theme = "alabaster"
+# html_theme = "sphinx_book_theme"
+# html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
+# html_theme = "press"
+# html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -72,16 +72,15 @@ html_theme = "sphinx_book_theme"
 # html_static_path = ['_static']
 
 html_theme_options = {
-    "collapse_navigation": True,
-    "logo": {
-        "text": "synadm - The Synapse Admin CLI",
-    },
-    "pygment_light_style": "bw",
+    # "light_css_variables": {
+    #     "color-brand-primary": "#343a40",
+    #     # "color-brand-content": "#495057",
+    #     # "color-admonition-background": "orange",
+    # },
 }
-html_title = "synadm"
-#html_logo = "_static/beets_logo_nobg.png"
-html_static_path = ["_static"]
-html_css_files = ["synadm.css"]
+# html_title = "synadm - the Synapse Admin CLI"
+# html_static_path = ["_static"]
+# html_css_files = ["synadm.css"]
 
 
 # -- Extension configuration -------------------------------------------------
