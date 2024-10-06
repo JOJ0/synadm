@@ -61,8 +61,8 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 # html_theme = "sphinx_book_theme"
-# html_theme = "pydata_sphinx_theme"
-html_theme = "furo"
+html_theme = "pydata_sphinx_theme"
+# html_theme = "furo"
 # html_theme = "press"
 # html_theme = "alabaster"
 

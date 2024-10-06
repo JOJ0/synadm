@@ -21,7 +21,7 @@ requests==2.31.0
 snowballstemmer==2.2.0
 Sphinx==7.2.3
 sphinx-click==5.0.1
-furo==2024.8.6
+pydata-sphinx-theme==0.15.4
 sphinxcontrib-applehelp==1.0.7
 sphinxcontrib-devhelp==1.0.5
 sphinxcontrib-htmlhelp==2.0.4
