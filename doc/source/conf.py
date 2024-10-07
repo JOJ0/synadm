@@ -78,7 +78,7 @@ html_theme_options = {
     #     # "color-admonition-background": "orange",
     # },
 }
-# html_title = "synadm - the Synapse Admin CLI"
+html_title = "synadm"
 # html_static_path = ["_static"]
 # html_css_files = ["synadm.css"]
 
