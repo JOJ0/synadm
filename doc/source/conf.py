@@ -79,8 +79,8 @@ html_theme_options = {
     # },
 }
 html_title = "synadm"
-# html_static_path = ["_static"]
-# html_css_files = ["synadm.css"]
+html_static_path = ["_static"]
+html_css_files = ["synadm.css"]
 
 
 # -- Extension configuration -------------------------------------------------

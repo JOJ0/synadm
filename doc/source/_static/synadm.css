@@ -15,6 +15,10 @@ table {
 }
 table,thead,tbody {width:98%}
 */
+html {
+    --pst-font-size-base: 14px;
+    --pst-header-height: 3rem;
+}
 
 /* pydata teal (primary): #126A7E */
 /* pydata violet (secondary): #7D0E70 */
