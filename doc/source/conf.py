@@ -72,6 +72,13 @@ html_theme = "pydata_sphinx_theme"
 # html_static_path = ['_static']
 
 html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/JOJ0/synadm",
+            "icon": "fa-brands fa-github",
+        },
+    ],
     # "light_css_variables": {
     #     "color-brand-primary": "#343a40",
     #     # "color-brand-content": "#495057",
