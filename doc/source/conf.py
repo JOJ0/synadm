@@ -89,6 +89,7 @@ html_theme_options = {
     "navbar_align": "left",
     "header_links_before_dropdown": 3,
     "show_toc_level": 3,
+    "back_to_top_button": False,
     # "light_css_variables": {
     #     "color-brand-primary": "#343a40",
     #     # "color-brand-content": "#495057",
