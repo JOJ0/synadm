@@ -71,6 +71,12 @@ html_theme = "pydata_sphinx_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 # html_static_path = ['_static']
 
+html_context = {
+    "github_user": "JOJ0",
+    "github_repo": "synadm",
+    "github_version": "master",
+    "doc_path": "doc/source/",
+}
 html_theme_options = {
     "icon_links": [
         {
@@ -79,6 +85,7 @@ html_theme_options = {
             "icon": "fa-brands fa-github",
         },
     ],
+    "use_edit_page_button": True,
     # "light_css_variables": {
     #     "color-brand-primary": "#343a40",
     #     # "color-brand-content": "#495057",
