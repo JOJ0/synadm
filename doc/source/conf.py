@@ -86,7 +86,12 @@ html_theme_options = {
         },
     ],
     "use_edit_page_button": True,
+
+    # this is a weird hack that makes site headers not overflow (and be
+    # problematic), avoid changing without checking if the site header
+    # became bigger!
     "navbar_align": "left",
+
     "header_links_before_dropdown": 3,
     "show_toc_level": 3,
     "back_to_top_button": False,
