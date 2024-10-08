@@ -20,5 +20,11 @@ html {
     --pst-header-height: 3rem;
 }
 
+@media (prefers-reduced-motion) {
+    .bd-sidebar-primary, .bd-sidebar-secondary {
+        transition-duration: 0s;
+    }
+}
+
 /* pydata teal (primary): #126A7E */
 /* pydata violet (secondary): #7D0E70 */
