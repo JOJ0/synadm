@@ -1,5 +1,5 @@
 Jinja2<3.1
 Sphinx
 sphinx-click
-sphinx-rtd-theme
+pydata-sphinx-theme
 myst-parser

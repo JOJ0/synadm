@@ -56,23 +56,36 @@ exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
+html_theme = "pydata_sphinx_theme"
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = 'sphinx_rtd_theme'
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
-
-html_theme_options = {
-    'collapse_navigation': True,
-    'navigation_depth': 8,
-    'sticky_navigation': False,
-    'prev_next_buttons_location': 'bottom'
+html_context = {
+    "github_user": "JOJ0",
+    "github_repo": "synadm",
+    "github_version": "master",
+    "doc_path": "doc/source/",
 }
+html_theme_options = {
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/JOJ0/synadm",
+            "icon": "fa-brands fa-github",
+        },
+    ],
+    "use_edit_page_button": True,
+
+    # this is a weird hack that makes site headers not overflow (and be
+    # problematic), avoid changing without checking if the site header
+    # became bigger!
+    "navbar_align": "left",
+
+    "header_links_before_dropdown": 3,
+    "show_toc_level": 3,
+    "back_to_top_button": False,
+}
+html_title = "synadm"
+html_static_path = ["_static"]
+html_css_files = ["synadm.css"]
 
 
 # -- Extension configuration -------------------------------------------------
