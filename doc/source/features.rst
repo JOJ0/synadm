@@ -12,9 +12,7 @@ Account Validity
 .. csv-table::
    :file: features/account_validity.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Background Updates
 ------------------
@@ -22,9 +20,7 @@ Background Updates
 .. csv-table::
    :file: features/background_updates.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Delete Group
 ------------
@@ -32,9 +28,7 @@ Delete Group
 .. csv-table::
    :file: features/delete_group.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Event Reports
 -------------
@@ -42,9 +36,7 @@ Event Reports
 .. csv-table::
    :file: features/event_reports.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Experimental Features
 ---------------------
@@ -52,9 +44,7 @@ Experimental Features
 .. csv-table::
    :file: features/experimental_features.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Media
 -----
@@ -62,9 +52,8 @@ Media
 .. csv-table::
    :file: features/media.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
+   :keepspace:
 
 Purge History
 -------------
@@ -72,9 +61,7 @@ Purge History
 .. csv-table::
    :file: features/purge_history.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Register Users
 --------------
@@ -82,9 +69,7 @@ Register Users
 .. csv-table::
    :file: features/register_users.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Registration Tokens
 -------------------
@@ -92,9 +77,7 @@ Registration Tokens
 .. csv-table::
    :file: features/registration_tokens.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Manipulate Room Membership
 --------------------------
@@ -102,9 +85,7 @@ Manipulate Room Membership
 .. csv-table::
    :file: features/manipulate_room_membership.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Rooms
 -----
@@ -112,9 +93,7 @@ Rooms
 .. csv-table::
    :file: features/rooms.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Server Notices
 --------------
@@ -122,9 +101,7 @@ Server Notices
 .. csv-table::
    :file: features/server_notices.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Statistics
 ----------
@@ -132,9 +109,7 @@ Statistics
 .. csv-table::
    :file: features/statistics.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Users
 -----
@@ -142,9 +117,7 @@ Users
 .. csv-table::
    :file: features/users.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Server Version
 --------------
@@ -152,9 +125,7 @@ Server Version
 .. csv-table::
    :file: features/server_version.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Federation
 ----------
@@ -162,9 +133,7 @@ Federation
 .. csv-table::
    :file: features/federation.csv
    :header: "Synapse Admin API","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 Miscellaneous
 -------------
@@ -172,9 +141,7 @@ Miscellaneous
 .. csv-table::
    :file: features/miscellaneous.csv
    :header: "Description","synadm command(s)"
-   :width: 98%
    :widths: 1 1
-   :align: left
 
 
 .. _documentation source directory:
