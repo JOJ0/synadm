@@ -56,20 +56,7 @@ exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-# html_theme = "sphinx_book_theme"
 html_theme = "pydata_sphinx_theme"
-# html_theme = "furo"
-# html_theme = "press"
-# html_theme = "alabaster"
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-# html_static_path = ['_static']
 
 html_context = {
     "github_user": "JOJ0",
@@ -95,11 +82,6 @@ html_theme_options = {
     "header_links_before_dropdown": 3,
     "show_toc_level": 3,
     "back_to_top_button": False,
-    # "light_css_variables": {
-    #     "color-brand-primary": "#343a40",
-    #     # "color-brand-content": "#495057",
-    #     # "color-admonition-background": "orange",
-    # },
 }
 html_title = "synadm"
 html_static_path = ["_static"]
