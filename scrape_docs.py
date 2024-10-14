@@ -32,11 +32,8 @@ def scrape(output, url):
     apidoc = requests.get(chapter).text
     soup = BeautifulSoup(apidoc, 'html.parser')
 
-    any_heading_tag = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+    any_heading_tag = ['h2', 'h3', 'h4', 'h5', 'h6']
     elements = soup.find_all([*any_heading_tag, 'a'],)
-
-    if output == 'csv':
-        print('"Synapse Admin API","synadm command(s)"')
 
     for e in elements:
         if e.name in any_heading_tag and output == 'debug':
@@ -52,10 +49,10 @@ def scrape(output, url):
                     spacing = ''
                     for h in any_heading_tag:
                         if e.parent.name == h:
-                            # h1 is no spacing (decrease by 1),
-                            # h2 is 2 spaces, h3 is 4....
+                            # h2 is no spacing (decrease by 2),
+                            # h3 is 2 spaces, h4 is 4....
                             # two literal spaces are replaced by '|indent| '
-                            spacing_count = int(e.parent.name[-1]) - 1
+                            spacing_count = int(e.parent.name[-1]) - 2
                             for val in range(0, spacing_count * 2):
                                 spacing += '|indent| '
                     rst = f'{spacing}`{e.text} <{fulllink}>`_'
