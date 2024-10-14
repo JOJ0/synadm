@@ -64,7 +64,13 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 
 We keep track of which Synapse Admin API's `synadm` supports in a set of tables on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html). The structure of this page follows the layout of the official [Synapse Admin API documentation](https://element-hq.github.io/synapse/latest/usage/administration/admin_api/index.html). Each table represents one main chapter of the Synapse documentation.
 
-In our documentation source, the page is defined by [features.rst](https://github.com/JOJ0/synadm/blob/master/doc/source/features.rst), which contains multiple CSV files, each representing a table. To assist with maintaining this page, we offer a [web scraper tool](https://github.com/JOJ0/synadm/blob/master/scrape_docs.py) that pulls data from the Synapse Admin API docs and creates an initial version of such a CSV table. A basic usage example is
+In our documentation source, the page is defined by [features.rst](https://github.com/JOJ0/synadm/blob/master/doc/source/features.rst), which contains multiple CSV files, each representing a table. To assist with maintaining this page, we offer a [web scraper tool](https://github.com/JOJ0/synadm/blob/master/scrape_docs.py) that pulls data from the Synapse Admin API docs and creates an initial version of such a CSV table. To get started with using the tool, first run this command in the repository:
+
+```
+pip install -e '.[scrape_docs]'
+```
+
+A basic usage example is:
 
 ```
 ./scrape_docs.py -o csv https://element-hq.github.io/synapse/latest/admin_api/rooms.html
@@ -77,11 +83,19 @@ which prints a two-column CSV table containing restructuredText formatted hyperl
 ```
 
 This would directly link to the `USER_ID` argument's documentation of that command.
+
 Linking to an option is also possible:
 
 ```
 :option:`synadm media list -r`
 ```
+
+If there's no `synadm` command for the corresponding item, leave the right
+column empty. If the item is a section has no real API and is nested with
+commands (e.g. [delete local media][dellocalmedia]), use the `—` character.
+
+[dellocalmedia]:https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media
+
 
 Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
 
