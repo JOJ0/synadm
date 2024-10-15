@@ -28,15 +28,25 @@ def scrape(output, url):
     The default output format is "csv", which gives a two column CSV table
     containing restructuredText formatted hyperlinks and a headline.
     '''
+    def get_indentation_levels(heading_tags, heading_tag):
+        """Returns how many indentation levels are required depending on the
+        passed heading tag
+
+        h1 is no indentation,
+        h2 is one indentation level,
+        h3 is two, and so on...
+        """
+        for h in heading_tags:
+            if heading_tag == h:
+                return int(heading_tag[-1]) - 1
+        return 0
+
     chapter = url
     apidoc = requests.get(chapter).text
     soup = BeautifulSoup(apidoc, 'html.parser')
 
     any_heading_tag = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']
     elements = soup.find_all([*any_heading_tag, 'a'],)
-
-    if output == 'csv':
-        print('"Synapse Admin API","synadm command(s)"')
 
     for e in elements:
         if e.name in any_heading_tag and output == 'debug':
@@ -46,18 +56,18 @@ def scrape(output, url):
                 link = e['href']
                 if output == 'debug':
                     print(f'Element text:\t{e.text}\nLink/Anchor:\t{link}')
+                    indent_count = get_indentation_levels(any_heading_tag,
+                                                          e.parent.name)
+                    print(f'Indentations:\t{indent_count}')
                 if output in ['rst', 'csv']:
                     parts = chapter.split('/admin_api/')
                     fulllink = f'{parts[0]}/admin_api/{parts[1]}{link}'
+                    indent_count = get_indentation_levels(any_heading_tag,
+                                                          e.parent.name)
                     spacing = ''
-                    for h in any_heading_tag:
-                        if e.parent.name == h:
-                            # h1 is no spacing (decrease by 1),
-                            # h2 is 2 spaces, h3 is 4....
-                            # two literal spaces are replaced by '|indent| '
-                            spacing_count = int(e.parent.name[-1]) - 1
-                            for val in range(0, spacing_count * 2):
-                                spacing += '|indent| '
+                    for val in range(0, indent_count):
+                        # '|indent| ' represents one indentation level
+                        spacing += '|indent| '
                     rst = f'{spacing}`{e.text} <{fulllink}>`_'
                     if output == 'csv':
                         left_col = f'"{rst}"'
