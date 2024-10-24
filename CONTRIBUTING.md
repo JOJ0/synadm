@@ -29,7 +29,7 @@ No matter if you're a programmer or not there are many ways to contribute to the
 
 * [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
 * Help keep the features list on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) up to date.
-* Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with _Sphinx_ [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
+* Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with *Sphinx* [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
 
 ### Programming
 
@@ -156,7 +156,7 @@ synadm -h
 
 The general design of a synadm subcommand is simple. You would usually have:
 
-- A method in the _backend module_, which is located in the file [synadm/api.py](https://github.com/JOJ0/synadm/blob/master/synadm/api.py).
+- A method in the *backend module*, which is located in the file [synadm/api.py](https://github.com/JOJ0/synadm/blob/master/synadm/api.py).
 - A definition of the CLI frontend. The Python package [Click](https://click.palletsprojects.com) is the command-line library in use. It's easy to learn and usually rather self-explanatory. Just copy and paste an existing command and work from there. The frontend code is found in the directory [synadm/cli](https://github.com/JOJ0/synadm/blob/master/synadm/cli/)
 
 _Note: If you are not familiar with Python code, don't let yourself get distracted with the unusual @statements that define arguments and options. They are so-called decorators that "plug in" those options into your commands function. You don't actually need to understand why the Click library, makes use of this concept._
@@ -206,11 +206,11 @@ From a command's frontend code in the `synadm/cmd` package, logging is available
 
 ### Code Documentation
 
-We provide an auto-generated [Python package documentation](https://synadm.readthedocs.io/en/latest/index_modules.html) generated with the help of the _autodoc_ feature of the _Sphinx documentation generator_. This requires that code is documented through properly formatted docstrings of functions, classes and methods.
+We provide an auto-generated [Python package documentation](https://synadm.readthedocs.io/en/latest/index_modules.html) generated with the help of the *autodoc* feature of the *Sphinx documentation generator*. This requires that code is documented through properly formatted docstrings of functions, classes and methods.
 
 We use the [google docstring format](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings).
 
-_Not all parts of `synadm` are populated with such docstrings yet but we require it for newly written code._
+*Not all parts of `synadm` are populated with such docstrings yet but we require it for newly written code.*
 
 ### Code Style
 
@@ -236,7 +236,7 @@ Some more style and coding requirements:
 - We require a line length of 79 characters in Python code.
   - Some editors (e.g. [vim](https://vimhelp.org/change.txt.html#gq)) have handy commands to quickly reformat multi-line text (e.g help texts of options).
   - For code passages, staying within this boundary and at the same time keeping code well readable, this can be achieved using PEP8's many [line continuation suggestions](https://peps.python.org/pep-0008/#code-lay-out).
-- We don't require a maximum line length in Markdown files, for example _this document_ or `README.md`. Please omit line-breaks in sentences, paragraphs, and so on, when editing these docs.
+- We don't require a maximum line length in Markdown files, for example *this document* or `README.md`. Please omit line-breaks in sentences, paragraphs, and so on, when editing these docs.
 - If you'd like to tidy up your commits or reduce commit count we welcome the use of `git commit --amend` and `git rebase`. If you'd like us to test your code or work together within your feature branch, be aware of that force pushing might complicate things and should be avoided in that case.
 
 
@@ -249,10 +249,10 @@ This section is a checklist for maintainers of the `synadm` project. This inform
   - If the current "occupier" of the branch demands it though, they can invite other maintainers to submit to that branch.
 - Maintainers are not required to create branches in their own fork. Feature branches can be created directly in the [JOJ0/synadm](https://github.com/JOJ0/synadm) repository.
 - One person should be the "owner" of each PR, no matter if opened by a contributor or a maintainer. Assistance from other maintainers can be request if desired.
-  - Who the "owner" is can be arranged in the _synadm maintainers room_ (private) but usually would be the person who initially reviews the submission.
+  - Who the "owner" is can be arranged in the *synadm maintainers room* (private) but usually would be the person who initially reviews the submission.
   - The "assignee" setting available on PR's and issues should be used to mark who the "owner" is.
   - The ultimate decision to merge should be with the "owner".
-  - Assistance from other maintainers can be requested via a "review request" _or_ via "mentioning".
+  - Assistance from other maintainers can be requested via a "review request" *or* via "mentioning".
 - PR's opened by maintainers (not external contributors) often require special attention about responsibilities:
   - Basically the "author" of such a PR is the "owner" as well.
   - The final decision to merge should still stay with the "owner". Requesting reviews from other maintainers should be the tool to responsibly decide when it is time to merge.
@@ -265,7 +265,7 @@ This section is a checklist for maintainers of the `synadm` project. This inform
 Releasing a new version of `synadm` requires the following steps:
 
 - Increase the version in all required files using the `bump.sh` script. `pip install bump2version` to your dev-environment to install the required tool. The final step to push to the master branch will be suggested by the script ('git push --follow-tags`).
-- Following this push command the _release CI pipeline_ will be triggered and a tag and release draft be created on GitHub.
+- Following this push command the *release CI pipeline* will be triggered and a tag and release draft be created on GitHub.
 - Edit the generated draft and add release notes with the help of the "Generate release notes" button, but reformat into sections to be consistent with prior releases. If things were added without a PR, add those manually to the list of new features or fixes.
 - Once the release notes are fine, make them public. The package can now be pushed to PyPi using the script `pypi.sh`
 - Activate a new documentation version via [https://readthedocs.org/projects/synadm/versions/](https://readthedocs.org/projects/synadm/versions/), thus we provide a version of the online documentation consistent with the content of to the newly released `synadm` package.
