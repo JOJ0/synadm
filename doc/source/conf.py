@@ -36,7 +36,9 @@ release = '0.46.1'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    'sphinx_click'
+    'sphinx_click',
+    'myst_parser',
+    # 'sphinx.ext.autosectionlabel',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -89,3 +91,4 @@ html_css_files = ["synadm.css"]
 
 
 # -- Extension configuration -------------------------------------------------
+myst_heading_anchors = 3
