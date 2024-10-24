@@ -216,7 +216,7 @@ pip install .
 
 ## Implementation Status / Commands List
 
-The [API to CLI Mapping](https://synadm.readthedocs.io/en/dev/features.html) section of our  documentation provides an overview of what `synadm` can do.
+The [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) section of our documentation provides an overview of what `synadm` can do.
 
 
 ## Get in Touch
