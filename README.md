@@ -216,73 +216,7 @@ pip install .
 
 ## Implementation Status / Commands List
 
-[Follow this link to the official Synapse Admin API docs](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html) - direct links to the specific API documentation pages are provided in the list below.
-
-*Note: Most commands have several optional arguments available. Put -h after any of the below listed commands to view them or have a look at the [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).*
-
-
-* [ ] [Account Validity](https://element-hq.github.io/synapse/develop/admin_api/account_validity.html)
-* [x] [Delete Group](https://element-hq.github.io/synapse/develop/admin_api/delete_group.html) (delete community)
-* [ ] [Event Reports](https://element-hq.github.io/synapse/develop/admin_api/event_reports.html)
-* [x] [Media Admin](https://element-hq.github.io/synapse/develop/admin_api/media_admin_api.html)
-  * [x] `media list -r <room id>`
-  * [x] `media list -u <user id>` (alias of `user media <user id>`)
-  * [x] `media quarantine -s <server name> -i <media id>`
-  * [x] `media quarantine -r <room id>`
-  * [x] `media quarantine -u <room id>`
-  * [x] `media protect <media id>`
-  * [x] `media delete -s <server name> -i <media id>`
-  * [x] `media delete -s <server name> --before <date> --size 1024`
-  * [x] `media purge --before <date>` (purge remote media API)
-* [x] [Purge History](https://element-hq.github.io/synapse/develop/admin_api/purge_history_api.html)
-  * [x] `history purge <room id>`
-  * [x] `history purge-status <purge id>`
-* [x] ~~[Purge Rooms](https://element-hq.github.io/synapse/develop/admin_api/purge_room.html)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Register Users](https://element-hq.github.io/synapse/develop/admin_api/register_api.html)
-* [x] [Manipulate Room Membership](https://element-hq.github.io/synapse/develop/admin_api/room_membership.html)
-  * [x] `room join`
-* [x] [Rooms](https://element-hq.github.io/synapse/develop/admin_api/rooms.html)
-  * [x] `room list`
-  * [x] `room details <room id>`
-  * [x] `room members <room id>`
-  * [x] `room delete <room id>`
-  * [x] `room make-admin <room id> <user id>`
-  * [x] `room state <room id>`
-  * [ ] Additional commands and aliases around room management
-    * [x] `room search <search-term>` (alias of `room list -n <search-term>`)
-    * [x] `room resolve <room alias>`
-    * [x] `room power-levels`
-    * [x] `room block`
-    * [x] `room block-status`
-* [x] [Server Notices](https://element-hq.github.io/synapse/develop/admin_api/server_notices.html)
-* [x] ~~[Shutdown Room](https://element-hq.github.io/synapse/develop/admin_api/shutdown_room.html)~~ (DEPRECATED, covered by `room delete`)
-* [ ] [Statistics](https://element-hq.github.io/synapse/develop/admin_api/statistics.html)
-  * [ ] `synadm media user-stats`
-  * [ ] `synadm room largest`
-* [x] [Users](https://element-hq.github.io/synapse/develop/admin_api/user_admin_api.html)
-  * [x] `user details <user id>`
-  * [x] `user modify <user id>` (also used for user creation)
-  * [x] `user list`
-  * [x] `user deactivate <user id>` (including GDPR erase)
-  * [x] `user password <user id>`
-  * [x] `user membership <user id>`
-  * [x] `user whois <user id>`
-  * [x] `user shadow-ban <user id>`
-  * [x] `user media -u <user id>` (also available as `media list -u <user id>`)
-  * [x] `user login <user id>`
-  * [ ] Additional commands and aliases around user management
-      * [x] `user search <search-term>` (shortcut to `user list -d -g -n <search-term>`)
-      * [ ] `user create <user id>` (alias of `user modify ...`)
-      * [x] `user prune-devices <user id>`
-* [x] [Server Version](https://element-hq.github.io/synapse/develop/admin_api/version_api.html)
-  * [x] `version`
-* [x] [Registration Tokens](https://element-hq.github.io/synapse/latest/usage/administration/admin_api/registration_tokens.html)
-  * [x] `regtok list`
-  * [x] `regtok details <registration token>`
-  * [x] `regtok new`
-  * [x] `regtok update <registration token>`
-  * [x] `regtok delete <registration token>`
-
+The [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) section of our documentation provides an overview of what `synadm` can do.
 
 
 ## Get in Touch
