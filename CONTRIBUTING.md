@@ -113,19 +113,19 @@ It proved to be useful in the past if loose (feature) ideas would be discussed i
 To install `synadm` into its own private virtual Python environment follow these steps:
 
 <!-- omit in toc -->
-#### 1. Check Python Version
+### 1. Check Python Version
 
 `python3 --version` should show at least v3.6.x
 
 <!-- omit in toc -->
-#### 2. Clone Repo:
+### 2. Clone Repo:
 
 ```
 git clone https://github.com/joj0/synadm
 ```
 
 <!-- omit in toc -->
-#### 3. Set up a Python3 Virtual Environment
+### 3. Set up a Python3 Virtual Environment
 
 
 Create and activate a virtual environment using the python3 venv module:
@@ -142,7 +142,7 @@ Once your Python virtual environment is loaded and your prompt looks similar to 
 
 
 <!-- omit in toc -->
-#### 4. Install in "Editable Mode" for development
+### 4. Install in "Editable Mode" for development
 
 Execute the install command from the root of the repo directory:
 
@@ -155,7 +155,7 @@ pip install -e .
 
 
 <!-- omit in toc -->
-#### 5. Run
+### 5. Run
 
 As long as your venv is loaded, `synadm` should run fine without having to add a path in front of it.
 
