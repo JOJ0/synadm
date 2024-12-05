@@ -41,6 +41,10 @@ def room():
 @click.pass_obj
 def join(helper, room_id_or_alias, user_id):
     """ Join a room.
+
+    The administrator must belong to the room and have sufficient privilege to
+    invite the user. If this is not the case, you can use the make-admin
+    command.
     """
     mxid = helper.generate_mxid(user_id)
     out = helper.api.room_join(room_id_or_alias, mxid)
