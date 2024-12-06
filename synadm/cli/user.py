@@ -520,6 +520,122 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
         click.echo("Abort.")
 
 
+# for these placeholders, function similarly to the modify command, but in
+# it's own command.
+# TODO: find 3pid modify command
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.argument("user_type", type=str)
+@click.pass_obj
+def set_user_type(helper, user_id, user_type):
+    """Set a user type.
+
+    For the user_type argument, the accepted values are "null" (to
+    clear/remove the user type), or any other value that synapse accepts
+    ("bot" and "support").
+    """
+    if user_type == "null":
+        user_type = None
+    helper.output(helper.api.user_set_type(user_id, user_type))
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.argument("mxc_uri", type=str)
+@click.pass_obj
+def set_profile_picture(helper, user_id, mxc_uri):
+    """
+    Set a profile picture for a user by the MXC URI.
+
+    Setting the MXC URI to an empty strings removes the profile picture.
+    """
+    modified = helper.user_set_profile_picture(user_id, mxc_uri)
+    if modified is None:
+        click.echo("Could not set profile picture.", err=True)
+        raise SystemExit(1)
+    helper.output(modified)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.argument("display_name", type=str)
+@click.pass_obj
+def set_display_name(helper, user_id, display_name):
+    """
+    Set the display name of a user.
+
+    Display name can be set to an empty string to remove it.
+    """
+    mxid = helper.generate_mxid(user_id)
+    modified = helper.api.user_set_display_name(mxid, display_name)
+    if modified is None:
+        click.echo("Could not set display name.", err=True)
+        raise SystemExit(1)
+    if helper.output_format == "human":
+        new_display_name = modified["displayname"]
+        if new_display_name is None:
+            click.echo(f"Removed display name for {mxid}")
+        else:
+            click.echo(f"Set display name for {mxid} to {new_display_name}")
+    else:
+        helper.output(modified)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+# TODO: check compatibility with --batch
+@click.password_option(
+    required=False,
+    help="""The new password to set to. This is required when reactivating a
+    user on a Synapse installation with passwords enabled.""")
+@click.pass_obj
+def reactivate(helper, user_id, password):
+    result = helper.api.user_reactivate(user_id, password)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def lock(helper, user_id):
+    """
+    Lock a user account, preventing them from logging in or using the
+    account.
+    """
+    result = helper.api.user_set_lock(user_id, True)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def unlock(helper, user_id):
+    """
+    Unlock a user account, allowing a locked account to log in and use the
+    account.
+    """
+    result = helper.api.user_set_lock(user_id, False)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def admin_grant(helper, user_id):
+    result = helper.api.user_set_admin(user_id, True)
+    helper.output(result)
+
+
+@user.command()
+@click.argument("user_id", type=str)
+@click.pass_obj
+def admin_revoke(helper, user_id):
+    result = helper.api.user_set_admin(user_id, False)
+    helper.output(result)
+
+
 @user.command()
 @click.argument("user_id", type=str)
 @click.pass_obj
