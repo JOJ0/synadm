@@ -181,15 +181,11 @@ _Note: If you are not familiar with Python code, don't let yourself get distract
 
 ### Implementation Examples
 
-Have a look at this method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369
-
-and this one: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545
+Have a look at [this method](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369) and [this one](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545).
 
 That's all it needs to implement command `synadm user details <user_id>`.
 
-And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301
-
-and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529
+Another example, this time using a POST based API endpoint: It implements command `synadm user password <user_id>`. [This](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301) is the CLI-level method, and again it requires [a backend method in `api.py`](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529).
 
 
 ### Sending requests & URL encoding
