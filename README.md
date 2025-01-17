@@ -4,8 +4,6 @@
 - [About](#about)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-  - [Install from PyPI](#install-from-pypi)
-  - [Install from git](#install-from-git)
 - [Configuration](#configuration)
   - [Getting an Admin Token](#getting-an-admin-token)
   - [The configurator](#the-configurator)
@@ -43,44 +41,7 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 
 ## Installation
 
-### Install from PyPI
-
 `pip3 install synadm`
-
-### Install from git
-
-<!-- omit in toc -->
-#### 1. Check Python Version
-
-`python3 --version` should show at least v3.6.x
-
-<!-- omit in toc -->
-#### 2. Clone Repo:
-
-```
-git clone https://github.com/joj0/synadm
-```
-
-<!-- omit in toc -->
-#### 3. Install Package Globally
-
-This will install `synadm` and all dependent Python packages to your system's global Python site-packages directory:
-
-```
-cd synadm
-sudo pip install .
-```
-
-*Note: If you get an import error for setuptools, make sure the package is installed. Debian based systems: `sudo apt install python3-setuptools`, RedHat based: `sudo yum install python3-setuptools`* 
-
-<!-- omit in toc -->
-#### 4. Run
-
-`synadm` should now run fine without having to add a path in front of it:
-
-```
-synadm -h
-```
 
 *Note: Usually setuptools installs a command wrapper to `/usr/local/bin/synadm`, but that depends on your system.*
 
