@@ -19,12 +19,9 @@
 - [Contributing](#contributing)
 
 
-
-
 ## About
 
 A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/matrix-org/synapse) conveniently issue commands available via its [Admin API](https://element-hq.github.io/synapse/develop/usage/administration/admin_api/index.html#the-admin-api).
-
 
 
 ## Prerequisites
@@ -37,21 +34,22 @@ A CLI tool to help admins of [Matrix-Synapse homeservers](https://github.com/mat
 `synadm` is designed to run either directly on the host running the Synapse instance or on a remote machine able to access Synapse's API port. Synapse's default Admin API endpoint address usually is http://localhost:8008/_synapse/admin or https://localhost:8448/_synapse/admin.
 
 
-
-
 ## Installation
+
+If `pipx` is available on your operating system, it is the recommended method for installation:
+
+`pipx install synadm`
+
+Alternatively, regular `pip` can also be used:
 
 `pip3 install synadm`
 
-*Note: Usually setuptools installs a command wrapper to `/usr/local/bin/synadm`, but that depends on your system.*
-
-*Note: In case you don't want `synadm` to be installed to a global system directory, you can find an [alternative way of installing](CONTRIBUTING.md#getting-the-source--installing) in the contribution docs*.
-
-*Note: synadm is multi-user aware - it stores its configuration inside the executing user's home directory. See chapter [configuration](#configuration).*
-
+To install the latest version from Git to a Python virtual environment [see the chapter in the contributing docs](https://synadm.readthedocs.io/en/latest/contributing.html#getting-the-source-and-installing).
 
 
 ## Configuration
+
+`synadm` stores its configuration inside the executing user's home directory in `~/.config/synadm.yaml`) and is handled by [the synadm configurator](#the-configurator). Usually it's not required to edit it manually.
 
 ### Getting an Admin Token
 
@@ -70,6 +68,7 @@ If you issue this command in a fresh `synadm` installation, [the configurator](#
 - Set token to "invalid" at first, to convience `synadm` to launch the `matrix login` command (otherwise you'd get a "Configuration incomplete" error).
 - After successfully entering your admin password you will be presented a token which you can finally set by re-launching the configurator as described below.
 
+
 ### The configurator
 
 `synadm` asks for necessary configuration items on first launch automatically. Also whenever new mandatory configuration items where added (eg after an update), the user will be prompted for missing items automatically.
@@ -81,7 +80,6 @@ synadm config
 ```
 
 Configuration will be saved in `~/.config/synadm.yaml`
-
 
 *Note: Be aware that once you configured `synadm`, your admin user's token is saved in the configuration file. On Posix compatible systems permissions are set to mode 0600, on other OS's it is your responsibilty to change permissions accordingly.*
 
@@ -108,6 +106,7 @@ Find some more details about the topic in [this issue post on the matrix-docker-
 _Note that currently `synadm` is using a part of the Server-Server (Federation) API (`keys/v2/server`) to retrieve "its own homeserver name". This affects some of the `media` management commands. By default and also as the Matrix spec recommends, this API is not accessible via the Client-Server API port. We are working on a better solution to retrieve the own servername but as a workaround the `key` API's can be exposed by setting `matrix_synapse_http_listener_resource_names: ["client","keys"]` in [vars.yaml](https://github.com/spantaleev/matrix-docker-ansible-deploy/blob/master/docs/configuring-playbook.md#configuring-the-ansible-playbook)._
 
 Find more details about the topic [here](https://github.com/spantaleev/matrix-docker-ansible-deploy/issues/1761#issuecomment-1101170229).
+
 
 ## Usage
 
@@ -143,13 +142,13 @@ will show essential help for the particular subcommand right away.
 
 A detailed [Command Line Reference](https://synadm.readthedocs.io/en/latest/index_cli_reference.html) can be found in `synadm's` readthedocs documentation.
 
-
 ### Advanced Usage
 
 Examples of how `synadm` can be used in shell scripts and oneliners is
 provided in the
 [Scripting Examples](https://synadm.readthedocs.io/en/latest/examples.html)
 docs chapter.
+
 
 ## Update
 
@@ -196,4 +195,4 @@ If you are sure you've found a bug that was not already reported, certainly dire
 
 First of all, thanks for your interest in contributing to `synadm`! We appreciate any help, no matter if you are a programmer or a user. Both groups can do valuable things for the `synadm` project. We love providing a useful tool to fellow Synapse sysadmins but rely on contribution from the Synapse and Matrix community to keep `synadm` useful, current and stable.
 
-Please review the [contributing docs](CONTRIBUTING.md) for guidelines and help around the topic!
+Please review the [contributing docs](https://synadm.readthedocs.io/en/latest/contributing.html) for guidelines and help around the topic!
