@@ -7,12 +7,12 @@
 - [Submitting Your Work](#submitting-your-work)
 - [Expectations Regarding Timelines](#expectations-regarding-timelines)
 - [Feature Coverage Documentation](#feature-coverage-documentation)
-- [Discuss \& Design First](#discuss--design-first)
-- [Getting the Source \& Installing](#getting-the-source--installing)
+- [Discuss and Design First](#discuss-and-design-first)
+- [Getting the Source and Installing](#getting-the-source-and-installing)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
-  - [Sending requests \& URL encoding](#sending-requests--url-encoding)
-  - [Helpers \& Utilities](#helpers--utilities)
+  - [Sending requests and URL encoding](#sending-requests-and-url-encoding)
+  - [Helpers and Utilities](#helpers-and-utilities)
   - [Logging](#logging)
   - [Code Documentation](#code-documentation)
   - [Code Style](#code-style)
@@ -27,9 +27,10 @@ No matter if you're a programmer or not there are many ways to contribute to the
 
 ### Non-Programming
 
-* [Set up synadm](README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
+* [Set up synadm](https://github.com/JOJ0/synadm/blob/master/README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
 * Help keep the features list on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) up to date.
 * Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with _Sphinx_ [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
+
 
 ### Programming
 
@@ -100,7 +101,7 @@ commands (e.g. [delete local media][dellocalmedia]), use the `—` character.
 Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
 
 
-## Discuss & Design First
+## Discuss and Design First
 
 It proved to be useful in the past if loose (feature) ideas would be discussed in [#synadm:peek-a-boo.at](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) first. Collecting opinions from fellow `synadm` users might help defining a more concrete idea.
 
@@ -108,24 +109,24 @@ It proved to be useful in the past if loose (feature) ideas would be discussed i
 - **A separate issue is not required**, if you'd like to code it **yourself**. Please include the feature description in your PR.
 
 
-## Getting the Source & Installing
+## Getting the Source and Installing
 
 To install `synadm` into its own private virtual Python environment follow these steps:
 
 <!-- omit in toc -->
-#### 1. Check Python Version
+### 1. Check Python Version
 
 `python3 --version` should show at least v3.6.x
 
 <!-- omit in toc -->
-#### 2. Clone Repo:
+### 2. Clone Repo:
 
 ```
 git clone https://github.com/joj0/synadm
 ```
 
 <!-- omit in toc -->
-#### 3. Set up a Python3 Virtual Environment
+### 3. Set up a Python3 Virtual Environment
 
 
 Create and activate a virtual environment using the python3 venv module:
@@ -142,7 +143,7 @@ Once your Python virtual environment is loaded and your prompt looks similar to 
 
 
 <!-- omit in toc -->
-#### 4. Install in "Editable Mode" for development
+### 4. Install in "Editable Mode" for development
 
 Execute the install command from the root of the repo directory:
 
@@ -155,7 +156,7 @@ pip install -e .
 
 
 <!-- omit in toc -->
-#### 5. Run
+### 5. Run
 
 As long as your venv is loaded, `synadm` should run fine without having to add a path in front of it.
 
@@ -178,18 +179,14 @@ _Note: If you are not familiar with Python code, don't let yourself get distract
 
 ### Implementation Examples
 
-Have a look at this method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369
-
-and this one: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545
+Have a look at [this method](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369) and [this one](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545).
 
 That's all it needs to implement command `synadm user details <user_id>`.
 
-And another example, this time using a POST based API endpoint. It implements command `synadm user password <user_id>`. This is the CLI-level method: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301
-
-and again it needs a backend method in `api.py`: https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529
+Another example, this time using a POST based API endpoint: It implements command `synadm user password <user_id>`. [This](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301) is the CLI-level method, and again it requires [a backend method in `api.py`](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529).
 
 
-### Sending requests & URL encoding
+### Sending requests and URL encoding
 
 Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
 
@@ -206,7 +203,7 @@ self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
 
 
 
-### Helpers & Utilities
+### Helpers and Utilities
 
 You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
 

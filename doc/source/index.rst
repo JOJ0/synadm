@@ -12,6 +12,7 @@ Welcome to synadm's documentation!
    index_cli_reference
    features
    examples
+   contributing
    index_modules
 
 
