@@ -49,7 +49,7 @@ To install the latest version from Git to a Python virtual environment [see the 
 
 ## Configuration
 
-`synadm` stores its configuration inside the executing user's home directory in `~/.config/synadm.yaml`) and is handled by [the synadm configurator](#the-configurator). Usually it's not required to edit it manually.
+`synadm` stores its configuration inside the executing user's home directory in `~/.config/synadm.yaml` and is handled by [the synadm configurator](#the-configurator). Usually it's not required to edit it manually.
 
 ### Getting an Admin Token
 
