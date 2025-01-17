@@ -7,12 +7,12 @@
 - [Submitting Your Work](#submitting-your-work)
 - [Expectations Regarding Timelines](#expectations-regarding-timelines)
 - [Feature Coverage Documentation](#feature-coverage-documentation)
-- [Discuss \& Design First](#discuss--design-first)
-- [Getting the Source \& Installing](#getting-the-source-installing)
+- [Discuss and Design First](#discuss-and-design-first)
+- [Getting the Source and Installing](#getting-the-source-and-installing)
 - [Command Design](#command-design)
   - [Implementation Examples](#implementation-examples)
-  - [Sending requests \& URL encoding](#sending-requests-url-encoding)
-  - [Helpers \& Utilities](#helpers-utilities)
+  - [Sending requests and URL encoding](#sending-requests-and-url-encoding)
+  - [Helpers and Utilities](#helpers-and-utilities)
   - [Logging](#logging)
   - [Code Documentation](#code-documentation)
   - [Code Style](#code-style)
@@ -101,7 +101,7 @@ commands (e.g. [delete local media][dellocalmedia]), use the `—` character.
 Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
 
 
-## Discuss & Design First
+## Discuss and Design First
 
 It proved to be useful in the past if loose (feature) ideas would be discussed in [#synadm:peek-a-boo.at](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) first. Collecting opinions from fellow `synadm` users might help defining a more concrete idea.
 
@@ -109,7 +109,7 @@ It proved to be useful in the past if loose (feature) ideas would be discussed i
 - **A separate issue is not required**, if you'd like to code it **yourself**. Please include the feature description in your PR.
 
 
-## Getting the Source & Installing
+## Getting the Source and Installing
 
 To install `synadm` into its own private virtual Python environment follow these steps:
 
@@ -186,7 +186,7 @@ That's all it needs to implement command `synadm user details <user_id>`.
 Another example, this time using a POST based API endpoint: It implements command `synadm user password <user_id>`. [This](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301) is the CLI-level method, and again it requires [a backend method in `api.py`](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529).
 
 
-### Sending requests & URL encoding
+### Sending requests and URL encoding
 
 Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
 
@@ -203,7 +203,7 @@ self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
 
 
 
-### Helpers & Utilities
+### Helpers and Utilities
 
 You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
 
