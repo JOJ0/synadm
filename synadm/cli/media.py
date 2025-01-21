@@ -117,9 +117,8 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
     media ID and server name if MXC URI is passed.""")
 @click.option(
     "--server-name", "-s", type=str,
-    help="""The server name of the media, mandatory when --media-id is used and
-    _remote_ media should be processed. For locally stored media this option
-    can be omitted.
+    help="""The server name of the media for quarantining remote media. If
+    not used, quarantines local homeserver by specified --media-id.
     """)
 @click.pass_obj
 def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
@@ -178,10 +177,8 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
     media ID and server name if MXC URI is passed.""")
 @click.option(
     "--server-name", "-s", type=str,
-    help="""The server name of the media, mandatory when --media-id is used and
-    _remote_ media should be processed. For locally stored media this option
-    can be omitted.
-    """)
+    help="""The server name of the media for unquarantining remote media. If
+    not used, unquarantines local homeserver by specified --media-id.""")
 @click.pass_obj
 def media_unquarantine_cmd(helper, server_name, media_id, mxc_uri):
     """ Remove media from quarantine.
