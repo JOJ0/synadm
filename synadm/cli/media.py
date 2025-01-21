@@ -198,23 +198,23 @@ def media_unquarantine_cmd(helper, server_name, media_id, mxc_uri):
             click.echo("Passed MXC URI does not have mxc in scheme.", err=True)
             raise SystemExit(1)
 
-    unquarantinend = None
+    unquarantined = None
 
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
         fetched_name = helper.retrieve_homeserver_name(
             helper.config["base_url"])
-        unquarantinend = helper.api.media_unquarantine(fetched_name, media_id)
+        unquarantined = helper.api.media_unquarantine(fetched_name, media_id)
     elif server_name and not media_id:
         click.echo("Media ID missing.")
-        unquarantinend = None
+        unquarantined = None
     elif media_id and server_name:
-        unquarantinend = helper.api.media_unquarantine(server_name, media_id)
+        unquarantined = helper.api.media_unquarantine(server_name, media_id)
 
-    if unquarantinend is None:
+    if unquarantined is None:
         click.echo("Media could not be removed from quarantine.")
         raise SystemExit(1)
-    helper.output(unquarantinend)
+    helper.output(unquarantined)
 
 
 @media.command(name="protect")
