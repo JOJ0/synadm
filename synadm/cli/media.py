@@ -170,6 +170,10 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
     help="""The media with this specific media ID will be removed from
     quarantine.
     """)
+@optgroup.option(
+    "--mxc-uri", "-U", type=str,
+    help="""The MXC URI of the media to quarantine. Equivalent to passing
+    media ID and server name if MXC URI is passed.""")
 @click.option(
     "--server-name", "-s", type=str,
     help="""The server name of the media, mandatory when --media-id is used and
@@ -177,9 +181,21 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
     can be omitted.
     """)
 @click.pass_obj
-def media_unquarantine_cmd(helper, server_name, media_id):
+def media_unquarantine_cmd(helper, server_name, media_id, mxc_uri):
     """ Remove media from quarantine.
     """
+    if mxc_uri:
+        # while an MXC URI is a URI and not a URL, this works anyways for
+        # splitting things up
+        uri_parsed = urllib.parse.urlparse(mxc_uri)
+        if uri_parsed.scheme == "mxc":
+            # ........................ rm first /
+            media_id = uri_parsed.path.replace("/", "", 1)
+            server_name = uri_parsed.netloc
+        else:
+            click.echo("Passed MXC URI does not have mxc in scheme.", err=True)
+            raise SystemExit(1)
+
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
         fetched_name = helper.retrieve_homeserver_name(
