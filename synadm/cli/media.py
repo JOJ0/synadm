@@ -22,6 +22,7 @@ import click
 from click_option_group import optgroup
 from click_option_group import RequiredAnyOptionGroup, OptionGroup
 from click_option_group import RequiredMutuallyExclusiveOptionGroup
+import urllib
 
 from synadm import cli
 
@@ -110,6 +111,10 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
     "--user-id", "-u", type=str,
     help="""All media uploaded by user with this matrix ID (@user:server) will
     be quarantined.""")
+@optgroup.option(
+    "--mxc-uri", "-U", type=str,
+    help="""The MXC URI of the media to quarantine. Equivalent to passing
+    media ID and server name if MXC URI is passed.""")
 @click.option(
     "--server-name", "-s", type=str,
     help="""The server name of the media, mandatory when --media-id is used and
@@ -117,9 +122,22 @@ def media_list_cmd(ctx, helper, room_id, user_id, from_, limit, sort, reverse,
     can be omitted.
     """)
 @click.pass_obj
-def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id):
+def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
+                         mxc_uri):
     """ Quarantine media in rooms, by users or by media ID.
     """
+    if mxc_uri:
+        # while an MXC URI is a URI and not a URL, this works anyways for
+        # splitting things up
+        uri_parsed = urllib.parse.urlparse(mxc_uri)
+        if uri_parsed.scheme == "mxc":
+            # ........................ rm first /
+            media_id = uri_parsed.path.replace("/", "", 1)
+            server_name = uri_parsed.netloc
+        else:
+            click.echo("Passed MXC URI does not have mxc in scheme.", err=True)
+            raise SystemExit(1)
+
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
         fetched_name = helper.retrieve_homeserver_name(
