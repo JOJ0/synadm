@@ -19,7 +19,7 @@
 """
 
 import click
-from click_option_group import MutuallyExclusiveOptionGroup, optgroup
+from click_option_group import optgroup
 from click_option_group import RequiredAnyOptionGroup, OptionGroup
 from click_option_group import RequiredMutuallyExclusiveOptionGroup
 import urllib
