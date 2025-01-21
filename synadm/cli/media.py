@@ -138,6 +138,8 @@ def media_quarantine_cmd(helper, server_name, media_id, user_id, room_id,
             click.echo("Passed MXC URI does not have mxc in scheme.", err=True)
             raise SystemExit(1)
 
+    media_quarantined = None
+
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
         fetched_name = helper.retrieve_homeserver_name(
@@ -195,6 +197,8 @@ def media_unquarantine_cmd(helper, server_name, media_id, mxc_uri):
         else:
             click.echo("Passed MXC URI does not have mxc in scheme.", err=True)
             raise SystemExit(1)
+
+    unquarantinend = None
 
     if media_id and not server_name:
         # We assume it is local media and fetch our own server name.
