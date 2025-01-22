@@ -326,11 +326,14 @@ def delete(ctx, helper, room_id, new_room_user_id, room_name, message, block,
 
 
 @room.command(name="purge-empty")
-@click.option(
+@optgroup.group(
+    "Purge options", cls=MutuallyExclusiveOptionGroup,
+    help="""Control how rooms are purged""")
+@optgroup.option(
     "--no-purge", is_flag=True, default=False, show_default=True,
     help="""Prevent removing of all traces of the room from your
     database.""")
-@click.option(
+@optgroup.option(
     "--force-purge", is_flag=True, default=False, show_default=True,
     help="""Force a purge to go ahead even if there are local users still
     in the room. Do not use this unless a regular purge operation fails,
