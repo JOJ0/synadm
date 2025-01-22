@@ -396,8 +396,8 @@ def purge_empty(helper, no_purge, force_purge, v1, dry_run, batch_size):
 
     helper.output(empty_rooms_ids)
     if dry_run:
-        click.echo("Empty room purge dry run. Rooms will not be deleted "
-                   "is listed.", err=True)
+        click.echo("Empty room purge dry run. Rooms listed are considered "
+                   "empty.", err=True)
         return
 
     sure = (
