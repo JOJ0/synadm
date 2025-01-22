@@ -852,8 +852,9 @@ class SynapseAdmin(ApiRequest):
             room_id (string): If left out, all rooms are fetched.
 
         Returns:
-            string: JSON string containing the Admin API's response or None if
-                an exception occured. See Synapse Admin API docs for details.
+            string or None: JSON string containing the Admin API's response
+                or None if an exception occured. See Synapse Admin API docs
+                for details.
         """
         if room_id:
             # We use the "name search" possibility of the room list API to get
@@ -861,6 +862,9 @@ class SynapseAdmin(ApiRequest):
             rooms = self.room_list(from_, limit, room_id, order_by, reverse)
         else:
             rooms = self.room_list(from_, limit, name, order_by, reverse)
+
+        if rooms is None:
+            return None
 
         rooms_w_power_count = 0
         for i, room in enumerate(rooms["rooms"]):
