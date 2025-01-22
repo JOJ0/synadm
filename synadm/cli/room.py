@@ -19,7 +19,8 @@
 """
 
 import click
-from click_option_group import RequiredMutuallyExclusiveOptionGroup, optgroup
+from click_option_group import MutuallyExclusiveOptionGroup, optgroup
+from click_option_group import RequiredMutuallyExclusiveOptionGroup
 
 from synadm import cli
 
@@ -96,10 +97,28 @@ def resolve(helper, room_id_or_alias, reverse):
     "--reverse", "-r", is_flag=True, default=False,
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
-def list_room_cmd(helper, from_, limit, name, sort, reverse):
+@optgroup.group(
+    "Query type", cls=MutuallyExclusiveOptionGroup,
+    help="Query for empty or non-empty rooms"
+)
+@optgroup.option(
+    "--empty", "-e", is_flag=True,
+    help="""Queries for empty rooms only.""")
+@optgroup.option(
+    "--not-empty", "-E", is_flag=True,
+    help="""Queries for rooms which are not empty only.""")
+def list_room_cmd(helper, from_, limit, name, sort, reverse, empty,
+                  not_empty):
     """ List and search for rooms.
     """
-    rooms = helper.api.room_list(from_, limit, name, sort, reverse)
+    empty_rooms = None
+    if empty:
+        empty_rooms = True
+    elif not_empty:
+        empty_rooms = False
+
+    rooms = helper.api.room_list(from_, limit, name, sort, reverse,
+                                 empty_rooms)
     if rooms is None:
         click.echo("Rooms could not be fetched.")
         raise SystemExit(1)

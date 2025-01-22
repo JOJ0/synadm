@@ -763,18 +763,28 @@ class SynapseAdmin(ApiRequest):
         return self.query("post", "v1/join/{room_id_or_alias}", data=data,
                           room_id_or_alias=room_id_or_alias)
 
-    def room_list(self, _from, limit, name, order_by, reverse):
+    def room_list(self, _from, limit, name, order_by, reverse,
+                  empty_rooms=None):
         """ List and search rooms
+
+        args:
+            empty_rooms: Whether to get empty rooms. Default is None, which
+                gets both empty and non-empty rooms. Returns empty rooms if
+                True, and non-empty rooms if False.
         """
-        return self.query("get", "v1/rooms", params={
+        params = {
             "from": _from,
             "limit": limit,
             "search_term": name,
             "order_by": order_by,
             "dir": "b" if reverse else None
-        })
+        }
+        if empty_rooms is not None:
+            params["empty_rooms"] = str(empty_rooms).lower()
+        return self.query("get", "v1/rooms", params=params)
 
-    def room_list_paginate(self, limit, name, order_by, reverse, _from=0):
+    def room_list_paginate(self, limit, name, order_by, reverse, _from=0,
+                           empty_rooms=None):
         """ Yields API responses for room listing.
 
         Args:
@@ -785,19 +795,26 @@ class SynapseAdmin(ApiRequest):
             order_by (string): Synapse Room list API specific argument.
             reverse (bool): Whether the results should be
             _from (int): Initial offset in pagination.
+            empty_rooms: Whether to get empty rooms. Default is None, which
+                gets both empty and non-empty rooms. Returns empty rooms if
+                True, and non-empty rooms if False.
 
         Yields:
             dict: The Admin API response for listing accounts.
                 https://element-hq.github.io/synapse/latest/admin_api/rooms.html#list-room-api
         """
         while _from is not None:
-            response = self.query("get", "v1/rooms", params={
+            params = {
                 "from": _from,
                 "limit": limit,
                 "search_term": name,
                 "order_by": order_by,
                 "dir": "b" if reverse else None
-            })
+            }
+            if empty_rooms is not None:
+                params["empty_rooms"] = str(empty_rooms).lower()
+            response = self.query("get", "v1/rooms",
+                                  params=params)
             yield response
             _from = response.get("next_batch", None)
             self.log.debug(f"room_list_paginate: next from value = {_from}")
