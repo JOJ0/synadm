@@ -385,10 +385,10 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @optgroup.group(cls=UserModifyOptionGroup)
 @optgroup.option(
     "--password-prompt", "-p", is_flag=True,
-    help="Set password interactively.")
+    help="Set password interactively. See also the --no-logout option.")
 @optgroup.option(
     "--password", "-P", type=str,
-    help="Set password on command line.")
+    help="Set password on command line. See also the --no-logout option.")
 @optgroup.option(
     "--display-name", "-n", type=str,
     help="Set display name. defaults to the value of user_id")
@@ -433,6 +433,11 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     manipulated. If the --user-type option is omitted when creating a new user,
     a regular user will be created.""")
 @optgroup.option(
+    "--no-logout", "logout_devices", type=bool, default=False, is_flag=True,
+    help="""When setting a password, the user is logged out on all devices
+    by default (unspecified). When --no-logout is specified, devices are not
+    logged out even when the password is changed.""")
+@optgroup.option(
     "--lock/--unlock", "-l/-L", default=None, show_default=False,
     help="""Whether to lock or unlock the account, preventing or allowing
     logins respectively. Feature first present in Synapse 1.91.0.""")
@@ -440,7 +445,7 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
 @click.pass_context
 def modify(ctx, helper, user_id, password, password_prompt, display_name,
            threepid, clear_threepids, avatar_url, admin, deactivation,
-           user_type, lock):
+           user_type, lock, logout_devices):
     """ Create or modify a local user. Provide matrix user ID (@user:server)
     as argument.
     """
@@ -503,7 +508,8 @@ def modify(ctx, helper, user_id, password, password_prompt, display_name,
             avatar_url,
             admin,
             deactivation,
-            'null' if user_type == 'regular' else user_type, lock
+            'null' if user_type == 'regular' else user_type, lock,
+            logout_devices
         )
         if modified is None:
             click.echo("User could not be modified/created.")

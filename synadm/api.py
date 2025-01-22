@@ -600,7 +600,8 @@ class SynapseAdmin(ApiRequest):
                           user_id=user_id)
 
     def user_modify(self, user_id, password, display_name, threepid,
-                    avatar_url, admin, deactivation, user_type, lock):
+                    avatar_url, admin, deactivation, user_type, lock,
+                    logout_devices):
         """ Create or update information about a given user
 
         The threepid argument must be passed as a tuple in a tuple (which is
@@ -631,6 +632,8 @@ class SynapseAdmin(ApiRequest):
         if user_type:
             data.update({"user_type": None if user_type == 'null' else
                          user_type})
+        if logout_devices:
+            data.update({"logout_devices": logout_devices})
         return self.query("put", "v2/users/{user_id}", data=data,
                           user_id=user_id)
 
