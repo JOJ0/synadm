@@ -22,7 +22,7 @@ import click
 from click_option_group import optgroup
 from click_option_group import RequiredAnyOptionGroup, OptionGroup
 from click_option_group import RequiredMutuallyExclusiveOptionGroup
-import urllib
+import urllib.parse
 
 from synadm import cli
 
