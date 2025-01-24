@@ -88,15 +88,15 @@ class ApiRequest:
 
     def query(
         self,
-        method,
-        urlpart,
-        *args,
-        params=None,
-        data=None,
-        token=None,
-        base_url_override=None,
-        verify=None,
-        **kwargs,
+        method: str,
+        urlpart: str,
+        *args: Any,
+        params: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        token: Optional[str] = None,
+        base_url_override: Optional[bool] = False,
+        verify: Optional[bool] = True,
+        **kwargs: Dict[str, Any],
     ) -> Optional[Union[Dict[str, Any], List[Dict[str, Any]], None]]:
         """Generic wrapper around requests methods.
 
