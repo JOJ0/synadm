@@ -118,9 +118,7 @@ class ApiRequest:
                 logged and None is returned.
         """
         args = [urllib.parse.quote(arg, safe="") for arg in args]
-        kwargs = dict(kwargs)
-        for i in kwargs.keys():
-            kwargs[i] = urllib.parse.quote(kwargs[i], safe="")
+        kwargs = {k: urllib.parse.quote(v, safe="") for k, v in kwargs.items()}
         urlpart = urlpart.format(*args, **kwargs)
 
         if base_url_override:
