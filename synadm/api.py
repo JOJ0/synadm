@@ -103,19 +103,19 @@ class ApiRequest:
         Handles requests methods, logging and exceptions, and URL encoding.
 
         Args:
-            urlpart (string): The path to the API endpoint, excluding
-                self.base_url and self.path (the part after
-                proto://fqdn:port/path). It will be passed to Python's
-                str.format, so the string should not be already formatted
-                (as f-strings or with str.format) as to sanitize the URL.
-            params (dict, optional): URL parameters (?param1&param2).  Defaults
-                to None.
-            data (dict, optional): Request body used in POST, PUT, DELETE
-                requests.  Defaults to None.
-            base_url_override (bool): The default setting of self.base_url set
+            method: The http method to use (get, post, put, ...)
+            urlpart: The path to the API endpoint, excluding self.base_url and
+                self.path (the part after proto://fqdn:port/path). It will be
+                passed to Python's str.format, so the string should not be
+                already formatted (as f-strings or with str.format) as to
+                sanitize the URL.
+            params: URL parameters (?param1&param2)..
+            data: Request body used in POST, PUT, DELETE requests.
+            token: An optional token overriding the configured one.
+            base_url_override: The default setting of self.base_url set
                 on initialization can be overwritten using this argument.
-            verify(bool): Mandatory SSL verification is turned on by default
-                and can be turned off using this method.
+            verify: Mandatory SSL verification is on by default and can be
+                turned off using this method.
             *args: Arguments that will be URL encoded and passed to Python's
                 str.format.
             **kwargs: Keyword arguments that will be URL encoded (only the
