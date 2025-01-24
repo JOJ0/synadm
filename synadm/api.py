@@ -117,10 +117,8 @@ class ApiRequest:
                 JSON strings. On exceptions the error type and description are
                 logged and None is returned.
         """
-        args = list(args)
+        args = [urllib.parse.quote(arg, safe="") for arg in args]
         kwargs = dict(kwargs)
-        for i in range(len(args)):
-            args[i] = urllib.parse.quote(args[i], safe="")
         for i in kwargs.keys():
             kwargs[i] = urllib.parse.quote(kwargs[i], safe="")
         urlpart = urlpart.format(*args, **kwargs)
