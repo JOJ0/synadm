@@ -85,8 +85,8 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
         self.verify = verify
 
-    def query(self, method, urlpart, params=None, data=None, token=None,
-              base_url_override=None, verify=None, *args, **kwargs):
+    def query(self, method, urlpart, *args, params=None, data=None, token=None,
+              base_url_override=None, verify=None, **kwargs):
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions, and URL encoding.
