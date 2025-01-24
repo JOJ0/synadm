@@ -28,13 +28,14 @@ documentation of the Synapse Admin APIs and the Matrix spec at
 https://matrix.org/docs/spec/#matrix-apis.
 """
 
-import requests
-from http.client import HTTPConnection
-from requests.exceptions import InvalidURL, MissingSchema
 import datetime
 import json
-import urllib.parse
 import re
+import urllib.parse
+from http.client import HTTPConnection
+
+import requests
+from requests.exceptions import InvalidURL, MissingSchema
 
 
 def log_fatal_exit(error, logger):
