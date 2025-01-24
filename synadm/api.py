@@ -31,6 +31,7 @@ https://matrix.org/docs/spec/#matrix-apis.
 import datetime
 import json
 import re
+from typing import Optional, Union, Dict, List, Any
 import urllib.parse
 from http.client import HTTPConnection
 
@@ -85,8 +86,18 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
         self.verify = verify
 
-    def query(self, method, urlpart, *args, params=None, data=None, token=None,
-              base_url_override=None, verify=None, **kwargs):
+    def query(
+        self,
+        method,
+        urlpart,
+        *args,
+        params=None,
+        data=None,
+        token=None,
+        base_url_override=None,
+        verify=None,
+        **kwargs,
+    ) -> Optional[Union[Dict[str, Any], List[Dict[str, Any]], None]]:
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions, and URL encoding.
