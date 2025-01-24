@@ -30,10 +30,21 @@ https://matrix.org/docs/spec/#matrix-apis.
 
 import requests
 from http.client import HTTPConnection
+from requests.exceptions import InvalidURL, MissingSchema
 import datetime
 import json
 import urllib.parse
 import re
+
+
+def log_fatal_exit(error, logger):
+    """Log a fatal error and exit synadm."""
+    logger.fatal(
+        "%s: %s.\nsynadm exited due to a fatal error.",
+        type(error).__name__,
+        error,
+    )
+    raise SystemExit(1) from error
 
 
 class ApiRequest:
@@ -139,6 +150,12 @@ class ApiRequest:
                 self.log.warning(f"{host_descr} returned status code "
                                  f"{resp.status_code}")
             return resp.json()
+        except ConnectionError as error:
+            log_fatal_exit(error, self.log)
+        except InvalidURL as error:
+            log_fatal_exit(error, self.log)
+        except MissingSchema as error:
+            log_fatal_exit(error, self.log)
         except Exception as error:
             self.log.error("%s while querying %s: %s",
                            type(error).__name__, host_descr, error)
