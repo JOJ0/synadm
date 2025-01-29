@@ -49,7 +49,7 @@ def log_fatal_exit(error, logger, message=None):
     logger.info("".join(traceback.format_exception(error)))
 
     logger.fatal(
-        "%s: %s.\n%s",
+        "%s: %s.\n\n%s",
         type(error).__name__,
         error, message
     )
