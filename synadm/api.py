@@ -36,7 +36,7 @@ import urllib.parse
 from http.client import HTTPConnection
 
 import requests
-from requests.exceptions import InvalidURL, MissingSchema, ConnectionError
+from requests.exceptions import ConnectionError
 
 
 def log_fatal_exit(error, logger, message=None):
@@ -161,10 +161,6 @@ class ApiRequest:
                                  f"{resp.status_code}")
             return resp.json()
         except ConnectionError as error:
-            log_fatal_exit(error, self.log)
-        except InvalidURL as error:
-            log_fatal_exit(error, self.log)
-        except MissingSchema as error:
             log_fatal_exit(error, self.log, "Connection error. Please check "
                            "that Synapse can be reached.")
         except Exception as error:
