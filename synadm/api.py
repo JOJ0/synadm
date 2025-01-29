@@ -39,12 +39,14 @@ import requests
 from requests.exceptions import InvalidURL, MissingSchema, ConnectionError
 
 
-def log_fatal_exit(error, logger):
+def log_fatal_exit(error, logger, message=None):
     """Log a fatal error and exit synadm."""
+    if message is None:
+        message = "synadm exited due to a fatal error."
     logger.fatal(
-        "%s: %s.\nsynadm exited due to a fatal error.",
+        "%s: %s.\n%s",
         type(error).__name__,
-        error,
+        error, message
     )
     raise SystemExit(1) from error
 
