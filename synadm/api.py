@@ -165,7 +165,8 @@ class ApiRequest:
         except InvalidURL as error:
             log_fatal_exit(error, self.log)
         except MissingSchema as error:
-            log_fatal_exit(error, self.log)
+            log_fatal_exit(error, self.log, "Connection error. Please check "
+                           "that Synapse can be reached.")
         except Exception as error:
             self.log.error("%s while querying %s: %s",
                            type(error).__name__, host_descr, error)
