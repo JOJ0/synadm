@@ -41,7 +41,14 @@ from requests.exceptions import ConnectionError
 
 
 def log_fatal_exit(error, logger, message=None):
-    """Log a fatal error and exit synadm."""
+    """Log a fatal error and exit synadm.
+
+    Args:
+        error: A Python exception.
+        logger: A Python logger, with info and fatal methods
+        message: Message to use instead of "synadm exited due to a fatal
+            error."
+    """
     if message is None:
         message = "synadm exited due to a fatal error."
 
