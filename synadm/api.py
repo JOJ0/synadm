@@ -34,6 +34,7 @@ import re
 from typing import Optional, Union, Dict, List, Any
 import urllib.parse
 from http.client import HTTPConnection
+import traceback
 
 import requests
 from requests.exceptions import ConnectionError
@@ -43,6 +44,10 @@ def log_fatal_exit(error, logger, message=None):
     """Log a fatal error and exit synadm."""
     if message is None:
         message = "synadm exited due to a fatal error."
+
+    # split by new lines that's already included
+    logger.info("".join(traceback.format_exception(error)))
+
     logger.fatal(
         "%s: %s.\n%s",
         type(error).__name__,
