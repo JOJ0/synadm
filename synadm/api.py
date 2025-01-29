@@ -36,7 +36,7 @@ import urllib.parse
 from http.client import HTTPConnection
 
 import requests
-from requests.exceptions import InvalidURL, MissingSchema
+from requests.exceptions import InvalidURL, MissingSchema, ConnectionError
 
 
 def log_fatal_exit(error, logger):
