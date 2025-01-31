@@ -37,7 +37,6 @@ from http.client import HTTPConnection
 import traceback
 
 import requests
-from requests.exceptions import ConnectionError
 
 
 def log_fatal_exit(error, logger, message=None):
@@ -172,7 +171,7 @@ class ApiRequest:
                 self.log.warning(f"{host_descr} returned status code "
                                  f"{resp.status_code}")
             return resp.json()
-        except ConnectionError as error:
+        except requests.exceptions.ConnectionError as error:
             log_fatal_exit(error, self.log, "Connection error. Please check "
                            "that Synapse can be reached.")
         except Exception as error:
