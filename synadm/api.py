@@ -85,7 +85,7 @@ class ApiRequest:
                 proto://fqdn:port/path). It will be passed to Python's
                 str.format, so the string should not be already formatted
                 (as f-strings or with str.format) as to sanitize the URL.
-            params (dict, optional): URL parameters (?param1&paarm2).  Defaults
+            params (dict, optional): URL parameters (?param1&param2).  Defaults
                 to None.
             data (dict, optional): Request body used in POST, PUT, DELETE
                 requests.  Defaults to None.
