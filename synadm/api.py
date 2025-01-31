@@ -31,10 +31,10 @@ https://matrix.org/docs/spec/#matrix-apis.
 import datetime
 import json
 import re
-from typing import Optional, Union, Dict, List, Any
+import traceback
 import urllib.parse
 from http.client import HTTPConnection
-import traceback
+from typing import Any, Dict, List, Optional, Union
 
 import requests
 
