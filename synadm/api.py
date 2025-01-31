@@ -111,7 +111,7 @@ class ApiRequest:
         base_url_override: Optional[bool] = False,
         verify: Optional[bool] = True,
         **kwargs: Dict[str, Any],
-    ) -> Optional[Union[Dict[str, Any], List[Dict[str, Any]], None]]:
+Optional[Union[Dict[str, Any], List[Dict[str, Any]]]]
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions, and URL encoding.
