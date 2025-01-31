@@ -137,11 +137,10 @@ class ApiRequest:
                 values) and passed to Python's str.format.
 
         Returns:
-            string or None: Usually a JSON string containing
-                the response of the API; responses that are not 200(OK) (usally
-                error messages returned by the API) will also be returned as
-                JSON strings. On exceptions the error type and description are
-                logged and None is returned.
+            A dict, list or None. If it's a dict or list, it is a JSON
+            decoded response. Whether it is a dict or a list depends on what
+            the server responds with. It returns a None if any exceptions
+            are encountered.
         """
         args = [urllib.parse.quote(arg, safe="") for arg in args]
         kwargs = {k: urllib.parse.quote(v, safe="") for k, v in kwargs.items()}
