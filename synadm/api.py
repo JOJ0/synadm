@@ -52,7 +52,7 @@ def log_fatal_exit(error, logger, message=None):
     if message is None:
         message = "synadm exited due to a fatal error."
 
-    # split by new lines that's already included
+    # format_exception() returns a list of strings. join it into a single string again. 
     logger.info("".join(traceback.format_exception(error)))
 
     logger.fatal(
