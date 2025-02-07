@@ -701,6 +701,51 @@ def user_shadow_ban(helper, user_id, unban):
     else:
         helper.output(user_ban)
 
+@user.command()
+@click.argument("user_id", type=str)
+@click.option(
+    "-r", "--room", "rooms", multiple=True, type=str,
+    help="""Rooms to limit to for redaction. Specify this argument multiple
+    rooms with the flag, and pass internal room IDs. Defaults to all
+    rooms."""
+)
+@click.option(
+    "--reason", type=str,
+    help="""Provided reason for redaction. This will be to everyone, and
+    will be part of the redaction event. Optional."""
+)
+@click.option(
+    "-l", "--limit", type=int,
+    help="""Limit to amount of messages to redact. Synapse defaults to
+    1000."""
+)
+@click.pass_obj
+def redact(helper, user_id, rooms, reason=None, limit=None):
+    """
+    Redact events by a user, local or remote.
+
+    If a local user's events are redacted, Synapse will act as the specified
+    user. If a remote user's events are redacted, Synapse will use any
+    user with message redaction power to redact the specified remote user's
+    events.
+    """
+    mxid = helper.generate_mxid(user_id)
+    helper.output(
+        helper.api.user_redact(mxid, rooms, reason=reason, limit=limit)
+    )
+
+
+@user.command()
+@click.argument("redact_id", type=str)
+@click.pass_obj
+def redact_status(helper, redact_id):
+    """
+    Get the status of user events redaction.
+    """
+    helper.output(
+        helper.api.user_redact_status(redact_id)
+    )
+
 
 @user.command(name="auth-provider")
 @click.argument("external_user_id", type=str)

@@ -758,6 +758,49 @@ class SynapseAdmin(ApiRequest):
         return self.query("get", "v1/threepid/{medium}/users/{address}",
                           address=address, medium=medium)
 
+    def user_redact(self, user, rooms, reason=None, limit=None):
+        """
+        Redacts all events by a local or remote user in specified or all
+        rooms.
+
+        For users local to the homeserver, Synapse will redact it as the
+        specified user. For remote users, Synapse will redact as anyone who
+        has sufficient power level to remove messages.
+
+        https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#redact-all-the-events-of-a-user
+
+        Args:
+            user: An MXID in string
+            rooms: A list of rooms to redact events in. If the list is
+                empty, events in all rooms are redacted.
+            reason: A string, specifying the reason to redact. This is
+                visible to everyone in the room and will be part of the
+                redaction event.
+            limit: An integer of how many events can be redacted at once.
+                Synapse defaults to 1000.
+        """
+        data = {
+            "rooms": rooms or []
+        }
+        if reason:
+            data["reason"] = reason
+        if limit:
+            data["limit"] = limit
+        return self.query("post", "v1/user/{user_id}/redact", data=data,
+                          user_id=user)
+
+    def user_redact_status(self, redact_id):
+        """
+        Check the status of redacting user messages.
+
+        https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#check-the-status-of-a-redaction-process
+
+        Args:
+            redact_id: The redaction ID from the user redaction API.
+        """
+        return self.query("get", "v1/user/redact_status/{redact_id}",
+                          redact_id=redact_id)
+
     def room_join(self, room_id_or_alias, user_id):
         """ Allow an administrator to join an user account with a given user_id
         to a room with a given room_id_or_alias
