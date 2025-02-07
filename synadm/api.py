@@ -53,7 +53,11 @@ def log_fatal_exit(error, logger, message=None):
 
     # format_exception() returns a list of strings (with new lines). join it
     # into a single string again for readability.
-    logger.info("".join(traceback.format_exception(error)))
+    #
+    # error specified multiple times to ensure it works with python 3.9 and
+    # versions after that which accept things differently
+    logger.info("".join(traceback.format_exception(error, error,
+                                                   error.__traceback__)))
 
     logger.fatal(
         "%s: %s.\n\n%s",
