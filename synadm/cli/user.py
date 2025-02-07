@@ -701,6 +701,7 @@ def user_shadow_ban(helper, user_id, unban):
     else:
         helper.output(user_ban)
 
+
 @user.command()
 @click.argument("user_id", type=str)
 @click.option(
