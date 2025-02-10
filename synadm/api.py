@@ -28,12 +28,43 @@ documentation of the Synapse Admin APIs and the Matrix spec at
 https://matrix.org/docs/spec/#matrix-apis.
 """
 
-import requests
-from http.client import HTTPConnection
 import datetime
 import json
-import urllib.parse
 import re
+import traceback
+import urllib.parse
+from http.client import HTTPConnection
+from typing import Any, Dict, List, Optional, Union
+
+import requests
+
+
+def log_fatal_exit(error, logger, message=None):
+    """Log a fatal error and exit synadm.
+
+    Args:
+        error: A Python exception.
+        logger: A Python logger, with info and fatal methods
+        message: Message to use instead of "synadm exited due to a fatal
+            error."
+    """
+    if message is None:
+        message = "synadm exited due to a fatal error."
+
+    # format_exception() returns a list of strings (with new lines). join it
+    # into a single string again for readability.
+    #
+    # error specified multiple times to ensure it works with python 3.9 and
+    # versions after that which accept things differently
+    logger.info("".join(traceback.format_exception(error, error,
+                                                   error.__traceback__)))
+
+    logger.fatal(
+        "%s: %s.\n\n%s",
+        type(error).__name__,
+        error, message
+    )
+    raise SystemExit(1) from error
 
 
 class ApiRequest:
@@ -73,44 +104,49 @@ class ApiRequest:
             HTTPConnection.debuglevel = 1
         self.verify = verify
 
-    def query(self, method, urlpart, params=None, data=None, token=None,
-              base_url_override=None, verify=None, *args, **kwargs):
+    def query(
+        self,
+        method: str,
+        urlpart: str,
+        *args: Any,
+        params: Optional[Dict[str, Any]] = None,
+        data: Optional[Dict[str, Any]] = None,
+        token: Optional[str] = None,
+        base_url_override: Optional[bool] = False,
+        verify: Optional[bool] = True,
+        **kwargs: Dict[str, Any],
+    ) -> Optional[Union[Dict[str, Any], List[Dict[str, Any]]]]:
         """Generic wrapper around requests methods.
 
         Handles requests methods, logging and exceptions, and URL encoding.
 
         Args:
-            urlpart (string): The path to the API endpoint, excluding
-                self.base_url and self.path (the part after
-                proto://fqdn:port/path). It will be passed to Python's
-                str.format, so the string should not be already formatted
-                (as f-strings or with str.format) as to sanitize the URL.
-            params (dict, optional): URL parameters (?param1&param2).  Defaults
-                to None.
-            data (dict, optional): Request body used in POST, PUT, DELETE
-                requests.  Defaults to None.
-            base_url_override (bool): The default setting of self.base_url set
+            method: The http method to use (get, post, put, ...)
+            urlpart: The path to the API endpoint, excluding self.base_url and
+                self.path (the part after proto://fqdn:port/path). It will be
+                passed to Python's str.format, so the string should not be
+                already formatted (as f-strings or with str.format) as to
+                sanitize the URL.
+            params: URL parameters (?param1&param2)..
+            data: Request body used in POST, PUT, DELETE requests.
+            token: An optional token overriding the configured one.
+            base_url_override: The default setting of self.base_url set
                 on initialization can be overwritten using this argument.
-            verify(bool): Mandatory SSL verification is turned on by default
-                and can be turned off using this method.
+            verify: Mandatory SSL verification is on by default and can be
+                turned off using this method.
             *args: Arguments that will be URL encoded and passed to Python's
                 str.format.
             **kwargs: Keyword arguments that will be URL encoded (only the
                 values) and passed to Python's str.format.
 
         Returns:
-            string or None: Usually a JSON string containing
-                the response of the API; responses that are not 200(OK) (usally
-                error messages returned by the API) will also be returned as
-                JSON strings. On exceptions the error type and description are
-                logged and None is returned.
+            A dict, list or None. If it's a dict or list, it is a JSON
+            decoded response. Whether it is a dict or a list depends on what
+            the server responds with. It returns a None if any exceptions
+            are encountered.
         """
-        args = list(args)
-        kwargs = dict(kwargs)
-        for i in range(len(args)):
-            args[i] = urllib.parse.quote(args[i], safe="")
-        for i in kwargs.keys():
-            kwargs[i] = urllib.parse.quote(kwargs[i], safe="")
+        args = [urllib.parse.quote(arg, safe="") for arg in args]
+        kwargs = {k: urllib.parse.quote(v, safe="") for k, v in kwargs.items()}
         urlpart = urlpart.format(*args, **kwargs)
 
         if base_url_override:
@@ -139,6 +175,9 @@ class ApiRequest:
                 self.log.warning(f"{host_descr} returned status code "
                                  f"{resp.status_code}")
             return resp.json()
+        except requests.exceptions.ConnectionError as error:
+            log_fatal_exit(error, self.log, "Connection error. Please check "
+                           "that Synapse can be reached.")
         except Exception as error:
             self.log.error("%s while querying %s: %s",
                            type(error).__name__, host_descr, error)
