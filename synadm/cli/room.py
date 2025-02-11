@@ -97,26 +97,14 @@ def resolve(helper, room_id_or_alias, reverse):
     "--reverse", "-r", is_flag=True, default=False,
     help="""Direction of room order. If set it will reverse the sort order of
     --order-by method.""")
-@optgroup.group(
-    "Query type", cls=MutuallyExclusiveOptionGroup,
-    help="Query for empty or non-empty rooms"
-)
-@optgroup.option(
-    "--empty", "-e", is_flag=True,
-    help="""Queries for empty rooms only.""")
-@optgroup.option(
-    "--not-empty", "-E", is_flag=True,
-    help="""Queries for rooms which are not empty only.""")
-def list_room_cmd(helper, from_, limit, name, sort, reverse, empty,
-                  not_empty):
+@click.option(
+    "--empty/--not-empty", "-e/-E", "empty_rooms", is_flag=True,
+    type=bool, default=None, help="""Query for empty rooms only, or not
+    empty rooms only. If unspecified, both empty and non-empty rooms are
+    included.""")
+def list_room_cmd(helper, from_, limit, name, sort, reverse, empty_rooms):
     """ List and search for rooms.
     """
-    empty_rooms = None
-    if empty:
-        empty_rooms = True
-    elif not_empty:
-        empty_rooms = False
-
     rooms = helper.api.room_list(from_, limit, name, sort, reverse,
                                  empty_rooms)
     if rooms is None:
