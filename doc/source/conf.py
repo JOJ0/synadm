@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../synadm/../'))
 # -- Project information -----------------------------------------------------
 
 project = 'synadm'
-copyright = '2020-2024, Johannes Tiefenbacher'
+copyright = '2020-2025, Johannes Tiefenbacher'
 author = 'Johannes Tiefenbacher'
 
 # The short X.Y version
