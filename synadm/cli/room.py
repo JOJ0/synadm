@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # synadm
 # Copyright (C) 2020-2025 Johannes Tiefenbacher
+# Copyright (C) 2023-2025 JacksonChen666
 #
 # synadm is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
