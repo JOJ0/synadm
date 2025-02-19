@@ -57,6 +57,21 @@ def user():
     "--admins/--non-admins", "-a/-A", default=None,
     help="""Whether to filter for admins, or non-admins. If not specified,
     no admin filter is applied.""")
+@click.option(
+    "--sort-by", type=str, help="""Method of sorting users. Valid options
+    are name, is_guest, admin, user_type, deactivated, shadow_banned,
+    displayname, avatar_url, creation_ts, and last_seen_ts.""")
+@click.option(
+    "--reverse", is_flag=True, default=False, type=bool, help="""Display
+    items in reverse order, from last to first.""")
+@click.option(
+    "--exclude-user-type", type=str, default=None, multiple=True,
+    help="""Exclude users of specific user types. Can be specified multiple
+    times. Valid values are "bot", "support", or "" (excludes those without
+    user types).""")
+@click.option(
+    "--locked", "-L", type=bool, default=False, is_flag=True,
+    help="""Include locked users in the user list""")
 @optgroup.group(
     "Search options",
     cls=MutuallyExclusiveOptionGroup,
@@ -71,13 +86,15 @@ def user():
     help="""Search users by ID - filters to only return users with Matrix IDs
     (@user:server) that contain this value""")
 @click.pass_obj
-def list_user_cmd(helper, from_, limit, guests, deactivated, name, user_id,
-                  admins):
+def list_user_cmd(helper, from_, limit, guests, deactivated, name, sort_by,
+                  reverse, exclude_user_type, locked, user_id, admins):
     """ List users, search for users.
     """
     mxid = helper.generate_mxid(user_id)
+    _dir = "b" if reverse else None
     users = helper.api.user_list(from_, limit, guests, deactivated, name,
-                                 mxid, admins)
+                                 mxid, admins, sort_by, _dir,
+                                 exclude_user_type, locked)
     if users is None:
         click.echo("Users could not be fetched.")
         raise SystemExit(1)

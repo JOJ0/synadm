@@ -454,8 +454,11 @@ class SynapseAdmin(ApiRequest):
         self.user = user
 
     def user_list(self, _from, _limit, _guests, _deactivated,
-                  _name, _user_id, _admin=None):
+                  _name, _user_id, _admin=None, order_by=None, _dir=None,
+                  not_user_type=None, locked=False):
         """List and search users
+
+        https://element-hq.github.io/synapse/latest/admin_api/user_admin_api.html#list-accounts
 
         Args:
             _from (int): offsets user list by this number, used for pagination
@@ -467,6 +470,19 @@ class SynapseAdmin(ApiRequest):
             _user_id (string): fully qualified Matrix user ID to search for
             _admin (bool or None): whether to filter for admins. a None
                 does not filter.
+            order_by (string or None): Method of sorting returned users. See
+                Synapse's documentation for valid choices. None uses Synapse
+                defaults. Note that methods other than "name" or
+                "creation_ts" may be slow and cause a major load as they
+                have no database index.
+            _dir (string or None): Direction of sorting. "f" for forwards
+                (default or when None), "b" for backwards/reversed.
+            not_user_type (string or list or None): User type to exclude.
+                Supports list for multiple values. Possible values are
+                "bot", "support", or "" (to exclude users without a user
+                type). Defaults to None for no filtering.
+            locked (bool): Include locked users. Defaults to not
+                including them.
 
         Returns:
             string: JSON string containing the found users
@@ -478,14 +494,19 @@ class SynapseAdmin(ApiRequest):
                        else None),
             "deactivated": "true" if _deactivated else None,
             "name": _name,
-            "user_id": _user_id
+            "user_id": _user_id,
+            "order_by": order_by,
+            "dir": _dir,
+            "not_user_type": not_user_type,
+            "locked": str(locked).lower()
         }
         if _admin is not None:
             params["admins"] = str(_admin).lower()
         return self.query("get", "v2/users", params=params)
 
-    def user_list_paginate(self, _limit, _guests, _deactivated,
-                           _name, _user_id, _from="0", admin=None):
+    def user_list_paginate(self, _limit, _guests, _deactivated, _name,
+                           _user_id, _from="0", admin=None, order_by=None,
+                           _dir=None, not_user_type=None, locked=False):
         # documentation is mostly duplicated from user_list...
         """Yields API responses for all of the pagination.
 
@@ -500,6 +521,19 @@ class SynapseAdmin(ApiRequest):
             _user_id (string): Fully qualified Matrix user ID to search for.
             _from (string): Offsets user list by this number, used for
                 pagination.
+            order_by (string or None): Method of sorting returned users. See
+                Synapse's documentation for valid choices. None uses Synapse
+                defaults. Note that methods other than "name" or
+                "creation_ts" may be slow and cause a major load as they
+                have no database index.
+            _dir (string or None): Direction of sorting. "f" for forwards
+                (default or when None), "b" for backwards/reversed.
+            not_user_type (string or list or None): User type to exclude.
+                Supports list for multiple values. Possible values are
+                "bot", "support", or "" (to exclude users without a user
+                type). Defaults to None for no filtering.
+            locked (bool): Include locked users. Defaults to not
+                including them.
 
         Yields:
             dict: The Admin API response for listing accounts.
@@ -507,7 +541,8 @@ class SynapseAdmin(ApiRequest):
         """
         while _from is not None:
             response = self.user_list(_from, _limit, _guests, _deactivated,
-                                      _name, _user_id, admin)
+                                      _name, _user_id, admin, order_by,
+                                      _dir, not_user_type, locked)
             yield response
             _from = response.get("next_token", None)
 
