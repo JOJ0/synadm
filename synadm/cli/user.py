@@ -433,7 +433,8 @@ class UserModifyOptionGroup(RequiredAnyOptionGroup):
     manipulated. If the --user-type option is omitted when creating a new user,
     a regular user will be created.""")
 @optgroup.option(
-    "--no-logout", "logout_devices", type=bool, default=False, is_flag=True,
+    "--no-logout", "logout_devices", type=bool, default=None,
+    flag_value=False, is_flag=True,
     help="""When setting a password, the user is logged out on all devices
     by default (unspecified). When --no-logout is specified, devices are not
     logged out even when the password is changed.""")
