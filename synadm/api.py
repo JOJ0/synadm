@@ -161,7 +161,8 @@ class ApiRequest:
         else:
             url = f"{self.base_url}/{self.path}/{urlpart}"
             host_descr = "Synapse"
-        self.log.info("Querying %s on %s", method, url)
+        self.log.info("Querying %s on %s with URL query %s", method, url,
+                      params)
 
         if token:
             self.log.debug("Token override! Adjusting headers.")
