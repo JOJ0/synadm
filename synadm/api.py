@@ -120,6 +120,9 @@ class ApiRequest:
 
         Handles requests methods, logging and exceptions, and URL encoding.
 
+        The arguments "method" and "params" are passed to requests.request
+        as is.
+
         Args:
             method: The http method to use (get, post, put, ...)
             urlpart: The path to the API endpoint, excluding self.base_url and
@@ -127,8 +130,10 @@ class ApiRequest:
                 passed to Python's str.format, so the string should not be
                 already formatted (as f-strings or with str.format) as to
                 sanitize the URL.
-            params: URL parameters (?param1&param2)..
-            data: Request body used in POST, PUT, DELETE requests.
+            params (dict): URL queries (?param1&param2). Use a list type
+                for the value to achieve ?param1=value1&param1=value2.
+            data: Request body used in POST, PUT, DELETE requests, encoded
+                as JSON.
             token: An optional token overriding the configured one.
             base_url_override: The default setting of self.base_url set
                 on initialization can be overwritten using this argument.
