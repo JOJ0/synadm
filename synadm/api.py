@@ -1471,7 +1471,7 @@ class SynapseAdmin(ApiRequest):
         """
         # t because query also accepts token when we want it for the
         # request
-        # https://github.com/JOJ0/synadm/issues/110#issuecomment-1590032158
+        # https://codeberg.org/synadm/synadm/issues/110#issuecomment-3112443
         return self.query("delete", "v1/registration_tokens/{t}",
                           t=token)
 

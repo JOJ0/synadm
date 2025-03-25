@@ -27,11 +27,11 @@ setup(
     description="Command line admin tool for Synapse (Matrix reference homeserver)",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/joj0/synadm",
+    url="https://codeberg.org/synadm/synadm",
     project_urls={
-        "Bug Tracker": "https://github.com/joj0/synadm/issues",
+        "Bug Tracker": "https://codeberg.org/synadm/synadm/issues",
         "Documentation": "https://synadm.readthedocs.io/",
-        "Source Code": "https://github.com/joj0/synadm"
+        "Source Code": "https://codeberg.org/synadm/synadm"
     },
     license="GPLv3+",
     classifiers=[

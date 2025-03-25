@@ -27,14 +27,14 @@ No matter if you're a programmer or not there are many ways to contribute to the
 
 ### Non-Programming
 
-* [Set up synadm](https://github.com/JOJ0/synadm/blob/master/README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
+* [Set up synadm](https://codeberg.org/synadm/synadm/src/branch/master/README.md#installation) and report whether the installation, configuration and update processes work as described or could be improved. We don't have the resources to test on many operating systems, but you can [let us know](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) if it does work.
 * Help keep the features list on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) up to date.
 * Improve the docs: The end-user documentation is entirely realized with the typical online help of Unix commands, an option named`--help/-h`. We believe that a top-priority in designing CLI tools is getting this information right. Spelling, wording and of course technical correctness are equally important. If it's not easily possible to stay brief and technically precise at the same time, we believe it is OK to prioritize precision over shortness. We also have documentation made with _Sphinx_ [available online](https://synadm.readthedocs.io/en/latest/index_cli_reference.html).
 
 
 ### Programming
 
-* Pick an [open issue on GitHub](https://github.com/JOJ0/synadm/issues) or a not yet implemented [Synapse Admin API](https://synadm.readthedocs.io/en/latest/features.html) (see [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html)) and start implementing it, then submit a pull-request when you are ready.
+* Pick an [open issue on GitHub](https://codeberg.org/synadm/synadm/issues) or a not yet implemented [Synapse Admin API](https://synadm.readthedocs.io/en/latest/features.html) (see [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html)) and start implementing it, then submit a pull-request when you are ready.
   * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. You can then mention us (`@` then followed by a GitHub username).
   * It's ok to open a Draft PR even if you don't want our feedback yet but it helps you in any way. We won't bother you until you ping us.
 * Don't forget to check if the feature you are submitting is listed on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) already. If not, please add it to the corresponding table (preferably in a separate commit).
@@ -65,7 +65,7 @@ We are maintaining `synadm` in our spare time and currently are not sponsored by
 
 We keep track of which Synapse Admin API's `synadm` supports in a set of tables on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html). The structure of this page follows the layout of the official [Synapse Admin API documentation](https://element-hq.github.io/synapse/latest/usage/administration/admin_api/index.html). Each table represents one main chapter of the Synapse documentation.
 
-In our documentation source, the page is defined by [features.rst](https://github.com/JOJ0/synadm/blob/master/doc/source/features.rst), which contains multiple CSV files, each representing a table. To assist with maintaining this page, we offer a [web scraper tool](https://github.com/JOJ0/synadm/blob/master/scrape_docs.py) that pulls data from the Synapse Admin API docs and creates an initial version of such a CSV table. To get started with using the tool, first run this command in the repository:
+In our documentation source, the page is defined by [features.rst](https://codeberg.org/synadm/synadm/src/branch/master/doc/source/features.rst), which contains multiple CSV files, each representing a table. To assist with maintaining this page, we offer a [web scraper tool](https://codeberg.org/synadm/synadm/src/branch/master/scrape_docs.py) that pulls data from the Synapse Admin API docs and creates an initial version of such a CSV table. To get started with using the tool, first run this command in the repository:
 
 ```
 pip install -e '.[scrape_docs]'
@@ -98,7 +98,7 @@ commands (e.g. [delete local media][dellocalmedia]), use the `—` character.
 [dellocalmedia]:https://element-hq.github.io/synapse/latest/admin_api/media_admin_api.html#delete-local-media
 
 
-Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://github.com/JOJ0/synadm/tree/master/doc/source/features).
+Due to a shortcoming of Sphinx it is currently not possible to link to a plain command (without any option or argument). Also see `scrape_docs.py --help` and the [existing CSV files](https://codeberg.org/synadm/synadm/src/branch/master/doc/source/features).
 
 
 ## Discuss and Design First
@@ -122,7 +122,7 @@ To install `synadm` into its own private virtual Python environment follow these
 ### 2. Clone Repo:
 
 ```
-git clone https://github.com/joj0/synadm
+git clone https://codeberg.org/synadm/synadm
 ```
 
 <!-- omit in toc -->
@@ -171,24 +171,24 @@ synadm -h
 
 The general design of a synadm subcommand is simple. You would usually have:
 
-- A method in the _backend module_, which is located in the file [synadm/api.py](https://github.com/JOJ0/synadm/blob/master/synadm/api.py).
-- A definition of the CLI frontend. The Python package [Click](https://click.palletsprojects.com) is the command-line library in use. It's easy to learn and usually rather self-explanatory. Just copy and paste an existing command and work from there. The frontend code is found in the directory [synadm/cli](https://github.com/JOJ0/synadm/blob/master/synadm/cli/)
+- A method in the _backend module_, which is located in the file [synadm/api.py](https://codeberg.org/synadm/synadm/src/branch/master/synadm/api.py).
+- A definition of the CLI frontend. The Python package [Click](https://click.palletsprojects.com) is the command-line library in use. It's easy to learn and usually rather self-explanatory. Just copy and paste an existing command and work from there. The frontend code is found in the directory [synadm/cli](https://codeberg.org/synadm/synadm/src/branch/master/synadm/cli)
 
 _Note: If you are not familiar with Python code, don't let yourself get distracted with the unusual @statements that define arguments and options. They are so-called decorators that "plug in" those options into your commands function. You don't actually need to understand why the Click library, makes use of this concept._
 
 
 ### Implementation Examples
 
-Have a look at [this method](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369) and [this one](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545).
+Have a look at [this method](https://codeberg.org/synadm/synadm/src/commit/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L358-L369) and [this one](https://codeberg.org/synadm/synadm/src/commit/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L531-L545).
 
 That's all it needs to implement command `synadm user details <user_id>`.
 
-Another example, this time using a POST based API endpoint: It implements command `synadm user password <user_id>`. [This](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301) is the CLI-level method, and again it requires [a backend method in `api.py`](https://github.com/JOJ0/synadm/blob/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529).
+Another example, this time using a POST based API endpoint: It implements command `synadm user password <user_id>`. [This](https://codeberg.org/synadm/synadm/src/commit/68749391d6a291d2fac229214f59924189c775ac/synadm/cli/user.py#L276-L301) is the CLI-level method, and again it requires [a backend method in `api.py`](https://codeberg.org/synadm/synadm/src/commit/68749391d6a291d2fac229214f59924189c775ac/synadm/api.py#L511-L529).
 
 
 ### Sending requests and URL encoding
 
-Since commit [6874939](https://github.com/JOJ0/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
+Since commit [6874939](https://codeberg.org/synadm/synadm/commit/68749391d6a291d2fac229214f59924189c775ac) (released in v0.41.2) `synadm` encodes URL's in a central place - the `query()` method located in the [synadm.api.ApiRequest](https://synadm.readthedocs.io/en/latest/synadm.module.html#synadm.api.ApiRequest) class.
 
 Variables sent as part of the URL are required to be passed to the `query()` method **unaltered**. Do not use f-strings or str.format, let the `query()` method do the sanitizing of the URL.
 
@@ -199,13 +199,13 @@ self.query("post", "v1/reset_password/{user_id}", data=data, user_id=user_id)
 ```
 
 - The `data` argument is passed as the request body and expects a Python dictionary.
-- The `{user_id}` part of the URL will be replaced by the keyword argument `user_id`. The value of the keyword argument `user_id` will also be URL encoded to ensure [special cases](https://github.com/JOJ0/synadm/issues/96) don't break things.
+- The `{user_id}` part of the URL will be replaced by the keyword argument `user_id`. The value of the keyword argument `user_id` will also be URL encoded to ensure [special cases](https://codeberg.org/synadm/synadm/issues/96) don't break things.
 
 
 
 ### Helpers and Utilities
 
-You'll find a couple of helpers & utilities [near the top of the api module's code](https://github.com/JOJ0/synadm/blob/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
+You'll find a couple of helpers & utilities [near the top of the api module's code](https://codeberg.org/synadm/synadm/src/branch/master/synadm/api.py), right below the `query()` method, within the `ApiRequest` class. For example we already provide methods to translate unix timestamps to human readable formats and vice versa.
 
 If you need to defer code to a helper function because you require reusing it or otherwise think it's a cleaner approach, put it where you need it: Either as a subfunction in your backend method in the `synadm/api` module or in the frontend function in `synadm/cli/yourcommand`. If you think you've wrote a function that is very generic and might be useful to other `synadm/api` methods as well, put it next to the helpers in the `ApiRequest` class and tell us about it in a PR-comment.
 
@@ -258,7 +258,7 @@ This section is a checklist for maintainers of the `synadm` project. This inform
 - We keep a branch named `dev` consistently existing that may be used for random things.
   - If a PR is opened from `dev`, it cannot be used by others.
   - If the current "occupier" of the branch demands it though, they can invite other maintainers to submit to that branch.
-- Maintainers are not required to create branches in their own fork. Feature branches can be created directly in the [JOJ0/synadm](https://github.com/JOJ0/synadm) repository.
+- Maintainers are not required to create branches in their own fork. Feature branches can be created directly in the [synadm/synadm](https://codeberg.org/synadm/synadm) repository.
 - One person should be the "owner" of each PR, no matter if opened by a contributor or a maintainer. Assistance from other maintainers can be request if desired.
   - Who the "owner" is can be arranged in the _synadm maintainers room_ (private) but usually would be the person who initially reviews the submission.
   - The "assignee" setting available on PR's and issues should be used to mark who the "owner" is.

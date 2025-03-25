@@ -69,9 +69,9 @@ html_context = {
 html_theme_options = {
     "icon_links": [
         {
-            "name": "GitHub",
-            "url": "https://github.com/JOJ0/synadm",
-            "icon": "fa-brands fa-github",
+            "name": "Codeberg",
+            "url": "https://codeberg.org/synadm/synadm",
+            "icon": "fa-brands fa-github", # TODO
         },
     ],
     "use_edit_page_button": True,

@@ -145,11 +145,11 @@ Miscellaneous
 
 
 .. _documentation source directory:
-   https://github.com/JOJ0/synadm/tree/master/doc/source/features/
+   https://codeberg.org/synadm/synadm/src/branch/master/doc/source/features
 .. _feature request issue:
-   https://github.com/JOJ0/synadm/issues/new
+   https://codeberg.org/synadm/synadm/issues/new
 .. _pull request:
-   https://github.com/JOJ0/synadm/blob/master/CONTRIBUTING.md#submitting-your-work
+   https://codeberg.org/synadm/synadm/src/branch/master/CONTRIBUTING.md#submitting-your-work
 .. _feature coverage documentation:
-   https://github.com/JOJ0/synadm/blob/master/CONTRIBUTING.md#feature-coverage-documentation 
+   https://codeberg.org/synadm/synadm/src/branch/master/CONTRIBUTING.md#feature-coverage-documentation
 .. |indent| unicode:: U+00A0 U+00A0 .. non-breaking two-space indentation
