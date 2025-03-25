@@ -30,7 +30,7 @@ setup(
     url="https://github.com/joj0/synadm",
     project_urls={
         "Bug Tracker": "https://github.com/joj0/synadm/issues",
-        "Documentation": "https://github.com/joj0/synadm",
+        "Documentation": "https://synadm.readthedocs.io/",
         "Source Code": "https://github.com/joj0/synadm"
     },
     license="GPLv3+",
