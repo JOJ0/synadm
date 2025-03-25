@@ -71,7 +71,7 @@ html_theme_options = {
         {
             "name": "Codeberg",
             "url": "https://codeberg.org/synadm/synadm",
-            "icon": "fa-brands fa-github", # TODO
+            "icon": "fa-solid fa-code-branch",
         },
     ],
     "use_edit_page_button": True,
