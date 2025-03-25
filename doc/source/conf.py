@@ -61,9 +61,12 @@ exclude_patterns = []
 html_theme = "pydata_sphinx_theme"
 
 html_context = {
-    "github_user": "JOJ0",
-    "github_repo": "synadm",
-    "github_version": "master",
+    "codeberg_user": "synadm",
+    "codeberg_repo": "synadm",
+    "codeberg_version": "master",
+    # XXX: may have issues with files in folders? not sure, we don't have any
+    "edit_page_url_template": "https://codeberg.org/{{ codeberg_user }}/{{ codeberg_repo }}/_edit/{{ codeberg_version }}/{{ doc_path }}{{ file_name }}{{ some_other_arg }}",
+    "edit_page_provider_name": "Codeberg",
     "doc_path": "doc/source/",
 }
 html_theme_options = {
