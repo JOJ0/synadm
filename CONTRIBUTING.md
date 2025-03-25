@@ -34,8 +34,8 @@ No matter if you're a programmer or not there are many ways to contribute to the
 
 ### Programming
 
-* Pick an [open issue on GitHub](https://codeberg.org/synadm/synadm/issues) or a not yet implemented [Synapse Admin API](https://synadm.readthedocs.io/en/latest/features.html) (see [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html)) and start implementing it, then submit a pull-request when you are ready.
-  * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. You can then mention us (`@` then followed by a GitHub username).
+* Pick an [open issue on Codeberg](https://codeberg.org/synadm/synadm/issues) or a not yet implemented [Synapse Admin API](https://synadm.readthedocs.io/en/latest/features.html) (see [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html)) and start implementing it, then submit a pull-request when you are ready.
+  * If you'd like to receive "early feedback" even though you think your code is not ready yet, submit your PR already and set it to draft state. You can then mention us (`@` then followed by a username).
   * It's ok to open a Draft PR even if you don't want our feedback yet but it helps you in any way. We won't bother you until you ping us.
 * Don't forget to check if the feature you are submitting is listed on [API to CLI Mapping](https://synadm.readthedocs.io/en/latest/features.html) already. If not, please add it to the corresponding table (preferably in a separate commit).
 
@@ -46,7 +46,7 @@ There are several ways to submit your work.
 
 - Clone the repo, create a feature branch and submit a pull-request.
   - Consider having the [Allow edits from maintainers](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/allowing-changes-to-a-pull-request-branch-created-from-a-fork) option enabled. We will deal with this permission responsibly. It proved to be a useful option for working together in the past and might even speed up getting a PR merged.
-- If you're not familiar with using git or just want to submit a smaller change (like a correction to the docs), you can use the “Edit file” button in the upper-right while viewing a file directly on the GitHub web interface.
+- If you're not familiar with using git or just want to submit a smaller change (like a correction to the docs), you can use the “Edit file” button in the upper-right while viewing a file directly on the web interface.
 
 
 ## Expectations Regarding Timelines
@@ -105,7 +105,7 @@ Due to a shortcoming of Sphinx it is currently not possible to link to a plain c
 
 It proved to be useful in the past if loose (feature) ideas would be discussed in [#synadm:peek-a-boo.at](https://matrix.to/#/%23synadm%3Apeek-a-boo.at?via=jacksonchen666.com&via=maclemon.at&via=matrix.org&via=raim.ist) first. Collecting opinions from fellow `synadm` users might help defining a more concrete idea.
 
-- If you'd like **someone else** to pick up your feature idea because you are not able to code it yourself, please **open a detailed GitHub issue** describing the feature.
+- If you'd like **someone else** to pick up your feature idea because you are not able to code it yourself, please **open a detailed issue** describing the feature.
 - **A separate issue is not required**, if you'd like to code it **yourself**. Please include the feature description in your PR.
 
 
@@ -276,7 +276,7 @@ This section is a checklist for maintainers of the `synadm` project. This inform
 Releasing a new version of `synadm` requires the following steps:
 
 - Increase the version in all required files using the `bump.sh` script. `pip install bump2version` to your dev-environment to install the required tool. The final step to push to the master branch will be suggested by the script ('git push --follow-tags`).
-- Following this push command the _release CI pipeline_ will be triggered and a tag and release draft be created on GitHub.
+- ~~Following this push command the _release CI pipeline_ will be triggered and a tag and release draft be created on GitHub.~~ This is not yet setup on Codeberg
 - Edit the generated draft and add release notes with the help of the "Generate release notes" button, but reformat into sections to be consistent with prior releases. If things were added without a PR, add those manually to the list of new features or fixes.
 - Once the release notes are fine, make them public. The package can now be pushed to PyPi using the script `pypi.sh`
 - Activate a new documentation version via [https://readthedocs.org/projects/synadm/versions/](https://readthedocs.org/projects/synadm/versions/), thus we provide a version of the online documentation consistent with the content of to the newly released `synadm` package.

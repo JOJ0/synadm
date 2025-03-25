@@ -187,7 +187,7 @@ We are hanging around in the official support room for Synapse, [#synapse:matrix
 
 The most direct way to reach synadm maintainers as well as seasoned users and Synapse admins is by joining [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at).
 
-If you are sure you've found a bug that was not already reported, certainly directly opening an [issue on GitHub](https://codeberg.org/synadm/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
+If you are sure you've found a bug that was not already reported, certainly directly [opening an issue](https://codeberg.org/synadm/synadm/issues) is a valid option too. If unsure, ask in [#synadm:peek-a-boo.at](https://matrix.to/#/#synadm:peek-a-boo.at) first.
 
 
 
